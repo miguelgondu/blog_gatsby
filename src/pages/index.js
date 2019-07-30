@@ -9,7 +9,6 @@ export default ({ data }) => {
     return (
         <Layout>
             <div>
-                <h4>{data.allMarkdownRemark.totalCount} Posts</h4>
                 {data.allMarkdownRemark.edges.map(({ node }) => (
                     <div key={node.id}>
                         <h3>
@@ -18,10 +17,7 @@ export default ({ data }) => {
                                 — {node.frontmatter.date}
                             </span>
                         </h3>
-                        <p css={{
-                            display: `flex`,
-                            alignItems: `center`
-                        }}>{node.excerpt}</p>
+                        <p>{node.excerpt}</p>
                     </div>
                 ))}
             </div>
