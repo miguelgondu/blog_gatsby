@@ -14,8 +14,23 @@
   },
   "dependencies": {
     "gatsby": "^2.13.42",
+    "gatsby-plugin-typography": "^2.3.2",
+    "gatsby-remark-katex": "^3.1.2",
+    "gatsby-remark-mathjax": "^1.0.0",
+    "gatsby-source-filesystem": "^2.1.6",
+    "gatsby-transformer-remark": "^2.6.10",
+    "katex": "^0.10.2",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.8.6",
+    "react-typography": "^0.16.19",
+    "rehype-katex": "^1.2.0",
+    "rehype-stringify": "^6.0.0",
+    "remark": "^11.0.0",
+    "remark-math": "^1.0.6",
+    "remark-rehype": "^5.0.0",
+    "typography": "^0.16.19",
+    "typography-theme-elk-glen": "^0.16.19",
+    "typography-theme-fairy-gates": "^0.16.19"
   },
   "devDependencies": {
     "prettier": "^1.18.2"
