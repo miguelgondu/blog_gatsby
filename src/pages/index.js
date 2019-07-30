@@ -3,7 +3,7 @@ import { graphql } from "gatsby"
 // import { css } from "@emotion/core"
 // import { rhythm } from "../utils/typography"
 import Layout from "../components/layout"
-import "katex/dist/katex.min.css"
+// import "katex/dist/katex.min.css"
 
 export default ({ data }) => {
     return (
@@ -20,7 +20,7 @@ export default ({ data }) => {
                         </h3>
                         <p css={{
                             display: `flex`,
-                            alignItems: `center`,
+                            alignItems: `center`
                         }}>{node.excerpt}</p>
                     </div>
                 ))}
@@ -28,7 +28,6 @@ export default ({ data }) => {
         </Layout>
     )
 }
-
 
 export const query = graphql`
   query {
