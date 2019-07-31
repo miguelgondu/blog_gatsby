@@ -1,43 +1,58 @@
 import React from "react"
-import { graphql } from "gatsby"
-// import { css } from "@emotion/core"
-// import { rhythm } from "../utils/typography"
+import { graphql, Link } from "gatsby"
 import Layout from "../components/layout"
-// import "katex/dist/katex.min.css"
+import "katex/dist/katex.min.css"
 
 export default ({ data }) => {
     return (
         <Layout>
             <div>
-                {data.allMarkdownRemark.edges.map(({ node }) => (
+                {data.allMdx.nodes.map(node  => (
                     <div key={node.id}>
                         <h3>
+                          <Link to={node.fields.slug}>
                             {node.frontmatter.title}{" "}
-                            <span>
-                                — {node.frontmatter.date}
-                            </span>
+                          </Link>
                         </h3>
-                        <p>{node.excerpt}</p>
-                    </div>
-                ))}
+                        <span>
+                          {node.frontmatter.date}{" "}
+                        </span>
+                    <p>{node.frontmatter.categories.map((category, index) => (<span> {category} - </span>))}</p>
+                    </div>)
+                )}
             </div>
         </Layout>
     )
 }
 
+// {
+//   posts.map(post => (
+//     <Article
+//       title={post.frontmatter.title}
+//       date={post.frontmatter.date}
+//       excerpt={post.excerpt}
+//       timeToRead={post.timeToRead}
+//       slug={post.fields.slug}
+//       categories={post.frontmatter.categories}
+//       key={post.fields.slug}
+//     />
+//   ))
+// }
+
 export const query = graphql`
   query {
-    allMarkdownRemark {
-      totalCount
-      edges {
-        node {
-          id
-          frontmatter {
-            title
-            date(formatString: "DD MMMM, YYYY")
-          }
-          excerpt
+    allMdx(sort: { fields: [frontmatter___date], order: DESC }) {
+      nodes {
+        fields {
+          slug
         }
+        frontmatter {
+          title
+          date(formatString: "DD/MM/YYYY")
+          categories
+        }
+        excerpt(pruneLength: 200)
+        timeToRead
       }
     }
   }

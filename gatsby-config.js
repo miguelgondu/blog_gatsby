@@ -12,17 +12,18 @@ module.exports = {
     {
       resolve: `gatsby-source-filesystem`,
       options: {
-        name: `src`,
-        path: `${__dirname}/src/`,
+        name: `post`,
+        path: `${__dirname}/src/pages`,
       },
     },
     {
-      resolve: `gatsby-transformer-remark`,
+      resolve: `gatsby-plugin-mdx`,
       options: {
-        plugins: [
-          `gatsby-remark-mathjax`,
-        ],
-      },
+        defaultLayouts: {
+          default: require.resolve(`./src/components/layout.js`)
+        },
+				remarkPlugins: [require('remark-math'), require('remark-html-katex')]
+      }
     },
     {
       resolve: `gatsby-plugin-typography`,
