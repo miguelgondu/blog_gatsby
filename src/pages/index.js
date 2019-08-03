@@ -17,27 +17,20 @@ export default ({ data }) => {
                         <span>
                           {node.frontmatter.date}{" "}
                         </span>
-                    <p>{node.frontmatter.categories.map((category, index) => (<span> {category} - </span>))}</p>
+                    <p>{node.frontmatter.categories.map((category, index, arr) => {
+                      if (arr.length === index + 1) {
+                        return (<span>{category}</span>)
+                      }
+                      else {
+                        return (<span>{category} - </span>)
+                      }
+                    })}</p>
                     </div>)
                 )}
             </div>
         </Layout>
     )
 }
-
-// {
-//   posts.map(post => (
-//     <Article
-//       title={post.frontmatter.title}
-//       date={post.frontmatter.date}
-//       excerpt={post.excerpt}
-//       timeToRead={post.timeToRead}
-//       slug={post.fields.slug}
-//       categories={post.frontmatter.categories}
-//       key={post.fields.slug}
-//     />
-//   ))
-// }
 
 export const query = graphql`
   query {
