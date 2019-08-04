@@ -11,13 +11,15 @@ export default ({
 }) => (
     <Layout>
         <h1>Categories</h1>
-        {
-            group.map(category => (
-                <h3 key={category.fieldValue}>
-                    <Link to={`/categories/${_.kebabCase(category.fieldValue)}`}>{category.fieldValue}</Link>
-          </h3>
-            ))
-        }
+        <ul>
+          {
+              group.map(category => (
+                  <li key={category.fieldValue}>
+                      <Link to={`/categories/${_.kebabCase(category.fieldValue)}`}>{category.fieldValue}</Link>
+            </li>
+              ))
+          }
+        </ul>
     </Layout>
 )
 
