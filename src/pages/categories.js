@@ -2,6 +2,8 @@ import React from "react"
 import { Link, graphql } from 'gatsby'
 import Layout from "../components/layout"
 
+const _ = require('lodash')
+
 export default ({
     data: {
         allMdx: { group },
@@ -12,7 +14,7 @@ export default ({
         {
             group.map(category => (
                 <h3 key={category.fieldValue}>
-                    <Link to={`/categories/${category.fieldValue}`}>{category.fieldValue}</Link>
+                    <Link to={`/categories/${_.kebabCase(category.fieldValue)}`}>{category.fieldValue}</Link>
           </h3>
             ))
         }
