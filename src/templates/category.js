@@ -30,6 +30,7 @@ const Category = ({ pageContext: { category }, data: { allMdx } }) => {
                         }
                     })}
                     </p>
+                    <p>{node.frontmatter.summary}</p>
                 </div>
             ))}
         </Layout>
@@ -60,6 +61,7 @@ export const postQuery = graphql`
           title
           date(formatString: "DD/MM/YYYY")
           categories
+          summary
         }
         fields {
           slug

@@ -25,6 +25,7 @@ export default ({ data }) => {
                         return (<span>{category} - </span>)
                       }
                     })}</p>
+                    <p>{node.frontmatter.summary}</p>
                     </div>)
                 )}
             </div>
@@ -43,6 +44,7 @@ export const query = graphql`
           title
           date(formatString: "YYYY/MM/DD")
           categories
+          summary
         }
         excerpt(pruneLength: 200)
         timeToRead
