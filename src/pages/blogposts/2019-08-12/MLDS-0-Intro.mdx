@@ -1,8 +1,38 @@
 ---
 date: "2019-08-12"
-title: "MLDS 0: Introduction and set-up"
+title: "MLDS 0: Introduction and setting up Ubuntu for Data Science"
 summary: "An introduction to 'Miguel Learns Data Science', and a description of the set-up for the next instances."
 categories:
   - MLDS
   - Python
 ---
+
+# Introduction
+
+This is the first post on a series about several concepts in Data Science called 'Miguel Learns Data Science', or MLDS for short. In each post, I plan to introduce a concept, give some mathematical background and give actual examples with code (mostly written in Python).
+
+Hopefully, each post of MLDS will be bite-sized and could be used as a small introduction to the subject, with good references to further reading.
+
+For this introduction, I will explain my set-up: how these codes are written and run, along with links to download and set your Ubuntu 18.04 machine for Data Science using Python.
+
+# Setting up Ubuntu for Data Science
+
+In my set-up, I run a dual boot between Windows 10 and Ubuntu 18.04 (which is, as of this moment, the latest Long-Term Support release). Most of the set-up I describe here can also be achieved in lower or higher versions of Ubuntu, and I will try to indicate the proper fixes.
+
+## Installing oh-my-zsh
+
+I like to have a more verbose and pretty terminal. With [zsh and oh-my-zsh](), you can customize your terminal to have a different layout and color scheme. These new schemes are specially useful when using git.
+
+## Installing Python 3.6 and virtualenvwrapper
+
+First of all, you will need Python. Python 3.6[^1] already comes in Ubuntu 18.04 (indeed, open a console using `ctrl+T` and write `python3`). If you are running other versions of Ubuntu, I suggest installing Ubuntu as indicated in [this answer]().
+
+[Image of Python 3.6 in Ubuntu 18.04]
+
+Once we have this binary, we can create a virtual environment with it. With virtual environments, we can have more control over the Python binary version and the libraries installed with pip. For example, you might want to have an environment with Python 2.7 for certain libraries and separate enviroments for e.g. a CUDA or a CPU installation of TensorFlow.
+
+I personally use [`virtualenvwrapper`](https://virtualenvwrapper.readthedocs.io/en/latest/), which allows me to easily create and activate virtual environments. In what rests of this post, I will show how to install virtualenvwrapper (following its great documentation), and I will talk about some of the libraries I frequently use for my Data Science experiments.
+
+---
+
+[^1]: I love Python 3.6 because of [f-strings](). You won't really need this specific version of Python if you feel comfortable doing string formatting in another way.
