@@ -1,51 +1,64 @@
 ---
 date: "2019-08-12"
-title: "MLDS 0: Introduction and setting up Windows and Ubuntu for Data Science"
+title: "MLDS 0: Installing and Using Anaconda and Jupyter Notebook"
 summary: "An introduction to 'Miguel Learns Data Science', and a description of the set-up for the next instances."
-lang: "English"
 categories:
   - MLDS
   - Python
 ---
 
-TODO: narrow the scope way more. Just talk about virtualenvwrapper and add a easy (Anaconda) or hard (setting up python yourself).
+# MLDS 0: Installing and Using Anaconda and Jupyter Notebook
 
-# MLDS 0: Introduction and setting up Windows and Ubuntu for Data Science
-
-This is the zero-th post on a series about Data Science called 'Miguel Learns Data Science', or MLDS for short. In each post, I plan to introduce a concept, give some mathematical background and give actual examples with code (mostly written in Python).
+This is the zero-th post on a series about Data Science called 'Miguel Learns Data Science', or MLDS for short. In each post, I plan to introduce a concept, give some mathematical background and give actual examples with code written in Python, using the SciPy suite.
 
 Hopefully, each post of MLDS will be bite-sized and could be used as a small introduction to the subject, with good references to further reading.
 
-For this introduction, I will explain my set-up and I will link to everything you would need to follow in order to replicate it.
+For this introduction, I will explain how to set-up your computer for experiments in Python using the Anaconda distribution. I will show how to install it and use Jupyter Notebook, a tool for writing share-able code.
 
-## My set-up
+## What's Anaconda?
 
-I run a dual boot between Ubuntu 18.04 and Windows 10. If you have a new PC and want to install Ubuntu, you will need to create a bootable USB or CD. In order to create a bootable USB with a specific Linux version, [download it](https://ubuntu.com/download/desktop) and [follow this tutorial](https://linuxhint.com/rufus_bootable_usb_install_ubuntu_18-04_lts/) to create a bootable stick and install Ubuntu.
+[Anaconda](https://www.anaconda.com/) calles itself the standard Python distribution for Data Science. Python, [a language built by Guido Van Rossum in his spare time](https://www.zdnet.com/article/python-is-eating-the-world-how-one-developers-side-project-became-the-hottest-programming-language-on-the-planet/?2), has recently grown in popularity due to its simplicity and appeal to scientists. It has a great community of open-source developers that create and maintain Python libraries. In data science, you'll need to crunch and process data, create and train models and so on. The [Scipy suite](https://www.scipy.org/) (which includes NumPy, Pandas and matplotlib) is the de-facto tool for these purposes.
 
-I mostly use Ubuntu, but I will reference how to set-up both Linux and Windows for your experiments.
+After installing Anaconda, you will have not only a running Python installation with all these libraries, but also several tools for writing your code and sharing it. With Anaconda, you could also download and install Python libraries and create virtual environments using [Conda](https://docs.conda.io/en/latest/).
 
-In what follows, I'll talk about setting up everything you will need to run Data Science experiments in Windows and Ubuntu.
+## How do I install Anaconda?
 
-## Setting up Windows
+[Follow this link](https://www.anaconda.com/distribution/) to download and install Anaconda in any OS. If you are running Windows or Mac's OSX, the installation should be very straightforward. If you're running Ubuntu, you'll download a `.sh` file. In order to run it, navigate to where the file is in the console, give it execution permitions with `chmod +x Anaconda3_..._.sh`. After that, install it by running `./Anaconda3_..._.sh` in your console. Do say yes to running conda init.
 
-## Setting up Ubuntu for Data Science
+I would heavily recommend creating and working in a virtual environment with Python 3.6, since most libraries are not yet fully supported in Python 3.7. To do so, you will have to open a terminal client (system symbol in Windows) and follow [this recipe](https://uoa-eresearch.github.io/eresearch-cookbook/recipe/2014/11/20/conda/).
 
-In my set-up, I run a dual boot between Windows 10 and Ubuntu 18.04 (which is, as of this moment, the latest Long-Term Support release). Most of the set-up I describe here can also be achieved in lower or higher versions of Ubuntu, and I will try to indicate the proper fixes.
+## How do I use Anaconda?
 
-### Installing oh-my-zsh
+If you are running Windows or Mac's OSX, you can access all the tools that Anaconda comes with by entering the Anaconda Navigator. Look for it using the Windows key or `ctrl+space` in Mac. You can e.g. use Spyder as an IDE for Python or use the Jupyter Notebook, as we will do.
 
-I like to have a more verbose and pretty terminal. With [zsh and oh-my-zsh](https://github.com/robbyrussell/oh-my-zsh), you can customize your terminal to have a different layout and color scheme. These new schemes are specially useful when using git.
+If you're running Ubuntu and said yes to conda init, you should be seeing a `(base)` (or your virtual environment) in the left to your username in the console. If that's the case, you can easily open the Jupyter Notebook by running `jupyter notebook` in the console.
 
-### Installing Python 3.6 and virtualenvwrapper
+Besides Jupyter Notebook, you can always use a code editor to write and run the now available Python instance. I heavily recommend [Visual Studio Code](https://code.visualstudio.com/). The good thing about VSCode is that you can fix keymappings to your favorite previous editors such as vim or Sublime, and it has a plethora of extensions that are easy to install. Moreover, it's open source and thus you don't have to worry about licences. If you plan to use VSCode frequently, it's absolutely worth it to familiarize yourself with key bindings, abbreviations and editing tips. [Follow the documentation in their site](https://code.visualstudio.com/docs).
 
-First of all, you will need Python. Python 3.6[^1] already comes in Ubuntu 18.04 (indeed, open a console using `ctrl+T` and write `python3`). If you are running other versions of Ubuntu, I suggest installing Ubuntu as indicated in [this answer]().
+## A small intro to Jupyter Notebooks
 
-[Image of Python 3.6 in Ubuntu 18.04]
+With Jupyter Notebook, which is one of the writing tools Anaconda comes with, you can write `.ipynb` files (or *notebooks*) that can be uploaded to [gist](https://gist.github.com/) with your github account or that can be sent for other users to see and run. These notebooks are built in blocks that can vary from code to markdown text, thus you can write text and explain your reasoning in the same space.
 
-Once we have this binary, we can create a virtual environment with it. With virtual environments, we can have more control over the Python binary version and the libraries installed with pip. For example, you might want to have an environment with Python 2.7 for certain libraries and separate enviroments for e.g. a CUDA or a CPU installation of TensorFlow.
+Open Jupyter Notebook (be it via the Anaconda Navigator or console) and navigate to an empty folder in which you want to create your first notebook. On the right hand side you'll see a button that says **New**, create a new Python 3 notebook.
 
-I personally use [`virtualenvwrapper`](https://virtualenvwrapper.readthedocs.io/en/latest/), which allows me to easily create and activate virtual environments. In what rests of this post, I will show how to install virtualenvwrapper (following its great documentation), and I will talk about some of the libraries I frequently use for my Data Science experiments.
+![](/assets/notebook.gif)
+
+You will be greeted by an empty block. There are two modes in Jupyter Notebook, *green* (or editing) and *blue* (or navigation). Edit the empty highlighted block with `enter`, going into *green* mode. Write `print("Hello World!")` in it and hit `ctrl+enter`. As you can see, `ctrl+enter` **runs** the block of code.
+
+![](/assets/running.gif)
+
+Go into navigation mode by hitting `esc`. In order to create blocks, use `a` to create an empty block **above** and `b` to create a block **below**. You can navigate between your blocks with the usual up and down arrows, and you can edit a block by hitting `enter`.
+
+You can modify what the block contains with the following shortcuts:
+
+- Writing `m` in navigation (blue) mode transforms it to a Markdown block, and `y` transforms it back to code.
+- Using the numbers from 1 onwards allows you to set titles, subtitles and so on.
+
+![](/assets/cells.gif)
+
+Feel free to learn about more shortcuts in the help tool that can be found in the navigation bar. Other ones that are frequently used are `d + d` to delete a block, `i + i` to interrupt the kernel (if it's stuck in an infinite loop of if it's eating a lot of resources) and `alt + enter` to run a block and create one below.
 
 
----
-[^1]: I love Python 3.6 because of [f-strings](). You won't really need this specific version of Python if you feel comfortable doing string formatting in another way.
+## Summary
+
+In this post I introduced 'Miguel Learn Data Science', a series of posts about concepts in Data Science. In order to follow these posts, it is worthwile to install Anaconda, a Python distribution that comes with all the relevant libraries and tools for daily work in Data Science. This post also shows how to install Anaconda and also contains a small introduction to Jupyter Notebook, which allows us to write explained code and easily share it.
