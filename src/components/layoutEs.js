@@ -12,7 +12,7 @@ export default ( props ) => (
     <div style={{ margin: `3rem auto`, maxWidth: 900, padding: `0 1rem` }}>
         <header style={{ marginBottom: `1.5rem` }}>
             <Link to="/" style={{ textShadow: `none`, backgroundImage: `none` }}>
-                <h3 style={{ display: `inline` }}>MGD's blog</h3>
+                <h3 style={{ display: `inline` }}>miguelgondu's blog</h3>
             </Link>
             <ul style={{ listStyle: `none`, float: `right` }}>
                 {/* <ListLink to="/">Home</ListLink> */}
