@@ -9,7 +9,7 @@ const Category = ({ pageContext: { category }, data: { allMdx } }) => {
     
     return (
         <Layout>
-            <h2>Category &ndash; {category}</h2>
+            <h2>{category}</h2>
             {nodes.map(node => (
                 <div key={node.id}>
                     <h3>
