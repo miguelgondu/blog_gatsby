@@ -7,6 +7,7 @@ export default ({ data }) => {
     return (
         <Layout to_en_es="/todos-los-posts/">
             <div>
+              <h1>All Posts</h1>
                 {data.allMdx.nodes.map(node  => (
                     <div key={node.id}>
                         <h3>
