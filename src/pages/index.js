@@ -5,7 +5,7 @@ import "katex/dist/katex.min.css"
 
 export default ({ data }) => {
     return (
-        <Layout>
+        <Layout to_en_es="/es/">
             <div>
                 {data.allMdx.nodes.map(node  => (
                     <div key={node.id}>
@@ -37,6 +37,7 @@ export const query = graphql`
   query {
     allMdx(
       sort: { fields: [frontmatter___date], order: DESC }
+      filter: { frontmatter: {lang: {eq: "en"}}}
     ) {
       nodes {
         fields {

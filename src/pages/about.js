@@ -4,7 +4,7 @@ import profile_photo from "../../static/profile_photo.jpg"
 
 
 export default () => (
-    <Layout>
+    <Layout to_en_es="/acerca-de/">
         <h1>About Me</h1>
         <img src={profile_photo} style={{ borderRadius: '50%', height: '250px', display: 'block', marginLeft: 'auto', marginRight: 'auto'}} alt=""></img>
 

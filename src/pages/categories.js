@@ -9,7 +9,7 @@ export default ({
         allMdx: { group },
     },
 }) => (
-    <Layout>
+    <Layout to_en_es="/categorias/">
         <h1>Categories</h1>
         <ul>
           {
@@ -25,7 +25,9 @@ export default ({
 
 export const postQuery = graphql`
   query CategoriesPage {
-    allMdx {
+    allMdx(
+      filter: {frontmatter: {lang: {eq: "en"}}}
+    ) {
       group(field: frontmatter___categories) {
         fieldValue
       }
