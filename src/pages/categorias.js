@@ -16,7 +16,7 @@ export default ({
               group.map(category => (
                   <li key={category.fieldValue}>
                       <Link to={`/categories/${_.kebabCase(category.fieldValue)}`}>{category.fieldValue}</Link>
-            </li>
+                  </li>
               ))
           }
         </ul>

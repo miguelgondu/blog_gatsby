@@ -9,6 +9,8 @@ export default () => (
         <img src={profile_photo} style={{ borderRadius: '50%', height: '250px', display: 'block', marginLeft: 'auto', marginRight: 'auto'}} alt=""></img>
 
         <p>Soy Miguel González Duque, un matemático de la Universidad Nacional de Colombia. Me interesa más que todo la inteligencia artificial, las ciencias de los datos, el aprendizaje automático, la optimización, ética y videojuegos.</p>
+        
+        <p>En este momento soy un estudiante de doctorado del <a href="https://game.itu.dk/" target="_blank" rel="noopener noreferrer">Center for Computer Games Research</a> en la Universidad IT de Copenhague, bajo la dirección del Prof. <a href="http://sebastianrisi.com/" target="_blank" rel="noopener noreferrer">Sebastian Risi</a>.</p>
 
         <p>Para contactarme, puedes escribirme al correo miguelgondu(at)gmail(dot)com.</p>
 
