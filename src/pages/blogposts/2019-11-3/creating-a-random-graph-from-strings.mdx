@@ -13,7 +13,7 @@ I have been toying around with the idea of creating art using pseudorandom numbe
 
 ![](/assets/pseudorandom_graphs.jpg)
 
-In summary, I transform the string to ASCII character by character, add up all these ASCII codes to get an integer, I plug it as a seed for `numpy`'s pseudorandom generator, and I construct a graph by sampling normal distributions and joining nearby neighbors. I will go through the code function by function. [Here's the whole code in gist](https://gist.github.com/miguelgondu/a959d33334e6e85e4077180f5bc885cd), if you're in a rush.
+In summary, I transform the string to ASCII character by character, add up all these values to get an integer, I plug it as a seed for `numpy`'s pseudorandom generator, and I construct a graph by sampling normal distributions and joining nearby neighbors. I will go through the code function by function. [Here's the whole code in gist](https://gist.github.com/miguelgondu/a959d33334e6e85e4077180f5bc885cd), if you're in a rush.
 
 ## String to integer
 
@@ -29,6 +29,8 @@ def parse_string_to_int(string):
 Notice that Python has its own way of transforming characters to ASCII code: the `ord` function.
 
 This way of encoding strings to integers comes with a funny consequence: anagrams render the same graph. There's also a high chance for collisions (strings that end up in the same integer, and thus the same graph). It hasn't happened with my friends' names so far, though.
+
+![](/assets/anagrams.jpg)
 
 As a small mathematical note, if $\Sigma$ is the alphabet and $\Sigma^*$ is the set of all possible words, there are plenty of functions $f\colon \Sigma^{ *}\to \mathbb{Z}$ to experiment with. This one happens to be commutative in the strings, but we could think about many others that wouldn't be.
 
