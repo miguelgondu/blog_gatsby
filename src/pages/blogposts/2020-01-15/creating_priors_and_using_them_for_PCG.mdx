@@ -42,6 +42,10 @@ n\begin{bmatrix}
 \end{bmatrix}
 $$
 
+$$\gamma$$
+
+$$\vdots$$
+
 $$ n\begin{bmatrix}
 1&a&a&a \\
 -1&1&a&a \\
@@ -59,7 +63,7 @@ X_n\\
 
 we will call this coefficient matrix $L_1$. We will usually assume that $X_0 = 0$.
 
-We have a couple of free variables that we can tweak and tune: the amount of points in the grid $n$ and our assumption of the boundedness in $\gamma$. We can code this, then, with a couple of functions in Python. Let's start with a function that creates the $L1$ matrix specified above. We will use the spdiags method in scipy: [TODO: add the link to scipy's documentation]
+We have a couple of free variables that we can tweak and tune: the amount of points in the grid $n$ and our assumption of the boundedness in $\gamma$. We can code this, then, with a couple of functions in Python. Let's start with a function that creates the $L1$ matrix specified above. We will use the [spdiags method](https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.spdiags.html) in scipy:
 
 ```python
 def create_L1(n):
