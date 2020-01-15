@@ -23,7 +23,7 @@ from scipy import sparse
 from scipy.sparse.linalg import spsolve
 ```
 
-As always, here's the link with the whole code of this blogpost. [TODO: ADD THE LINK]
+As always, [here's the link with the whole code of this blogpost](https://gist.github.com/miguelgondu/d3e1ee74fbb89d2f2b546a24fb60b15c). 
 
 ## Priors with bounded slope
 
@@ -32,19 +32,6 @@ We could encode, in this prior, some assumptions about it's shape and form. As a
 $$ \left|\frac{X_j - X_{j-1}}{h}\right| < m $$
 
 or, in other words, we're expecting $n|X_j - X_{j-1}| < m$. The way we can model this assumption is by considering a random variable $W$ distributed normally with mean $0$ and variance $\gamma = mh$. That is, the variance $\gamma$ encodes the how bounded we expect the slope to be. Let $W = [W_1, \dots, W_n]^T$ be a vector of $n$ realizations of this random variable, then we can build the following system of equations:
-
-$$
-n\begin{bmatrix}
-1&&& \\
--1&1&& \\
-&\ddots&\ddots& \\
-&&-1&1 \\
-\end{bmatrix}
-$$
-
-$$\gamma$$
-
-$$\vdots$$
 
 $n\begin{bmatrix}1&&& \\-1&1&& \\&\ddots&\ddots& \\&&-1&1 \\\end{bmatrix}$
 $\begin{bmatrix}X_1\\\vdots\\X_n\\\end{bmatrix} =$
@@ -97,21 +84,9 @@ A very similar procedure could be applied to the condition of bounded curvature.
 $$ \left|\frac{X_{j-1} - 2X_{j} + X_{j+1}}{h^2}\right| < m $$
 which, after solving for $X_j$, gives rise to the following system of equations
 
-% Put system of equations here, describing L2.
-$$ n^2\begin{bmatrix}
--2&1&& \\
-\phantom{-}1&-2&1& \\
-&\ddots&\ddots& \\
-&&1&-2 \\
-\end{bmatrix}\begin{bmatrix}
-X_1\\
-\vdots\\
-X_{n-1}\\
-\end{bmatrix} = \begin{bmatrix}
-\gamma W_1 - X_0\\
-\vdots\\
-\gamma W_{n-1} - X_n\\
-\end{bmatrix}, $$
+$n^2\begin{bmatrix}-2&1&& \\\phantom{-}1&-2&1& \\&\ddots&\ddots& \\&&1&-2 \\\end{bmatrix}$
+$\begin{bmatrix}X_1\\\vdots\\X_{n-1}\\\end{bmatrix} =$
+$\begin{bmatrix}\gamma W_1 - X_0\\\vdots\\\gamma W_{n-1} - X_n\\\end{bmatrix}$
 
 An easy modification of create_L1 and bounded_slope can be used here in order to create L2 (assuming that the boundary points are 0) and to solve the system using this new matrix:
 
@@ -210,6 +185,6 @@ We can expand the amount of free parameters we can tweak by considering Whittle-
 
 Besides the use in scientific computing, I think these priors could be used as a source of noise for Procedural Content Generation, just like [Perlin Noise](https://en.wikipedia.org/wiki/Perlin_noise) is used to create artificial landscapes. I plan to explore this direction in future posts.
 
-(All the code of this post, including image generation, can be found in [this gist]())
+(All the code of this post, including image generation, can be found in [this gist](https://gist.github.com/miguelgondu/d3e1ee74fbb89d2f2b546a24fb60b15c))
 
 
