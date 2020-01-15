@@ -33,11 +33,20 @@ $$ \left|\frac{X_j - X_{j-1}}{h}\right| < m $$
 
 or, in other words, we're expecting $n|X_j - X_{j-1}| < m$. The way we can model this assumption is by considering a random variable $W$ distributed normally with mean $0$ and variance $\gamma = mh$. That is, the variance $\gamma$ encodes the how bounded we expect the slope to be. Let $W = [W_1, \dots, W_n]^T$ be a vector of $n$ realizations of this random variable, then we can build the following system of equations:
 
+$$
+n\begin{bmatrix}
+1&a&a&a \\
+-1&1&a&a \\
+a&\ddots&\ddots&a \\
+a&a&-1&1 \\
+\end{bmatrix}
+$$
+
 $$ n\begin{bmatrix}
-1&&& \\
--1&1&& \\
-&\ddots&\ddots& \\
-&&-1&1 \\
+1&a&a&a \\
+-1&1&a&a \\
+a&\ddots&\ddots&a \\
+a&a&-1&1 \\
 \end{bmatrix}\begin{bmatrix}
 X_1\\
 \vdots\\
