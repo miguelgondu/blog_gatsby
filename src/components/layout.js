@@ -18,6 +18,7 @@ export default ( props ) => (
                 {/* <ListLink to="/">Home</ListLink> */}
                 <ListLink to="/about/">About</ListLink>
                 <ListLink to="/categories/">Categories</ListLink>
+                <ListLink to="/projects/">Projects</ListLink>
                 <ListLink to="/all-posts/">All Posts</ListLink>
                 <ListLink to={props.to_en_es}>en/es</ListLink>
                 {/* <ListLink to="/contact/">Contact</ListLink> */}
