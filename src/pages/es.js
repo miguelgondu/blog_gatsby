@@ -5,7 +5,7 @@ import "katex/dist/katex.min.css"
 
 export default ({ data }) => {
     return (
-        <LayoutEs to="/">
+        <LayoutEs to_en_es="/">
             <div>
                 {data.allMdx.nodes.map(node  => (
                     <div key={node.id}>
