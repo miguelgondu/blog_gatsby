@@ -10,6 +10,7 @@ export default () => (
         <ul>
             <li>A <a href="https://adaptivesudoku.herokuapp.com/" target="_blank" rel="noopener noreferrer">sudoku web app</a> that finds the right sudoku for you. This project uses Gaussian Processes and Bayesian Optimization to model the time it takes for each player to solve a sudoku given the number of prefilled digits.</li>
             <li> I am also working on <a href="https://github.com/juanrloaiza/latinamerican-philosophy-mining" target="_blank" rel="noopener noreferrer">topic modeling</a> alongside <a href="https://www.juanrloaiza.me/" target="_blank" rel="noopener noreferrer">Juan Raúl Loaiza</a>. We are processing the papers submitted to <em>Ideas y Valores</em>, a jounral from the department of philosophy of the Universidad Nacional de Colombia in Bogotá.</li>
+            <li>I implemented a <a href="https://github.com/miguelgondu/voronoi_me" target="_blank" rel="noopener noreferrer">small Python code</a> that transforms photos to low-poly versions using NumPy, SciPy, PIL and Voronoi tesselations.</li>
         </ul>
     </Layout>
 )

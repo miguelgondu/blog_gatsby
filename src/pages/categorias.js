@@ -1,8 +1,7 @@
 import React from "react"
-import { Link, graphql } from 'gatsby'
+import { graphql } from 'gatsby'
 import LayoutEs from "../components/layoutEs"
-
-const _ = require('lodash')
+import Category from "../components/category"
 
 export default ({
     data: {
@@ -14,9 +13,7 @@ export default ({
         <ul>
           {
               group.map(category => (
-                  <li key={category.fieldValue}>
-                      <Link to={`/categories/${_.kebabCase(category.fieldValue)}`}>{category.fieldValue}</Link>
-                  </li>
+                <Category category={category}></Category>
               ))
           }
         </ul>
