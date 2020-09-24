@@ -1,0 +1,20 @@
+img.profile_pic {
+    border-radius: 50%;
+    height: 250px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto
+}
+
+img.blogpost {
+    /* border-radius: 50%; */
+    height: 250px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto
+}
+
+div.centered {
+    margin-left: auto;
+    margin-right: auto;
+}
