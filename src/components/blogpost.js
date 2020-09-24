@@ -2,10 +2,10 @@ import React from "react"
 import { Link } from "gatsby"
 
 function blogpost(props) {
-    if ('imgsrc' in props) {
+    if (props.imgsrc != null) {
         return (
             <div key={props.id}>
-                <img class="blogpost" src={props.imgsrc} alt=""></img>
+                <Link to={props.slug}><img class="blogpost" src={props.imgsrc} alt=""></img></Link>
                 <h2><Link to={props.slug}>{props.title}{" "}</Link></h2>
                 <span>{props.date}{" "}</span>
                 <p>{props.categories.map((category, index, arr) => {
