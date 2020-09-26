@@ -1,4 +1,4 @@
-import React, { Fragment } from "react"
+import React from "react"
 import { graphql } from "gatsby"
 import LayoutEs from "../components/layoutEs"
 import Blogpost from "../components/blogpost"
