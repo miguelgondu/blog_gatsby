@@ -48,13 +48,25 @@ $$
 
 In summary, we expect measures to be non-negative and to treat disjoint sets additively. Notice how this generalizes the idea of, say, volume: if two solids $A$ and $B$ in $\mathbb{R}^3$ are disjoint, we would expect the volume of $A\cup B$ to be the sum of their volumes.
 
-There's a key difference between volumes and probabilities, though: **we assume probabilities to be bounded**[^3]. We expect events with probability 1 to be absolutely certain. Adding this restriction we get the following definition:
+In the previous section we talked about two measurable spaces, let's discuss the usual measures they have:
+
+- For $(\mathbb{R}, \mathcal{B})$, we should be specifying the *length* of open intervals $I = (a, b)$. Our intuition says we should be defining
+$$
+\mu(I) = b - a.
+$$
+This measure can be extended to arbitrary sets in $\mathcal{B}$, but how this is done is a story for another time.
+- For $(\mathbb{N}, \mathcal{P}(\mathbb{N})))$, we need to specify the *size* of any possible subset $A$ of $\mathbb{N}$. The standard measure that we define in discrete measurable spaces (including finite ones) is **the counting measure**, literally given by counting how many elements are in $A$:
+$$
+\mu(A) = \#(A) = \text{amount of elements in }A.
+$$
+
+There's a key difference between sizes and probabilities, though: **we assume probabilities to be bounded**[^3]. We expect events with probability 1 to be absolutely certain. Adding this restriction we get the following definition:
 
 **Definition:** a **probability space** is a triplet $(\Omega, \mathcal{F}, \text{Prob})$ such that
 - $(\Omega, \mathcal{F})$ is a measurable space.
 - $\text{Prob}$ is a $\sigma$-additive measure that satisfies $\text{Prob}(\Omega) = 1$.[^4]
 
-The measure $\text{Prob}$ in a probability space satisfies all three [Kolmogorov's axioms](https://plato.stanford.edu/entries/probability-interpret/#KolProCal). Kolmogorov's attempt to formalize our intuitive notions of probability.
+The measure $\text{Prob}$ in a probability space satisfies all three [Kolmogorov's axioms](https://plato.stanford.edu/entries/probability-interpret/#KolProCal), which attempt to formalize our intuitive notions of probability.
 
 ## Formalizing random variables
 
@@ -70,19 +82,21 @@ This condition ($f^{-1}(B)\in\mathcal{F}$) says that it makes sense to query for
 
 As we were discussing, the output of a random variable is a real number. This means that random variables are a particular kind of measurable functions:
 
-**Definition:** a function $X\colon(\Omega, \mathcal{F})\to(\mathbb{R}, \mathcal{B})$ is a **random variable** if $X^{-1}(B)\in\mathcal{F}$ for all Borel sets $B\in\mathcal{B}$.
+**Definition:** Let $(\Theta, \mathcal{G})$ be either the real numbers with Borel sets, or the discrete measurable space. A function $X\colon(\Omega, \mathcal{F})\to(\Theta, \mathcal{G})$ is a **random variable** if $X^{-1}(B)\in\mathcal{F}$ for measurable sets $B\in\mathcal{G}$.
 
-But I still think this definition isn't completely transparent, because _Borel sets_ sounds abstract. Remember that Borel sets are just (unions or complements of) open intervals in $\mathbb{R}$. Since the inverse image of a set is very well behaved with respect to unions, intersections and complements, then it suffices to consider $B$ to be an interval. An alternative (and maybe more transparent) definition of a random variable is usually given as
+People usually make the distinction between *continuous* and *discrete* random variables (depending on whether $\Theta$ is $\mathbb{R}$ or $\mathbb{N}$, respectively). Thankfully, measure theory allows us to treat these two cases using the same symbols, as we will see when we discuss integration later on.
 
-**Definition:** a function $X\colon(\Omega, \mathcal{F})\to(\mathbb{R}, \mathcal{B})$ is a **random variable** if $X^{-1}\left([-\infty, a)\right)\in\mathcal{F}$ for all $a\in\mathbb{R}$. That is, if the sets $\{\omega\in\Omega\colon X(\omega) < a\}$ are events for all $a\in \mathbb{R}$.
+I still think this definition isn't completely transparent, because "_Borel sets_" sounds abstract. Remember that Borel sets are just (unions or complements of) open intervals in $\mathbb{R}$. Since the inverse image of a set is very well behaved with respect to unions, intersections and complements, then it suffices to consider $B$ to be an interval. An alternative (and maybe more transparent) definition of a random variable is usually given as
 
-Now we are talking! In summary, random variables are formalized as measurable functions. Functions because they associate outcomes $\omega$ with real numbers, and measurable because we want the sets $X(\omega) < a$ (e.g. seeing less than 10 cars) to have meaningful probability.
+**Definition:** Let $(\Theta, \mathcal{G})$ be either the real numbers with Borel sets, or the discrete measurable space. A function $X\colon(\Omega, \mathcal{F})\to(\Theta, \mathcal{G})$ is a **random variable** if $X^{-1}\left([-\infty, a)\right)\in\mathcal{F}$ for all $a\in\mathbb{R}$. That is, if the sets $\{\omega\in\Omega\colon X(\omega) < a\}$ are events for all $a\in \mathbb{R}$.
+
+Now we are talking! In summary, random variables are formalized as measurable functions: Functions because they associate outcomes $\omega$ with real numbers (or only natural numbers), and measurable because we want the sets $X(\omega) < a$ (e.g. seeing less than 10 cars) to have meaningful probability.
 
 ## The distribution of a random variable
 
 Now let's talk about the distribution of a random variable. You might have heard things like "this variable is normally distributed" or "that variable follows the binomial distribution", and you might have run computations using this fact, and the densities of these distributions. This is all formalized like this:
 
-**Definition:** Any random variable $X\colon(\Omega, \mathcal{F}, \text{Prob})\to\mathbb{R}$ induces a probability measure $P_X\colon\mathcal{B}\to[0,\infty)$ given by
+**Definition:** Let $(\Theta, \mathcal{G}, \mu)$ be either the real numbers with Borel sets, or the discrete measurable space. Any random variable $X\colon(\Omega, \mathcal{F}, \text{Prob})\to(\Theta, \mathcal{G}, \mu)$ induces a probability measure $P_X\colon\mathcal{G}\to[0,\infty)$ on $\Theta$ given by
 $$
 P_X(A) = \text{Prob}(X\in A) = \text{Prob}(X^{-1}(A)).
 $$
@@ -92,14 +106,14 @@ In other words, **the distribution of a random variable is a way of computing pr
 $$
 \text{Prob}(E) = P_X(\{10, 11, \dots, 20\}),
 $$
-and we already have plenty of probability distributions $P_X$ that model certain phenomena in the world. In the case of couting cars, people ususally use the Poisson distribution. But how can we go from $P_X$ to an actual number?, for that we usually rely on **integration** with respect to measures and **densities** of distributions.
+and we already have plenty of probability distributions $P_X$ that model certain phenomena in the world. In the case of couting cars, people use the Poisson distribution. But how can we go from $P_X$ to an actual number?, for that we must rely on **integration** with respect to measures and **densities** of distributions.
 
-But before going through with these two topics, I want to define a concept that we see frequently in probability. Using the distribution $P_X\colon\mathcal{B}\to[0, \infty)$ we can define the **cumulative density function** as
+But before going through with these two topics, I want to define a concept that we see frequently in probability. Using the distribution $P_X\colon\mathcal{G}\to[0, \infty)$ we can define the **cumulative density function** as
 $$
 P_X(x) = P_X(\{w\colon X(w) \leq x\}) = \text{Prob}(X \leq x).
 $$
 
-As you can see, we use the same symbol ($P_X$) to refer to a completely different function (in this case from $\mathbb{R}$ to $\mathbb{R}$). In many ways, this function _defines_ the distribution of $X$ and we will see why when after discussing integration and densities.
+As you can see, we use the same symbol ($P_X$) to refer to a completely different function (in this case from $\Theta$ to $\mathbb{R}$). In many ways, this function _defines_ the distribution of $X$ and we will see why after discussing integration and densities.
 
 ## An interlude: integration
 
@@ -117,12 +131,19 @@ $$
 
 where $c_i\in E_i$ and $A$ is the disjoint union of all sets $E_i$. Notice how this relates to the Riemann sums: we are measuring _abstract lengths_ by replacing $x_{i+1} - x_i$ with $\mu(E_i)$. This is called the **Lebesgue integration** of $f$, and it extends Riemann integration beyond intervals and into more arbitrary measurable spaces, including probability spaces.
 
-In particular, if we have a random variable $X$ and its distribution $P_X$, we can consider the integral of any[^6] real function $f$ over an event $A\in\mathcal{B}$ with respect $P_X$:
+Let's discuss how this integral looks like when we integrate with respect to the measures that we had defined for $(\mathbb{R}, \mathcal{B})$ and $(\mathbb{N}, \mathcal{P}(\mathbb{N}))$:
+- Notice that when using the _elementary measure_ $\mu((a, b)) = b-a$, we end up computing a number that coincides with the Riemann integral. Properly defining the Lebesgue integral (and checking that it matches when a function $f$ is both Riemann and Lebesgue integrable) would require some work, so I leave it for future posts[^5].
+- If we are in the discrete measurable space with the counting metric $\mu = \#\colon\mathcal{P}(\mathbb{N})\to[0,\infty)$, this integral takes a particular form: if $A = \{a_1, \dots, a_n\}$ be a subset of $\mathbb{N}$, we can easily decompose it into the following pairwise-disjoint sets: $E_1 = \{a_1\}$, $E_2 = \{a_2\}$ and so on... The resulting integral would look like
 $$
-\int_A f\mathrm{d}P_X\,\,``=" \sum_{A_i}f(c_i)P_X(A_i).
+\int_A f\mathrm{d}\mu = \sum_{i=1}^n f(a_i).
 $$
+This means that integrating with respect to the counting metric is just our everyday addition!
 
-If $f \equiv 1$:
+Circling back to random variables: If we have a random variable $X$ and its distribution $P_X$, we can consider the integral of any[^6] real function $f$ over an event $A\in\mathcal{B}$ with respect $P_X$:
+$$
+\int_A f\mathrm{d}P_X\,\,``=" \sum_{A_i}f(c_i)P_X(A_i),
+$$
+and if $f \equiv 1$:
 $$
 \int_A \mathrm{d}P_X = P_X(A) = \text{Prob}(X\in A).
 $$
@@ -131,21 +152,21 @@ $$
 
 Let's summarize what we have discussed so far: we have defined events as sets $E\subseteq \Omega$ in a $\sigma$-algebra $\mathcal{F}$, we defined the probability of an event $\text{Prob}$ as a measure on $(\Omega, \mathcal{F})$ that satisfies being non-negative, normalized and $\sigma$-additive.
 
-We also considered random variables as measurable functions $X\colon (\Omega, \mathcal{F}, \text{Prob})\to\mathbb{R}$. $X$ induces a measure on $\mathbb{R}$ given by $P_X(A) = \text{Prob}(X\in A)$. This measure is the density of $X$, and it also defines the cumulative density function $P_X(x) = \text{Prob}(X \leq x)$.
+We also considered random variables as measurable functions $X\colon (\Omega, \mathcal{F}, \text{Prob})\to(\Theta, \mathcal{G}, \mu)$, where $\Theta$ is either the real numbers with Borel sets and Lebesgue measure (for _continuous_ random variables) or the natural numbers with all subsets and the counting measure (for _discrete_ random variables). $X$ induces a measure on $(\Theta, \mathcal{G}, \mu)$ given by $P_X(A) = \text{Prob}(X\in A)$. This measure is the distribution of $X$, and it also defines the cumulative density function $P_X(x) = \text{Prob}(X \leq x)$.
 
 We are still wondering how to compute $P_X(A) = \text{Prob}(X\in A)$, but we noticed that $\int_A\mathrm{d}P_X = \text{Prob}(A)$. The density of $X$ allows us to compute this integral:
 
-**Definition:** A function $p_X:\mathbb{R}\to\mathbb{R}$ that satisfies $\int_\mathbb{R}p_X\mathrm{d}x = 1$ and $P_X(A) = \int_A p_X\mathrm{d}x$ is called the **density** of $X$. If $\Omega$ is a discrete measurable space, $p_X$ is usually called the **mass** of $X$.
+**Definition:** Let $(\Theta, \mathcal{G}, \mu)$ be either the real numbers with Borel sets, or the discrete measurable space. A function $p_X:\Theta\to\mathbb{R}$ that satisfies $P_X(A) = \int_A \mathrm{d}P_X = \int_A p_X\mathrm{d}\mu$ is called the **density** of $X$ with respect to $\mu$. If $\Omega$ is the discrete measurable space, $p_X$ is usually called the **mass** of $X$.
 
-Let's see how this definition plays out in our particular example. It is well known[^7] that our variable $X$ (cars that go by in an interval of time) follows the Poisson distribution. This means that[^8]
+Let's see how this definition plays out in our particular example. We know that $\Theta = \mathbb{N}$ and that $\mu$ is the counting measure, and it is well known[^7] that our variable $X$ (cars that go by in an interval of time) follows the Poisson distribution. This means that[^8]
 $$
 p_X(x;\, \lambda) = \frac{e^{-\lambda}\lambda^x}{x!}
 $$
 
 $$
-\text{Prob}(10 \leq X \leq 20) = \int_{10}^{20}\mathrm{d}P_X = \sum_{x=10}^{20}p_X(x; \lambda) = \sum_{x=10}^{20}\frac{e^{-\lambda}\lambda^x}{x!},
+\text{Prob}(10 \leq X \leq 20) = \int_{10}^{20}\mathrm{d}P_X = \int_{10}^{20}p_X\mathrm{d}\mu = \sum_{x=10}^{20}p_X(x; \lambda) = \sum_{x=10}^{20}\frac{e^{-\lambda}\lambda^x}{x!},
 $$
-and this is a number that we can actually compute after specifying $\lambda$. A good question is: how do we know the _actual_ $\lambda$ that makes this Poisson distribution describe the random process of cars going through our street? Estimating $\lambda$ using data is called **inference**, but that is a topic for another time.
+and this is a number that we can actually compute after specifying $\lambda$. A good question is: how do we know the _actual_ $\lambda$ that makes this Poisson distribution describe the random process of cars going through our street? Estimating $\lambda$ from data is called **inference**, but that is a topic for another time.
 
 One final note regarding densities: if the cumulative density function $P_X(x) = \text{Prob}(X\leq x)$ is differentiable, you can re-construct the density by taking the derivative: $p_X(x) = P_X'(x)$.  Using the fundamental theorem of calculus, we realize that we can easily compute probabilities in intervals:
 $$
@@ -160,10 +181,10 @@ In this post we discussed how some concepts from probability theory are formaliz
 |-------------|---------|
 |Event|$E\in\mathcal{F}$, where $(\Omega, \mathcal{F})$ is a measurable space.|
 |Probability|A measure $\text{Prob}\colon \mathcal{F}\to[0,\infty)$ that satisfies $\text{Prob}(\Omega) = 1$. |
-| Random variable | A measurable function $X\colon(\Omega, \mathcal{F})\to (\mathbb{R}, \mathcal{B})$. |
+| Random variable | A measurable function $X\colon(\Omega, \mathcal{F})\to (\Theta, \mathcal{G})$, where $\Theta$ is either $\mathbb{R}$ or $\mathbb{N}$. |
 |Distribution| The measure $P_X(A) = \text{Prob}(X\in A) = \text{Prob}(X^{-1}(A))$|
-|Cumulative density| The induced function $P_X\colon\mathbb{R}\to\mathbb{R}$ given by $P_X(x) = \text{Prob}(X\leq x)$.|
-| Density (or mass)| A function $p_X\colon\mathbb{R}\to\mathbb{R}$ that satisfies $P_X(A) = \int_Ap_X\mathrm{d}x$.|
+|Cumulative density| The induced function $P_X\colon\Theta\to\mathbb{R}$ given by $P_X(x) = \text{Prob}(X\leq x)$.|
+| Density (or mass)| A function $p_X\colon\Theta\to\mathbb{R}$ that satisfies $P_X(A) = \int_Ap_X\mathrm{d}x$.|
 
 ## References
 - [Terry Tao's notes on Measure Theory.](https://terrytao.files.wordpress.com/2011/01/measure-book1.pdf)
@@ -174,8 +195,8 @@ In this post we discussed how some concepts from probability theory are formaliz
 [^4]:Notice that the $\sigma$-additivity implies that $\text{Prob}(\Omega) = \text{Prob}(\Omega \cup \varnothing) = \text{Prob}(\Omega) + \text{Prob}(\varnothing)$, which means that $\text{Prob}(\varnothing) = 0$.
 [^5]: If you want a formal treatment of integration in Measure Theory, check the references.
 [^3]: Not really, there are formalizations of probability that ditch the _normalization_ axiom. There are also formalizations that skip $\sigma$-additivity or positivity. These, however, belong more to the realm of philosophy of probability than what mathematicians and statisticians use in their daily practice. [The SEP has a great entry on it, in case you want to read more](https://plato.stanford.edu/entries/probability-interpret/).
-[^2]: This is not _completely_ true. The fully technical definition is that the Borel sets are the $\sigma$-algebra generated by the standard topology in $\mathbb{R}$. You don't have to worry what any of those words mean for now, but you can think of a topology on a set as defining what the "open intervals" should look like. The fact that Borel sets are defined this way allows for all continuous functions on $\mathbb{R}$ to be measurable. See more in the bibliography.
+[^2]: The technical definition is that the Borel sets are the $\sigma$-algebra generated by the standard topology in $\mathbb{R}$. You don't have to worry what any of those words mean for now, but you can think of a topology on a set as defining what the "open intervals" should look like. The fact that Borel sets are defined this way allows for all continuous functions on $\mathbb{R}$ to be measurable. See more in the references.
 [^6]: This _any_ is a stretch. The functions have to be integrable with respect to $P_X$ (i.e. $\int_Ef\mathrm{d}P_X$ should be a finite number).
 [^7]: The Poisson distribution can be thought of as a limit of the Binomal. But there's also a different way to derive the fact that said $p_X$ relates to counting things in fixed intervals of time. [Check this](https://courses.washington.edu/phys433/muon_counting/counting_stats_tutorial_b.pdf).
-[^8]: The integral $\int_A\mathrm{d}P_X$ is transformed into the sum because $P_X$ is a measure on the discrete space $\mathbb{N}$. Measure theory allows us to treat probabilities of events in the continuous and discrete setting using the same symbol.
+[^8]: The integral $\int_A\mathrm{d}P_X$ is transformed into a sum because $\mu$ is the counting measure in $\mathbb{N}$. Remember that measure theory allows us to treat probabilities of events in the continuous and discrete setting using the same symbol.
 
