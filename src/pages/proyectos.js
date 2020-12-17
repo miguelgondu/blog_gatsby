@@ -13,5 +13,9 @@ export default () => (
         <Project linkto="https://adaptivesudoku.herokuapp.com/" imgsrc="/assets/sudoku_webapp.png" title="Adaptive Sudoku">Una <a href="https://adaptivesudoku.herokuapp.com/" target="_blank" rel="noopener noreferrer">aplicación de sudokus</a> que encuentra el sudoku con la dificultad ideal para que sea solucionable en 3 minutos. Como cada jugador es distinto, los modelamos independientemente usando procesos Gaussianos y optimización Bayesiana.</Project>
 
         <Project title="Voronoi me" imgsrc="/assets/voronoi_me.jpg" linkto="https://github.com/miguelgondu/voronoi_me">Implementé un <a href="https://github.com/miguelgondu/voronoi_me" target="_blank" rel="noopener noreferrer">script en Python</a> que transforma fotos usando NumPy, SciPy y PIL. El resultado es una versión low-poly de la foto usando teselaciones de Voronoi.</Project>
+
+        <Project title="sc2reaper" linkto="https://github.com/miguelgondu/sc2reaper" imgsrc="/assets/paper_images/bril_paper_image.png">
+            Para mi tesis de maestría implementé un <a href="https://github.com/miguelgondu/sc2reaper" target="_blank" rel="noopener noreferrer">paquete/plantilla en Python para extraer data de archivos .SC2Replay</a>. Puedes encontrar más detalles en mis blogposts y en mis publicaciones (en la página "acerca de"). Esta imagen la hizo <a href="https://njustesen.github.io/njustesen/" target="_blank" rel="noopener noreferrer">Niels Justesen</a>, un amigo con quien escribí <a href="https://arxiv.org/abs/1907.03046" target="_blank" rel="noopener noreferrer">este artículo</a>. Unos estudiantes de pregrado en la Universidad Chalmers usaron esta librería para su <a a href="https://odr.chalmers.se/handle/20.500.12380/301902" target="_blank" rel="noopener noreferrer">tesis de pregrado</a>.
+        </Project>
     </Layout>
 )

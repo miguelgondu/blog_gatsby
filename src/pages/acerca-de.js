@@ -1,4 +1,5 @@
 import React from "react"
+import { Link } from "gatsby"
 import LayoutEs from "../components/layoutEs"
 import profile_photo from "../../static/profile_photo.jpg"
 
@@ -17,5 +18,7 @@ export default () => (
         <p>Para contactarme, puedes escribirme al correo miguelgondu(at)gmail(dot)com.</p>
 
         <p>Este blog se hizo usando <a href="https://www.gatsbyjs.org/" target="_blank" rel="noopener noreferrer">Gatsby</a>, y está inspirado en <a href="https://github.com/LekoArts/gatsby-starter-minimal-blog" target="_blank" rel="noopener noreferrer">el blog minimal de LekoArts</a>.</p>
+
+        <p>Mis publicaciones están en esta página, pero en inglés. Si quieres verlas, has clic <Link to="/about">aquí</Link>.</p>
     </LayoutEs>
 )
