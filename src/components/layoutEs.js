@@ -8,6 +8,15 @@ const ListLink = props => (
     </li>
 )
 
+function defaultToEnEs(props) {
+    if (props.to_en_es != null) {
+        return props.to_en_es
+    }
+    else {
+        return "/"
+    }
+}
+
 export default ( props ) => (
     <div style={{ margin: `3rem auto`, maxWidth: 900, padding: `0 1rem` }}>
         <header style={{ marginBottom: `4.5rem` }}>
@@ -20,7 +29,7 @@ export default ( props ) => (
                 {/* <ListLink to="/categorias/">Categorías</ListLink> */}
                 <ListLink to="/todos-los-posts/">Todos los posts</ListLink>
                 <ListLink to="/acerca-de/">Acerca de</ListLink>
-                <ListLink to={props.to_en_es}>en/es</ListLink>
+                <ListLink to={defaultToEnEs(props)}>en/es</ListLink>
                 {/* <ListLink to="/contact/">Contact</ListLink> */}
             </ul>
         </header>
