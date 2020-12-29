@@ -1,5 +1,6 @@
 import React from "react"
 import { Link } from "gatsby"
+import { Helmet } from "react-helmet"
 import "katex/dist/katex.min.css"
 
 const ListLink = props => (
@@ -19,6 +20,9 @@ function defaultToEnEs(props) {
 
 export default ( props ) => (
     <div style={{ margin: `3rem auto`, maxWidth: 900, padding: `0 1rem` }}>
+        <Helmet>
+            <title>miguelgondu's blog</title>
+        </Helmet>
         <header style={{ marginBottom: `4.5rem` }}>
             <Link to="/" style={{ textShadow: `none`, backgroundImage: `none` }}>
                 <h1 style={{ display: `inline` }}>miguelgondu's blog</h1>
