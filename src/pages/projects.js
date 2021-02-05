@@ -6,6 +6,8 @@ export default () => (
     <Layout to_en_es="/proyectos/">
         <h1>Projects</h1>
 
+        <Project title="Adaptive Roguelike" linkto="https://adaptive-roguelike.herokuapp.com/" imgsrc="/assets/roguelike.gif">I created another <a href="https://adaptive-roguelike.herokuapp.com/" target="_blank" rel="noopener noreferrer">small prototype of a game</a> that adapts to players' skill.</Project>
+
         <Project title="String-to-graph" linkto="https://string-to-graph.herokuapp.com/" imgsrc="/assets/string-to-graph.png">Do you remember <a href="/blogposts/2019-11-3/creating-a-random-graph-from-strings/" target="_blank" rel="noopener noreferrer">a blogpost</a> I wrote a couple of months ago?, in it I described how to create a graph from a string. Now it can be used as a <a href="https://string-to-graph.herokuapp.com/" target="_blank" rel="noopener noreferrer">web app</a>.</Project>
 
         <Project linkto="https://github.com/juanrloaiza/latinamerican-philosophy-mining" title="Topic Modeling in Philosophy Journals" imgsrc="/assets/philosophy_modeling.png">I am working on <a href="https://github.com/juanrloaiza/latinamerican-philosophy-mining" target="_blank" rel="noopener noreferrer">topic modeling</a> alongside <a href="https://www.juanrloaiza.me/" target="_blank" rel="noopener noreferrer">Juan Raúl Loaiza</a>. We are processing the papers submitted to <em>Ideas y Valores</em>, a journal from the department of philosophy of the Universidad Nacional de Colombia in Bogotá.</Project>

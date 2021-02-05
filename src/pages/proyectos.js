@@ -5,6 +5,8 @@ import Project from "../components/project"
 export default () => (
     <Layout to_en_es="/projects/">
         <h1>Proyectos</h1>
+
+        <Project title="Adaptive Roguelike" linkto="https://adaptive-roguelike.herokuapp.com/" imgsrc="/assets/roguelike.gif">Implementé un <a href="https://adaptive-roguelike.herokuapp.com/" target="_blank" rel="noopener noreferrer">prototipo de un juego</a> que se adapta a las habilidades de los jugadores.</Project>
         
         <Project title="String-to-graph" linkto="https://string-to-graph.herokuapp.com/" imgsrc="/assets/string-to-graph.png">¿Recuerdan <a href="/blogposts/2019-11-3/creating-a-random-graph-from-strings/" target="_blank" rel="noopener noreferrer">un blogpost</a> que escribí hace un tiempo?, en él describía cómo crear grafos a partir de strings. Ahora es <a href="https://string-to-graph.herokuapp.com/" target="_blank" rel="noopener noreferrer">una aplicación web</a>.</Project>
 
