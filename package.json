@@ -15,7 +15,9 @@
   "dependencies": {
     "@mdx-js/mdx": "^1.1.1",
     "@mdx-js/react": "^1.6.18",
+    "@types/d3": "^6.3.0",
     "d3": "^6.5.0",
+    "d3blackbox": "^1.2.0",
     "gatsby": "^2.29.2",
     "gatsby-plugin-mdx": "^1.0.19",
     "gatsby-plugin-react-helmet": "^3.7.0",

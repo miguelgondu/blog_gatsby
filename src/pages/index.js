@@ -5,15 +5,21 @@ import Blogpost from "../components/blogpost"
 import "katex/dist/katex.min.css"
 
 function processNodeBlogpost(node) {
-  if ("imgsrc" in node.frontmatter) {
-    return (
-      <Blogpost id={node.id} slug={node.fields.slug} title={node.frontmatter.title} date={node.frontmatter.date} categories={node.frontmatter.categories} summary={node.frontmatter.summary} imgsrc={node.frontmatter.imgsrc}></Blogpost>
-    )
+  const showCondition = node.frontmatter.show === null || node.frontmatter.show 
+  if (showCondition) {
+    if ("imgsrc" in node.frontmatter) {
+      return (
+        <Blogpost id={node.id} slug={node.fields.slug} title={node.frontmatter.title} date={node.frontmatter.date} categories={node.frontmatter.categories} summary={node.frontmatter.summary} imgsrc={node.frontmatter.imgsrc}></Blogpost>
+      )
+    }
+    else {
+      return (
+          <Blogpost id={node.id} slug={node.fields.slug} title={node.frontmatter.title} date={node.frontmatter.date} categories={node.frontmatter.categories} summary={node.frontmatter.summary}></Blogpost>
+      )
+    }
   }
   else {
-    return (
-        <Blogpost id={node.id} slug={node.fields.slug} title={node.frontmatter.title} date={node.frontmatter.date} categories={node.frontmatter.categories} summary={node.frontmatter.summary}></Blogpost>
-    )
+    return null
   }
 }
 
@@ -22,7 +28,7 @@ export default ({ data }) => {
         <Layout to_en_es="/es/">
             <div>
                 {data.allMdx.nodes.map(node  => (
-                  processNodeBlogpost(node)
+                    processNodeBlogpost(node)
                   )
                 )}
             </div>
@@ -46,6 +52,7 @@ export const query = graphql`
           imgsrc
           categories
           summary
+          show
         }
       }
     }
