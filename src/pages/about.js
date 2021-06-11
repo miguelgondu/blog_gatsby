@@ -15,6 +15,30 @@ function allPapers() {
     //     linkCode: null,
     // }
 
+    // Pulling back information geometry paper
+    let pullingBackInfoGeomPaper = {
+        title: "Pulling back information geometry",
+        content: "We induced geometries in latent space by pulling back the Fisher-Rao metric.",
+        linkPaper: "https://arxiv.org/pdf/2106.05367.pdf",
+        imgsrc: "/assets/paper_images/pulling_back_info_geom.png",
+        pdfsrc: null,
+        linkArxiv: "https://arxiv.org/abs/2106.05367",
+        linkPublication: null,
+        linkCode: null,
+    }
+
+    // Fast Game Content Adaption paper
+    let fastContentAdaptionPaper = {
+        title: "Fast Game Content Adaptation Through Bayesian-based Player Modelling",
+        content: "We applied a Bayesian Optimization approach to dynamically adjusting difficulty.",
+        linkPaper: "https://arxiv.org/pdf/2105.08484.pdf",
+        imgsrc: "/assets/paper_images/sudoku_paper_img.jpg",
+        pdfsrc: null,
+        linkArxiv: "https://arxiv.org/abs/2105.08484",
+        linkPublication: null,
+        linkCode: null,
+    }
+
     // Finding Game Levels paper
     let findingLevelsPaper = {
         title: "Finding Game Levels with the Right Difficulty in a Few Trials through Intelligent Trial-and-Error",
@@ -52,6 +76,8 @@ function allPapers() {
     }
 
     return ([
+        pullingBackInfoGeomPaper,
+        fastContentAdaptionPaper,
         findingLevelsPaper,
         brilPaper,
         mscThesis
@@ -65,7 +91,7 @@ export default () => (
 
         <p>I'm Miguel González Duque, a mathematician from the Universidad Nacional de Colombia. I'm mostly interested in probabilistic modeling, focusing on Bayesian data analysis and its applications.</p>
         
-        <p>I'm currently a PhD student at the <a href="https://game.itu.dk/" target="_blank" rel="noopener noreferrer">Center for Computer Games Research</a> at the IT University of Copenhagen, under the supervision of Prof. <a href="http://sebastianrisi.com/" target="_blank" rel="noopener noreferrer">Sebastian Risi</a>. We are developing systems that automatically adapt to users, and we are applying these ideas on videogames and automatic difficulty adjustment.</p>
+        <p>I'm currently a PhD student at the <a href="https://game.itu.dk/groups/creativeai/" target="_blank" rel="noopener noreferrer">Creative AI Lab</a> at the IT University of Copenhagen, under the supervision of Prof. <a href="http://sebastianrisi.com/" target="_blank" rel="noopener noreferrer">Sebastian Risi</a>. We are developing systems that automatically adapt to users, and we are applying these ideas on videogames and automatic difficulty adjustment.</p>
 
         <p>Feel free to contact me at miguelgondu(at)gmail(dot)com.</p>
 
