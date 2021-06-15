@@ -89,13 +89,11 @@ export default () => (
         <h1>About Me</h1>
         <img src={profile_photo} class="profile_pic" alt=""></img>
 
-        <p>I'm Miguel González Duque, a mathematician from the Universidad Nacional de Colombia. I'm mostly interested in probabilistic modeling, focusing on Bayesian data analysis and its applications.</p>
+        <p>I'm Miguel González Duque, a mathematician from the Universidad Nacional de Colombia. I'm mostly interested in the intersection between probabilistic modeling and geometry.</p>
         
-        <p>I'm currently a PhD student at the <a href="https://game.itu.dk/groups/creativeai/" target="_blank" rel="noopener noreferrer">Creative AI Lab</a> at the IT University of Copenhagen, under the supervision of Prof. <a href="http://sebastianrisi.com/" target="_blank" rel="noopener noreferrer">Sebastian Risi</a>. We are developing systems that automatically adapt to users, and we are applying these ideas on videogames and automatic difficulty adjustment.</p>
+        <p>I'm currently a PhD student at the <a href="https://game.itu.dk/groups/creativeai/" target="_blank" rel="noopener noreferrer">Creative AI Lab</a> at the IT University of Copenhagen, under the supervision of Prof. <a href="http://sebastianrisi.com/" target="_blank" rel="noopener noreferrer">Sebastian Risi</a>. We are developing systems that create and adapt game content to users. I have also started collaborating with <a href="http://www2.compute.dtu.dk/~sohau/" target="_blank" rel="noopener noreferrer">Søren Hauberg</a>'s lab at DTU, working on generative modelling and differential geometry.</p>
 
         <p>Feel free to contact me at miguelgondu(at)gmail(dot)com.</p>
-
-        <p>This blog was made using <a href="https://www.gatsbyjs.org/" target="_blank" rel="noopener noreferrer">Gatsby</a>, and is inspired by <a href="https://github.com/LekoArts/gatsby-starter-minimal-blog" target="_blank" rel="noopener noreferrer">the minimal blog starter by LekoArts</a>.</p>
 
         <h2>Some publications</h2>
 

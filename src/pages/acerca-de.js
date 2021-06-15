@@ -11,13 +11,11 @@ export default () => (
             <img src={profile_photo} class="profile_pic" alt=""></img>
         </div>
 
-        <p>Soy Miguel González Duque, un matemático de la Universidad Nacional de Colombia. Me interesa más que todo el modelamiento probabilístico, enfocándome en análisis Bayesiano de datos y sus aplicaciones.</p>
+        <p>Soy Miguel González Duque, un matemático de la Universidad Nacional de Colombia. Me interesa más que todo en la intersección entre modelamiento probabilístico y geometría diferencial.</p>
         
-        <p>En este momento soy un estudiante de doctorado del <a href="https://game.itu.dk/groups/creativeai/" target="_blank" rel="noopener noreferrer">Creative AI Lab</a> en la Universidad IT de Copenhague, bajo la dirección del Prof. <a href="http://sebastianrisi.com/" target="_blank" rel="noopener noreferrer">Sebastian Risi</a>. Estamos desarrollando sistemas que se adaptan automáticamente a sus usuarios, y estamos aplicando estas ideas en videojuegos y en ajuste automático de la dificultad.</p>
+        <p>En este momento soy un estudiante de doctorado del <a href="https://game.itu.dk/groups/creativeai/" target="_blank" rel="noopener noreferrer">Creative AI Lab</a> en la Universidad IT de Copenhague, bajo la dirección del Prof. <a href="http://sebastianrisi.com/" target="_blank" rel="noopener noreferrer">Sebastian Risi</a>. Estamos desarrollando sistemas que crean y adaptan contenido de videojuegos. También comencé a colaborar con el grupo de <a href="http://www2.compute.dtu.dk/~sohau/" target="_blank" rel="noopener noreferrer">Søren Hauberg</a> en DTU, trabajando en modelamiento generativo y geometría diferencial.</p>
 
         <p>Para contactarme, puedes escribirme al correo miguelgondu(at)gmail(dot)com.</p>
-
-        <p>Este blog se hizo usando <a href="https://www.gatsbyjs.org/" target="_blank" rel="noopener noreferrer">Gatsby</a>, y está inspirado en <a href="https://github.com/LekoArts/gatsby-starter-minimal-blog" target="_blank" rel="noopener noreferrer">el blog minimal de LekoArts</a>.</p>
 
         <p>Mis publicaciones están en esta página, pero en inglés. Si quieres verlas, has clic <Link to="/about">aquí</Link>.</p>
     </LayoutEs>
