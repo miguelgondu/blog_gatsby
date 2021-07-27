@@ -24,13 +24,28 @@ module.exports = {
         defaultLayouts: {
           default: require.resolve(`./src/components/layout.js`)
         },
-				remarkPlugins: [require('remark-math'), require('remark-html-katex')]
+				remarkPlugins: [require('remark-math'), require('remark-html-katex')],
+        gatsbyRemarkPlugins: [
+          {
+            resolve: `gatsby-remark-highlight-code`,
+          },
+        ],
       }
     },
     {
       resolve: `gatsby-plugin-typography`,
       options: {
         pathToConfigModule: `src/utils/typography`,
+      },
+    },
+    {
+      resolve: `gatsby-transformer-remark`,
+      options: {
+        plugins: [
+          {
+            resolve: `gatsby-remark-highlight-code`
+          },
+        ],
       },
     },
   ],

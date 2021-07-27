@@ -2,6 +2,8 @@ import React from "react"
 import { Link } from "gatsby"
 import { Helmet } from "react-helmet"
 import "katex/dist/katex.min.css"
+import { defineCustomElements as deckDeckGoHighlightElement } from '@deckdeckgo/highlight-code/dist/loader';
+deckDeckGoHighlightElement();
 
 const ListLink = props => (
     <li style={{ display: `inline-block`, marginRight: `1rem`, fontSize: "15px" }}>
