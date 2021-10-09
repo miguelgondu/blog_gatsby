@@ -56,7 +56,6 @@ export const query = graphql`
           show
         }
         excerpt(pruneLength: 200)
-        timeToRead
       }
     }
   }

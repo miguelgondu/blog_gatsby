@@ -77,5 +77,4 @@ function paper(props) {
 const ExportPapers = ( props ) => (
     paper(props)
 )
-
 export default ExportPapers

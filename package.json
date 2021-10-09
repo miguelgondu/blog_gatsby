@@ -45,7 +45,8 @@
     "sass": "^1.42.1",
     "typography": "^0.16.19",
     "typography-theme-elk-glen": "^0.16.19",
-    "typography-theme-fairy-gates": "^0.16.19"
+    "typography-theme-fairy-gates": "^0.16.19",
+    "typography-theme-twin-peaks": "^0.16.19"
   },
   "devDependencies": {
     "prettier": "^1.18.2"
