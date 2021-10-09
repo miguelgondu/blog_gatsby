@@ -2,8 +2,12 @@ import React from "react"
 import { Link } from "gatsby"
 import { Helmet } from "react-helmet"
 import "katex/dist/katex.min.css"
+import { MDXProvider } from "@mdx-js/react"
+import Heading from "./Heading"
 import { defineCustomElements as deckDeckGoHighlightElement } from '@deckdeckgo/highlight-code/dist/loader';
 deckDeckGoHighlightElement();
+
+const shortcodes = { Heading }
 
 const ListLink = props => (
     <li style={{ display: `inline-block`, marginRight: `1rem`, fontSize: "15px" }}>
@@ -42,6 +46,7 @@ export default ( props ) => (
                 {/* <ListLink to="/contact/">Contact</ListLink> */}
             </ul>
         </header>
-        {props.children}
+        {/* {props.children} */}
+        {React.Children.map(props.children, (c) => <MDXProvider components={shortcodes}>{c}</MDXProvider>)}
     </div>
 )

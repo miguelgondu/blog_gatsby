@@ -5,7 +5,7 @@ function blogpost(props) {
     if (props.imgsrc != null) {
         return (
             <div key={props.id}>
-                <Link to={props.slug}><img class="blogpost" src={props.imgsrc} alt=""></img></Link>
+                <Link to={props.slug}><img className="blogpost" src={props.imgsrc} alt=""></img></Link>
                 <h2><Link to={props.slug}>{props.title}{" "}</Link></h2>
                 <span>{props.date}{" "}</span>
                 <p>{props.categories.map((category, index, arr) => {

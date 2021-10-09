@@ -1,0 +1,44 @@
+---
+date: "2021-09-17"
+title: "Inference using torch distributions"
+summary: "This blogpost is a tutorial doing inference using torch distributions."
+lang: "en"
+show: false
+categories:
+    - Deep Generative Methods
+    - Python
+    - PyTorch
+---
+
+<!-- # Intro -->
+{/* <Heading>Inference using torch distributions</Heading> */}
+<Heading aria-label="Jump to section: What is a Medium Format Camera?" as="h2" hash="whatIsAMediumFormatCamera">What is a Medium Format Camera?</Heading>
+
+<!-- This blogpost is about trying to learn the parameters of probability distributions from data. This problem, called inference, is key in most of Machine Learning: regression, classification, unsupervised learning... all of these are usually framed as an instance of inference. We usually start with an assumption over how our data is distributed (for example, following a Gaussian whose parameters $\mu$ and $\Sigma$ we don't know), and then try to estimate the parameters by finding the distribution that makes our data *more likely*. -->
+
+This blogpost is about a deep generative method called *variational autoencoder*. I plan to go through the basics of why it was developed, how/why it works, and how you can implement it using `torch` and, in particular, a nice API for probability distributions called `torch.distributions`.
+
+## Inference of continuous latent variables
+
+To understand what a variational autoencoder does, I think it's worthwhile to maintain a working example. Consider a dataset that consists of images of clothes. The image of a dress is usually pretty large (e.g. 1024x1024x3 pixels), but we don't actually need all of that information if we want to describe the dress to someone. We could start by describing the color, maybe it's length and general shape... These multiple features that summarize a dress in less numbers than 1024x1024x3 is what we would call in this post *latent variables* $\bm{z}=(z_1, \dots, z_n)$. We will imagine a world in which, to create a dress, we first consider and set these latent variables of height, color, and so on... and once we've set them, we can consider multiple images of dresses $\bm{x}$ that might come up.
+
+[image of a dress]
+
+This is precisely the setting of having *continuous latent variables*. [a little bit more technical definition of latent variables and the graphical model in question].
+
+<!-- 2014 was a great year for Deep Generative Models: on the one hand, [Rezende & Mohammed]() noticed that you could actually do backpropagation, even when part of your neural network forward pass involves sampling from a Gaussian distribution; on the other, [Kingma & Welling]() developed the variational autoencoder as a way to approximate the complex distirbutions of latent variables from data. -->
+
+## What's variational inference?
+
+## What's amortized variational inference?
+
+
+# VAEs
+
+# Reparametrization trick
+
+# Torch distributions.
+
+
+
+[^1] This post assumes that you are familiar with some concepts in probability and in neural networks: [this](), [that](), and [that](). The links point towards good resources!
