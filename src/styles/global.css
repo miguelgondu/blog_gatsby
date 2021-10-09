@@ -1,6 +1,7 @@
 img.profile_pic {
 	border-radius: 50%;
-	height: 300px;
+	width: 100%;
+	max-width: 350px;
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
@@ -37,7 +38,7 @@ div.centered {
 	margin-left: auto;
 	margin-right: auto;
 }
-
+/* 
 @media screen and (max-width: 440px) {
 	img.profile_pic {
 		border-radius: 50%;
@@ -46,4 +47,4 @@ div.centered {
 		margin-left: auto;
 		margin-right: auto;
 	}
-}
+} */
