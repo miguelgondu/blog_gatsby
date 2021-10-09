@@ -2,7 +2,7 @@ import React from "react"
 import Layout from "../components/layoutEs"
 import Project from "../components/project"
 
-export default () => (
+const ProjectsPageEs = () => (
     <Layout to_en_es="/projects/">
         <h1>Proyectos</h1>
 
@@ -21,3 +21,5 @@ export default () => (
         </Project>
     </Layout>
 )
+
+export default ProjectsPageEs

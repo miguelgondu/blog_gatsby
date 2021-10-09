@@ -4,19 +4,20 @@ import Layout from "../components/layout"
 import Blogpost from "../components/blogpost"
 import "katex/dist/katex.min.css"
 
-export default ({ data }) => {
-    return (
-        <Layout to_en_es="/todos-los-posts/">
-            <div>
-              <h1>All Posts</h1>
-                {data.allMdx.nodes.map(node  => (
-                    <Blogpost id={node.id} slug={node.fields.slug} title={node.frontmatter.title} date={node.frontmatter.date} categories={node.frontmatter.categories} summary={node.frontmatter.summary}></Blogpost>
-                  )
-                )}
-            </div>
-        </Layout>
-    )
+const AllPostsPage = ({ data }) => {
+  return (
+      <Layout to_en_es="/todos-los-posts/">
+          <div>
+            <h1>All Posts</h1>
+              {data.allMdx.nodes.map(node  => (
+                  <Blogpost id={node.id} slug={node.fields.slug} title={node.frontmatter.title} date={node.frontmatter.date} categories={node.frontmatter.categories} summary={node.frontmatter.summary}></Blogpost>
+                )
+              )}
+          </div>
+      </Layout>
+  )
 }
+export default AllPostsPage
 
 export const query = graphql`
   query {

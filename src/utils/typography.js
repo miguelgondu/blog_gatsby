@@ -1,7 +1,7 @@
 import Typography from 'typography'
 import fairyGatesTheme from 'typography-theme-fairy-gates'
 fairyGatesTheme.baseFontSize = '20px' // was 20px.
-// fairyGatesTheme.headerFontFamily = ['Slavo 27px']
+// fairyGatesTheme.headerFontFamily = ['Open Sans 27px']
 
 const typography = new Typography(fairyGatesTheme)
 

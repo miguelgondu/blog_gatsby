@@ -3,8 +3,7 @@ import { Link } from "gatsby"
 import LayoutEs from "../components/layoutEs"
 import profile_photo from "../../static/profile_photo.jpg"
 
-
-export default () => (
+const AboutPageEs = () => (
     <LayoutEs to_en_es="/about/">
         <h1>Acerca de</h1>
         <div class="centered">
@@ -20,3 +19,5 @@ export default () => (
         <p>Mis publicaciones están en esta página, pero en inglés. Si quieres verlas, has clic <Link to="/about">aquí</Link>.</p>
     </LayoutEs>
 )
+
+export default AboutPageEs

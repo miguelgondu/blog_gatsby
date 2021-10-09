@@ -84,7 +84,7 @@ function allPapers() {
     ])
 }
 
-export default () => (
+const AboutPage = () => (
     <Layout to_en_es="/acerca-de/">
         <h1>About Me</h1>
         <img src={profile_photo} class="profile_pic" alt=""></img>
@@ -105,3 +105,5 @@ export default () => (
 
     </Layout>
 )
+
+export default AboutPage

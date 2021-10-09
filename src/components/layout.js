@@ -24,7 +24,7 @@ function defaultToEnEs(props) {
     }
 }
 
-export default ( props ) => (
+const ExportLayout = ( props ) => (
     <div style={{ margin: `3rem auto`, maxWidth: 900, padding: `0 1rem` }}>
         <Helmet>
             <meta charset="UTF-8"></meta>
@@ -50,3 +50,4 @@ export default ( props ) => (
         {React.Children.map(props.children, (c) => <MDXProvider components={shortcodes}>{c}</MDXProvider>)}
     </div>
 )
+export default ExportLayout

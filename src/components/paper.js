@@ -74,6 +74,8 @@ function paper(props) {
     }
 }
 
-export default ( props ) => (
+const ExportPapers = ( props ) => (
     paper(props)
 )
+
+export default ExportPapers

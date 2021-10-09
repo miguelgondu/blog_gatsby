@@ -42,6 +42,8 @@ function blogpost(props) {
     }
 }
 
-export default ( props ) => (
+const ExportBlogs = ( props ) => (
     blogpost(props)
 )
+
+export default ExportBlogs

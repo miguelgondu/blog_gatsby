@@ -23,18 +23,19 @@ function processNodeBlogpost(node) {
   }
 }
 
-export default ({ data }) => {
-    return (
-        <LayoutEs to_en_es="/">
-            <div>
-                {data.allMdx.nodes.map(node  => (
-                    processNodeBlogpost(node)
-                  )
-                )}
-            </div>
-        </LayoutEs>
-    )
-}
+const IndexPageEs = ({ data }) => {
+  return (
+      <LayoutEs to_en_es="/">
+          <div>
+              {data.allMdx.nodes.map(node  => (
+                  processNodeBlogpost(node)
+                )
+              )}
+          </div>
+      </LayoutEs>
+  )
+} 
+export default IndexPageEs
 
 export const query = graphql`
   query {
