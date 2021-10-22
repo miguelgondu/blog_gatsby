@@ -30,6 +30,7 @@
     "gatsby-source-filesystem": "^2.1.6",
     "gatsby-transformer-remark": "^4.11.0",
     "katex": "^0.13.18",
+    "poisson-process": "^1.0.0",
     "postcss": "^8.3.9",
     "prism-react-renderer": "^1.1.1",
     "react": "^16.8.6",
