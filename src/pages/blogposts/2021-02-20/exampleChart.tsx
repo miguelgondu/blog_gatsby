@@ -32,10 +32,6 @@ function poissonPMF(k: number, mean: number) {
   )
 }
 
-function maxOfData(data: Array<Point>) {
-  return Math.max(...data.map((doc) => doc.y))
-}
-
 interface Point {
   x: number,
   y: number
@@ -51,13 +47,13 @@ interface State {
   value: number
 }
 
-class ScatterPlot extends Component {
-  myRef;
-  data;
-  width;
-  height;
-  x;
-  y;
+class PoissonPlot extends Component {
+  myRef: React.RefObject<any>;
+  data: Array<Point>;
+  width: number;
+  height: number;
+  x: d3.ScaleLinear<number, number, never>;
+  y: d3.ScaleLinear<number, number, never>;
   state: State;
 
   constructor(props: FigureProps) {
@@ -89,7 +85,7 @@ class ScatterPlot extends Component {
     
       this.y = d3.scaleLinear()
                 .range([this.height-45, 5])
-                .domain([0, 0.35])
+                .domain([0, 0.29])
     }
 
     componentDidUpdate() {
@@ -111,32 +107,19 @@ class ScatterPlot extends Component {
     let color = "red";
     
     return (
-      <div>
-        <div>Current \(\lambda\): {this.state.value}</div>
+      <div className="figure-container">
+        <div>Current lambda: {this.state.value}</div>
         <input type="range" min={1} max={30} value={this.state.value} onChange={this.handleChange} />
-        <svg width={this.width} height={this.height}>
+        <svg width="100%" height="100%">
           <path strokeWidth={3} fill="none" stroke={color} d={linePath}/>
-          {this.data.map(d => (<circle key={`circle-${d.x}-${d.y}`} cx={this.x(d.x)} cy={this.y(d.y)} r={5}></circle>))}
+          {this.data.map((d: Point) => (<circle key={`circle-${d.x}-${d.y}`} cx={this.x(d.x)} cy={this.y(d.y)} r={2}></circle>))}
           <Axis x={40} y={0} scale={this.y} axisType='left'></Axis>
           <Axis x={0} y={this.height-40} scale={this.x} axisType='bottom'></Axis>
         </svg>
       </div>
-      // <div ref={this.myRef}></div>
     )
   }
 }
 
 
-
-
-// export default () => (
-//   <div>
-//     <svg width={width} height={height}>
-//       {data.map(d => (<circle cx={x(d.x)} cy={y(d.y)} r={5}></circle>))}
-//       <Axis x={40} y={0} scale={y} axisType='left'></Axis>
-//       <Axis x={0} y={height-40} scale={x} axisType='bottom'></Axis>
-//     </svg>
-//   </div>
-// )
-
-export default ScatterPlot;
+export default PoissonPlot;

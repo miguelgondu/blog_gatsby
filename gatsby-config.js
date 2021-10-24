@@ -26,7 +26,6 @@ module.exports = {
           default: require.resolve(`./src/components/layout.js`)
         },
 				remarkPlugins: [require('remark-math'), require('remark-html-katex')],
-        rehypePlugins: [require('rehype-katex')],
         gatsbyRemarkPlugins: [
           {
             resolve: `gatsby-remark-highlight-code`,
