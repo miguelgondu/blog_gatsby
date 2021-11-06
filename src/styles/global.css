@@ -65,6 +65,7 @@ div.state-indicator {
 	margin-top: 15px;
 	margin-bottom: 15px;
 	text-align: center;
+	line-height: 1.6;
 	font-size: xx-large;
 	width: 100%;
 }

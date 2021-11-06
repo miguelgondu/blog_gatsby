@@ -2,7 +2,9 @@ import React, { Component } from 'react'
 import * as d3 from 'd3'
 import { useD3 } from 'd3blackbox'
 
-const proportion = 0.66
+const proportion = 0.80
+const maxWidth = 600
+const maxHeight = 600
 
 function factorial(k: number) {
   let res = 1;
@@ -19,19 +21,21 @@ function poissonPMF(k: number, mean: number) {
   )
 }
 
+function getPoissonPoints(maxX: number, mean: number): Array<Point> {
+  return d3.range(maxX).map((k) => ({x: k, y: poissonPMF(k, mean)}))
+}
+
 interface Point {
   x: number,
   y: number
 }
 
 interface FigureProps {
-  width: number,
-  height: number,
   mean: number 
 }
 
 interface State {
-  value: number
+  mean: number
   figureWidth: number
   figureHeight: number
 }
@@ -48,16 +52,19 @@ class PoissonPlot extends Component {
       this.handleChange = this.handleChange.bind(this);
       this.onResize = this.onResize.bind(this);
       
+      // Instead of directly accessing window, we need to
+      // have some defaults because Gatsby expects something
+      // that works on Node.
       // https://github.com/gatsbyjs/gatsby/issues/12427
       let defaultHeight
       let defaultWidth
 
       if (typeof window !== `undefined`) {
-        defaultHeight = Math.min(window.innerHeight, 500)
-        defaultWidth = Math.min(window.innerWidth, 500)
+        defaultHeight = Math.min(window.innerHeight, maxHeight)
+        defaultWidth = Math.min(window.innerWidth, maxWidth)
       }
       this.state = {
-        "value": props.mean,
+        "mean": props.mean,
         "figureWidth": defaultWidth * proportion,
         "figureHeight": defaultHeight * proportion,
       }
@@ -65,16 +72,12 @@ class PoissonPlot extends Component {
       this.updateAxes();
     }
 
-    getPoissonPoints(maxX: number, mean: number): Array<Point> {
-      return d3.range(maxX).map((k) => ({x: k, y: poissonPMF(k, mean)}))
-    }
-
     handleChange(event) {
-      this.setState({"value": event.target.value})
+      this.setState({"mean": event.target.value})
     }
 
     updateAxes() {
-      this.data = this.getPoissonPoints(25, this.state.value);
+      this.data = getPoissonPoints(25, this.state.mean);
       this.x = d3.scaleLinear()
                 .range([ 45, this.state.figureWidth-10])
                 .domain([0, Math.max(...this.data.map((d: Point) => d.x))])
@@ -85,17 +88,17 @@ class PoissonPlot extends Component {
     }
 
     updateData() {
-      this.data = this.getPoissonPoints(25, this.state.value);
+      this.data = getPoissonPoints(25, this.state.mean);
     }
 
     onResize() {
       let defaultHeight
       let defaultWidth
       if (typeof window !== `undefined`) {
-        defaultHeight = Math.min(window.innerHeight, 500)
-        defaultWidth = Math.min(window.innerWidth, 500)
+        defaultHeight = Math.min(window.innerHeight, maxHeight)
+        defaultWidth = Math.min(window.innerWidth, maxWidth)
       }
-      this.setState({ figureWidth: defaultWidth * proportion, figureHeight: defaultHeight * proportion , value: this.state.value })
+      this.setState({ figureWidth: defaultWidth * proportion, figureHeight: defaultHeight * proportion , mean: this.state.mean })
     }
 
     componentDidMount() {
@@ -109,8 +112,6 @@ class PoissonPlot extends Component {
     }
   
   render() {
-    console.log(this.state)
-
     // Because Gatsby needs to have something that works on Node.js
     // https://stackoverflow.com/a/59534680/3516175
     if (typeof window === `undefined`) {
@@ -126,24 +127,21 @@ class PoissonPlot extends Component {
       return <g transform={`translate(${x}, ${y})`} ref={ref}></g>
     }
 
-  
     let color = "#04aa6d";
     
     let style = {
       stroke: color,
       strokeWidth: "3px"
     }
-
-    var linePath = d3.line().x(d => this.x(d.x))
-                            .y(d => this.y(d.y))
-                            .curve(d3.curveMonotoneX)(this.data);
     
     return (
+      <>
+      <hr />
       <div className="figure-container">
         <div className="state-indicator">Probability mass function of the Poisson distribution.</div>
-        <div className="state-indicator">Mean: {this.state.value}</div>
+        <div className="state-indicator">Mean: {this.state.mean}</div>
         <div className="slider-container">
-          <input className="slider" type="range" min={1} max={30} value={this.state.value} onChange={this.handleChange} />
+          <input className="slider" type="range" min={1} max={30} value={this.state.mean} onChange={this.handleChange} />
         </div>
         <svg width={this.state.figureWidth} height={this.state.figureHeight}>
           {/* <path strokeWidth={3} fill="none" stroke={color} d={linePath}/> */}
@@ -152,7 +150,9 @@ class PoissonPlot extends Component {
           <Axis x={40} y={0} scale={this.y} axisType='left'></Axis>
           <Axis x={0} y={this.state.figureHeight-40} scale={this.x} axisType='bottom'></Axis>
         </svg>
+      <hr />
       </div>
+      </>
     )
   }
 }
