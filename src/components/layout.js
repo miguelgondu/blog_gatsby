@@ -24,30 +24,41 @@ function defaultToEnEs(props) {
     }
 }
 
-const ExportLayout = ( props ) => (
-    <div style={{ margin: `3rem auto`, maxWidth: 900, padding: `0 1rem` }}>
-        <Helmet>
-            <meta charset="UTF-8"></meta>
-            <meta name="description" content="Miguel González Duque's blog about mathematics, Machine Learning and the brain."></meta>
-            <meta name="author" content="Miguel González Duque"></meta>
-            <title>miguelgondu's blog</title>
-        </Helmet>
-        <header style={{ marginBottom: `4.5rem` }}>
-            <Link to="/" style={{ textShadow: `none`, backgroundImage: `none` }}>
-                <h1 style={{ display: `inline` }}>miguelgondu's blog</h1>
-            </Link>
-            <ul style={{ listStyle: `none`, float: `right` }}>
-                {/* <ListLink to="/">Home</ListLink> */}
-                <ListLink to="/projects/">Projects</ListLink>
-                {/* <ListLink to="/categories/">Categories</ListLink> */}
-                {/* <ListLink to="/all-posts/">All Posts</ListLink> */}
-                <ListLink to="/about/">About</ListLink>
-                <ListLink to={defaultToEnEs(props)}>en/es</ListLink>
-                {/* <ListLink to="/contact/">Contact</ListLink> */}
-            </ul>
-        </header>
-        {/* {props.children} */}
-        {React.Children.map(props.children, (c) => <MDXProvider components={shortcodes}>{c}</MDXProvider>)}
-    </div>
-)
+class ExportLayout extends React.Component {
+    constructor(props) {
+        super(props);
+        this.props = props
+        deckDeckGoHighlightElement();
+    }
+
+    render () {
+        return (
+            <div style={{ margin: `3rem auto`, maxWidth: 900, padding: `0 1rem` }}>
+                <Helmet>
+                    <meta charset="UTF-8"></meta>
+                    <meta name="description" content="Miguel González Duque's blog about mathematics, Machine Learning and the brain."></meta>
+                    <meta name="author" content="Miguel González Duque"></meta>
+                    <title>miguelgondu's blog</title>
+                </Helmet>
+                <header style={{ marginBottom: `4.5rem` }}>
+                    <Link to="/" style={{ textShadow: `none`, backgroundImage: `none` }}>
+                        <h1 style={{ display: `inline` }}>miguelgondu's blog</h1>
+                    </Link>
+                    <ul style={{ listStyle: `none`, float: `right` }}>
+                        {/* <ListLink to="/">Home</ListLink> */}
+                        <ListLink to="/projects/">Projects</ListLink>
+                        {/* <ListLink to="/categories/">Categories</ListLink> */}
+                        {/* <ListLink to="/all-posts/">All Posts</ListLink> */}
+                        <ListLink to="/about/">About</ListLink>
+                        <ListLink to={defaultToEnEs(this.props)}>en/es</ListLink>
+                        {/* <ListLink to="/contact/">Contact</ListLink> */}
+                    </ul>
+                </header>
+                {/* {props.children} */}
+                {React.Children.map(this.props.children, (c) => <MDXProvider components={shortcodes}>{c}</MDXProvider>)}
+            </div>
+        )
+    }
+}
+
 export default ExportLayout

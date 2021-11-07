@@ -1,9 +1,9 @@
 ---
 date: "2021-02-20"
 title: "Making an interactive, responsive d3 chart in Gatsby"
-summary: ""
+summary: "This blogpost explores how to use d3 inside Gatsby, and shows how to create a simple interactive chart"
 lang: "en"
-show: false
+show: true
 categories:
     - Data Visualization
     - TypeScript
@@ -490,4 +490,4 @@ And finally, you can copy and paste [w3school's range sliders CSS](https://www.w
 
 <Heading aria-label="React components" as="h2" hash="MakingItResponsive">Conclusion</Heading>
 
-In this blogpost we made a d3 chart inside a React component. The way this usually works is by letting React handle DOM updates, while D3 maps data into SVG elements. This component reacts to user interaction, and updates the data it is maintaining and re-renders the chart with this new specifications. We also made the width and height dynamically change according to the window's shape and its resizes! Which means that, in theory, this plot should be rendered perfectly well in all devices.
+In this blogpost we made a d3 chart inside a React component. The way this usually works is by letting React handle DOM updates, while D3 maps data into SVG elements. This component reacts to user interaction, and updates the data it is maintaining and re-renders the chart with this new specifications. We also made the width and height dynamically change according to the window's shape and its resizes! Which means that, in theory, this plot should adapt its size according to screen resizes.
