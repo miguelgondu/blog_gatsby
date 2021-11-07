@@ -38,7 +38,7 @@ function getPoissonPoints(maxX: number, mean: number): Array<Point> {
 }
 
 
-class FinalChart extends Component {
+class PoissonPlot extends Component {
   state: State
   x: d3.ScaleLinear<number, number, never>;
   y: d3.ScaleLinear<number, number, never>;
@@ -54,7 +54,7 @@ class FinalChart extends Component {
         "figureWidth": 400,
         "figureHeight": 400
     }
-    
+
     this.onResize()
   }
 
@@ -65,10 +65,6 @@ class FinalChart extends Component {
         data: getPoissonPoints(25, event.target.value)
       }
     )
-  }
-
-  updateAxes() {
-
   }
 
   onResize() {
@@ -188,4 +184,4 @@ class FinalChart extends Component {
   }
 }
 
-export default FinalChart;
+export default PoissonPlot;

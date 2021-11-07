@@ -104,6 +104,7 @@ class WindowResizing extends Component {
 
   componentDidMount () {
     window.addEventListener('resize', this.onResize, false);
+    this.onResize()
   }
 
   render() {

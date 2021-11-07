@@ -76,7 +76,7 @@ class AddingASlider extends Component {
 
   render() {
     let Circle = ({x, y}) => {
-        return <circle key={`circle-${x}-${y}`} cx={this.x(x)} cy={this.y(y)} r={2} />
+        return <circle key={`csli-${x}-${y}`} cx={this.x(x)} cy={this.y(y)} r={2} />
     }
 
     let Line = ({x, y}) => {
@@ -84,7 +84,7 @@ class AddingASlider extends Component {
             stroke: "#04aa6d",
             strokeWidth: "3px"
         }
-        return <line key={`l-${x}-${y}`} x1={this.x(x)} y1={this.y(0)} x2={this.x(x)} y2={this.y(y)} style={style} />
+        return <line key={`lsli-${x}-${y}`} x1={this.x(x)} y1={this.y(0)} x2={this.x(x)} y2={this.y(y)} style={style} />
     }
 
     let Axis = ({x, y, axis, axisType}) => {
