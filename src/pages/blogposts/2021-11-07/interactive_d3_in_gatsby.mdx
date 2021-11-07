@@ -10,7 +10,6 @@ categories:
     - Gatsby
 ---
 
-import PoissonPlot from './chart'
 import BasicComponent from './basicComponent'
 import StaticPlot from './staticPlot'
 import StaticPlotWithAxes from './staticPlotWithAxes'
@@ -20,19 +19,21 @@ import FinalChart from './final'
 
 <Heading aria-label="Jump to title" as="h1" hash="MakingAResponsiveChart">Making an interactive, responsive d3 chart in Gatsby</Heading>
 
-In this blogpost, we will construct the following chart using React components. This is the plot of the probability mass function of a Poisson distributionwhere the user can change the mean parameter $\lambda$.
+In this blogpost, we will construct the chart of the probability mass function of a Poisson distribution where the user can change the mean parameter $\lambda$.
 
 <FinalChart />
 
 This chart is interactive and responsive. I built it using [d3, a JavaScript library for making data visualizations](https://d3js.org/). To adapt it to my blog and [Gatsby](https://www.gatsbyjs.com/), I had to learn a bit of [React](https://reactjs.org/) in the process. This blogpost explains the process from the ground-up: we first build the plot as a React component, then we add the input slider for the mean, and we wrap up by dynamically changing the plot's width and height according to screen size.
 
-I didn't know anything about React before I started making this post, so I expect it to be friendly to people that have some experience with basic NodeJS development (e.g. installing packages using `npm`), with blog developing in Gatsby and with making simple plots on d3. This blogpost has two main references. The first is Chapter 9 of  Elijah Meeks' book *D3.js in action* (and [here]()'s a free teaser of it), and the second is [this tutorial video](https://www.youtube.com/watch?v=Bdeu-BFisJU) on mixing d3 and Gatsby by [Jason Lengstorf](https://www.youtube.com/channel/UCnty0z0pNRDgnuoirYXnC5A) and [Swizec Teller](https://twitter.com/Swizec).
+I didn't know anything about React before I started making this post, but I did know a little bit of node, d3 and Gatsby. I expect this blogpost to be friendly to people that have some experience with basic NodeJS development (e.g. installing packages using `npm`), with blog developing in Gatsby and with making simple plots on d3.
+
+This blogpost has two main references. The first is Chapter 9 of  Elijah Meeks' book *D3.js in action* (and [here](https://medium.com/noteableio/interactive-applications-with-react-d3-f76f7b3ebc71)'s a free teaser of it), and the second is [this tutorial video](https://www.youtube.com/watch?v=Bdeu-BFisJU) on mixing d3 and Gatsby by [Jason Lengstorf](https://www.youtube.com/channel/UCnty0z0pNRDgnuoirYXnC5A) and [Swizec Teller](https://twitter.com/Swizec).
 
 This interactive plot may seem like a simple example, but it could easily be replaced with more elaborate interactive plots (like the ones showcased in [d3 examples](https://observablehq.com/@d3/gallery)).
 
-<Heading aria-label="React components" as="h2" hash="WhatAreReactComponents">React components in mdx</Heading>
+<Heading aria-label="React components" as="h2" hash="ReactComponentsInMDX">React components in mdx</Heading>
 
-Gatsby is built on top of React, which is an open-source library for building user interfaces. React uses reusable components that swallow information through their `props` (or by querying some API). The plot showed above is a React component with only one `prop`: the default mean value.
+Gatsby is built on top of React, which is an open-source library for building user interfaces. React uses reusable components that swallow information through their `props` (or by querying some API) and maintain a certain `state`. Our plot doesn't really swallow information, but it does update its state according to user interaction.
 
 When developing blogs in Gatsby, it is very common to write posts in **Markdown React** (or `.mdx`). This is a special version of Markdown that allows us to use React components, and this blogpost is an example of one (see the sourcefile [here]()). So, we will write our plot as a React component in a `chart.tsx` file, and place it in the same folder as we have ths blogpost. That way we can import it by just saying
 
