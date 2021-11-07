@@ -1,0 +1,486 @@
+---
+date: "2021-02-20"
+title: "Making an interactive, responsive d3 chart in Gatsby"
+summary: ""
+lang: "en"
+show: false
+categories:
+    - Data Visualization
+    - TypeScript
+    - Gatsby
+---
+
+import PoissonPlot from './chart'
+import BasicComponent from './basicComponent'
+import StaticPlot from './staticPlot'
+import StaticPlotWithAxes from './staticPlotWithAxes'
+import AddingASlider from './addingASlider'
+import WindowResizing from './windowResizing'
+import FinalChart from './final'
+
+<Heading aria-label="Jump to title" as="h1" hash="MakingAResponsiveChart">Making an interactive, responsive d3 chart in Gatsby</Heading>
+
+In this blogpost, we will construct the following chart using React components. This is the plot of the probability mass function of a Poisson distributionwhere the user can change the mean parameter $\lambda$.
+
+<FinalChart />
+
+This chart is interactive and responsive. I built it using [d3, a JavaScript library for making data visualizations](https://d3js.org/). To adapt it to my blog and [Gatsby](https://www.gatsbyjs.com/), I had to learn a bit of [React](https://reactjs.org/) in the process. This blogpost explains the process from the ground-up: we first build the plot as a React component, then we add the input slider for the mean, and we wrap up by dynamically changing the plot's width and height according to screen size.
+
+I didn't know anything about React before I started making this post, so I expect it to be friendly to people that have some experience with basic NodeJS development (e.g. installing packages using `npm`), with blog developing in Gatsby and with making simple plots on d3. This blogpost has two main references. The first is Chapter 9 of  Elijah Meeks' book *D3.js in action* (and [here]()'s a free teaser of it), and the second is [this tutorial video](https://www.youtube.com/watch?v=Bdeu-BFisJU) on mixing d3 and Gatsby by [Jason Lengstorf](https://www.youtube.com/channel/UCnty0z0pNRDgnuoirYXnC5A) and [Swizec Teller](https://twitter.com/Swizec).
+
+This interactive plot may seem like a simple example, but it could easily be replaced with more elaborate interactive plots (like the ones showcased in [d3 examples](https://observablehq.com/@d3/gallery)).
+
+<Heading aria-label="React components" as="h2" hash="WhatAreReactComponents">React components in mdx</Heading>
+
+Gatsby is built on top of React, which is an open-source library for building user interfaces. React uses reusable components that swallow information through their `props` (or by querying some API). The plot showed above is a React component with only one `prop`: the default mean value.
+
+When developing blogs in Gatsby, it is very common to write posts in **Markdown React** (or `.mdx`). This is a special version of Markdown that allows us to use React components, and this blogpost is an example of one (see the sourcefile [here]()). So, we will write our plot as a React component in a `chart.tsx` file, and place it in the same folder as we have ths blogpost. That way we can import it by just saying
+
+```tsx
+// blogpost.mdx
+import PoissonPlot from './chart'
+
+// ... the rest of your blogpost
+
+// The place you want the plot to be
+<PoissonPlot />
+
+// ... the rest of your blogpost
+
+```
+
+Now, we need to create and export the React component `PoissonPlot` in `./chart.tsx`. Let's start with some boilerplate.
+
+```ts
+import React, { Component } from 'react'
+
+interface FigureProps {
+  mean: number 
+}
+
+class PoissonPlot extends Component {
+  constructor(props: FigureProps) {
+      super(props)
+      // ...
+  }
+
+  render() {
+    return (
+      <>
+      <hr/>
+        <div>
+          I'm a React component.
+        </div>
+      <hr/>
+      </>
+    )
+  }
+}
+
+export default PoissonPlot;
+
+```
+
+Maybe the TypeScript interface for FigureProps is an overkill, but let's leave it like that. If we render it in this state we get:
+
+<BasicComponent />
+
+Yeah, it's not much, but it's a first step!
+
+<Heading aria-label="React components" as="h2" hash="MakingThePlot">Making the plot in d3</Heading>
+
+Let's plot our probability mass function inside this component using d3. The function we want to plot is:
+$$ 
+y(x;\lambda) = \exp(-\lambda)\frac{\lambda^x}{x!}.
+$$
+Let's fix $\lambda=15$ for now.
+
+<Heading aria-label="React components" as="h3" hash="SomeFunctionUtilities">Some math utilities</Heading>
+
+We can start by implementing some functions that allow us to compute the probability mass function (pmf) of the Poisson. Since we're dealing with relatively raw TypeScript, we will only use the internal `Math` library, and implement this function
+
+```tsx
+// Somewhere in chart.tsx
+import * as d3 from 'd3'
+
+interface Point {
+  x: number,
+  y: number
+}
+
+function factorial(k: number) {
+    // I hadn't manually implemented a factorial since 2013.
+  let res = 1;
+  for (let i = 1; i <= k; i++) {
+      res *= i;
+  }
+  return res
+}
+
+function poissonPMF(k: number, mean: number) {
+    return (
+        Math.exp(-mean) * Math.pow(mean, k) / factorial(k)
+    )
+}
+
+function getPoissonPoints(maxX: number, mean: number): Array<Point> {
+    return d3.range(maxX).map((k) => ({x: k, y: poissonPMF(k, mean)}))
+}
+```
+
+And here we used our first d3 function. `d3.range(n)` returns an array `[0, ..., n-1]` that we can then use to create an array of `Point`s with the formula we implemented. We will focus on plotting the cloud of points that results from `getPoissonPoints(25, 15)` for now, and then dynamically change the mean according to user input.
+
+<Heading aria-label="React components" as="h3" hash="ThePlotAsSVG">Rendering an SVG plot using d3</Heading>
+
+Usually, a d3 visualization is constructed by letting it select and enter into HTML elements all around the webpage, but this is in conflict with how React uses and maintains a version of the DOM. The usual practice when integrating d3 and React is to let React deal with all DOM manipulations, and use d3 as a mapping library that generates all the necessary drawings in SVG.
+
+So what we are going to do is to start the state with the data from `getPoissonPoints(25, 15)`, and display them as dots in an SVG plot using d3. We will need to initialize some axes `x` and `y` and use them to render the dots:
+
+```tsx
+// Some updates to chart.tsx
+
+interface State {
+    mean: number,
+    data: Array<Point>,
+    figureWidth: number,
+    figureHeight: number
+}
+
+class StaticPlot extends Component {
+  state: State
+  x: d3.ScaleLinear<number, number, never>;
+  y: d3.ScaleLinear<number, number, never>;
+
+  constructor(props: FigureProps) {
+    super(props)
+    this.state = {
+        "mean": 15,
+        "data": getPoissonPoints(25, 15),
+        "figureWidth": 200,
+        "figureHeight": 200
+    }
+    
+    // Initializing the axes
+    this.x = d3.scaleLinear()
+        .range([ 45, this.state.figureWidth-10])
+        .domain([0, Math.max(...this.state.data.map((d: Point) => d.x))])
+    
+    this.y = d3.scaleLinear()
+        .range([this.state.figureHeight-45, 5])
+        .domain([0, 0.22])
+  }
+
+  render() {
+    let Circle = ({x, y}) => {
+        return <circle key={`circle-${x}-${y}`} cx={this.x(x)} cy={this.y(y)} r={2} />
+    }
+
+    let Line = ({x, y}) => {
+        let style = {
+            stroke: "#04aa6d",
+            strokeWidth: "3px"
+        }
+        return <line key={`l-${x}-${y}`} x1={this.x(x)} y1={this.y(0)} x2={this.x(x)} y2={this.y(y)} style={style} />
+    }
+
+    return (
+      <>
+      <hr/>
+        <div>
+        <svg width={this.state.figureWidth} height={this.state.figureHeight}>
+          {/* For each datapoint, render a line and then a circle. */}
+          {this.state.data.map(
+              (d: Point) => (
+              <>
+                <Line x={d.x} y={d.y} />
+                <Circle x={d.x} y={d.y} />
+              </>
+              )
+          )}
+        </svg>
+        </div>
+      <hr/>
+      </>
+    )
+  }
+}
+
+export default StaticPlot;
+```
+
+And this is the result of rendering this component:
+
+<StaticPlot />
+
+Getting there! We are still missing the axes though. Let's add those.
+
+<Heading aria-label="React components" as="h3" hash="AddingAxesIsAPain">I don't understand how to add axes</Heading>
+
+It turns out that adding the usual d3 axes to this plot is non-trivial. I used [`d3blackbox`](https://github.com/Swizec/d3blackbox) (as discussed in the video I linked to, [minute 15:46](https://youtu.be/Bdeu-BFisJU?t=945)). We build an `Axes` object inside our render function that will call the usual `d3.select(something).call(d3.axisBottom(axis))`. I'm completely lost in the details, but we need to do it this way because of how React handles DOM manipulations.
+
+So, inside the render function add something like
+
+```tsx
+let Axis = ({x, y, scale, axisType}) => {
+    let ref;
+    if (axisType == 'y') {
+      // Render y axis
+      ref = useD3(
+        element => d3.select(element).call(d3.axisLeft(scale))
+      )
+    }
+    else {
+      ref = useD3(
+        // Render x axis
+        element => d3.select(element).call(d3.axisBottom(scale))
+      )
+    }
+  
+    return <g transform={`translate(${x}, ${y})`} ref={ref}></g>
+}
+```
+
+And lets add that to our return
+
+
+```tsx
+return (
+  <>
+  <hr/>
+    <div>
+    <svg width={this.state.figureWidth} height={this.state.figureHeight}>
+      {/* For each datapoint, render a line and then a circle. */}
+      {this.state.data.map(
+          (d: Point) => (
+          <>
+            <Line x={d.x} y={d.y} />
+            <Circle x={d.x} y={d.y} />
+          </>
+          )
+      )}
+      {/* Add x and y axes */}
+      <Axis x={40} y={0} axis={this.y} axisType="y"></Axis>
+      <Axis x={0} y={this.state.figureHeight-40} axis={this.x} axisType="x"></Axis>
+    </svg>
+    </div>
+  <hr/>
+  </>
+)
+```
+
+And here's the result of rendering it now.
+
+<StaticPlotWithAxes />
+
+<Heading aria-label="React components" as="h2" hash="MakingItInteractive">Making it interactive</Heading>
+
+Now that we have the core plot working, the next step is to add interactivity with a slider that governs the `mean` attribute of the state, to recompute the data every time there's a user interaction and to re-render the plot accordingly.
+
+<Heading aria-label="React components" as="h3" hash="AddingASlider">Adding a slider to the state</Heading>
+
+We need to start maintaining and updating the state according to changes in the component. Let's add an `<input type="range">` tag to our component, and have it change the state whenever its value changes.
+
+```tsx
+// Some changes to the component in chart.tsx
+
+class AddingASlider extends Component {
+  state: State
+  x: d3.ScaleLinear<number, number, never>;
+  y: d3.ScaleLinear<number, number, never>;
+
+  constructor(props: FigureProps) {
+    super(props)
+    // Binding the changing function to have access
+    // to all our attributes and methods.
+    this.handleChange = this.handleChange.bind(this);
+    
+    // All the other stuff about state and axes
+    // ...
+  }
+
+  handleChange(event) {
+    // A function that is called every time the
+    // slider value changes
+    this.setState(
+      {
+        mean: event.target.value,
+        data: getPoissonPoints(25, event.target.value)
+      }
+    )
+  }
+
+  // Mounting the component.
+  componentDidMount () {}
+
+  render() {
+    // All the stuff about circles, lines and axes
+    // ...
+
+    return (
+      <>
+      <hr/>
+        <div>
+          <input
+            type="range"
+            min={1}
+            max={30}
+            value={this.state.mean}
+            onChange={this.handleChange}
+          />
+        </div>
+        <div>
+        <svg width={this.state.figureWidth} height={this.state.figureHeight}>
+          {/* everything that was inside the svg before */}
+        </svg>
+        </div>
+      <hr/>
+      </>
+    )
+  }
+}
+
+export default AddingASlider;
+
+```
+
+And if we render it, now we get
+
+<AddingASlider />
+
+Now we are talking! The default slider is ugly, but I trust you can change its `className` and adapt its style to whatever you want in your `global.css` style. I won't dive into those details, but [I ended up settling for whatever w3s had to offer](https://www.w3schools.com/howto/howto_js_rangeslider.asp).
+
+<Heading aria-label="React components" as="h2" hash="MakingItResponsive">Making it responsive</Heading>
+
+Notice that the figure has a static width and height. In what remains, we will adapt this width and height dynamically to cover about 4/5s of the screen, but to be bounded to be at most 500px. We will also add some style to have it be in the center of the page.
+
+At mount time, we will add an event listener for every time the window is resized, which executes a function that adapts these two attributes in the state.
+
+```tsx
+// Some changes in the component
+class WindowResizing extends Component {
+  state: State
+  x: d3.ScaleLinear<number, number, never>;
+  y: d3.ScaleLinear<number, number, never>;
+
+  constructor(props: FigureProps) {
+    // A new constructor that resizes
+    super(props)
+    this.handleChange = this.handleChange.bind(this);
+    this.onResize = this.onResize.bind(this);
+
+    this.state = {
+        "mean": 15,
+        "data": getPoissonPoints(25, 15),
+        "figureWidth": 400, // doesn't matter
+        "figureHeight": 400 // doesn't matter
+    }
+    
+    // Adjusts the plot to the screen.
+    this.onResize()
+  }
+  
+  // A new function that resizes the figure
+  onResize() {
+    let maxHeight = 500;
+    let maxWidth = 500;
+    let proportion = 4/5;
+    
+    // We need to do this default width and height
+    // stuff because Gatsby needs something
+    // that works on node alone, without a screen.
+    // See https://github.com/gatsbyjs/gatsby/issues/12427
+
+    let screenHeight
+    let screenWidth
+    if (typeof window !== `undefined`) {
+      screenHeight = Math.min(window.innerHeight, maxHeight)
+      screenWidth = Math.min(window.innerWidth, maxWidth)
+    }
+
+    let figureWidth = screenWidth * proportion 
+    let figureHeight = screenHeight * proportion 
+
+    this.setState({
+      figureWidth: figureWidth,
+      figureHeight: figureHeight
+    })
+
+    // Update the axes.
+    this.x = d3.scaleLinear()
+               .range([ 45, figureWidth-10])
+               .domain([0, 25])
+    
+    this.y = d3.scaleLinear()
+               .range([figureHeight-45, 5])
+               .domain([0, 0.22])
+  }
+
+  // A new component mount
+  componentDidMount () {
+    window.addEventListener('resize', this.onResize, false);
+    this.onResize()
+  }
+
+  // ...the rest of the stuff.
+
+  // Some changes in render
+  render() {
+    // ...Definitions of Circle, Line and Axis
+    
+    // What's new:
+    let figContainerStyle = {
+      textAlign: "center"
+    }
+
+    return (
+      <>
+      <hr/>
+        <div style={figContainerStyle}>
+          {/* This is a new div with centered contents */}
+          <div>
+            {/* The input... */}
+          </div>
+          <div>
+            {/* The svg... */}
+          </div>
+        </div>
+      <hr/>
+      </>
+    )
+  }
+}
+
+```
+
+With these changes, we are almost done:
+
+<WindowResizing />
+
+<Heading aria-label="React components" as="h2" hash="MakingItResponsive">Putting it all together</Heading>
+
+Let's add a couple of divs with the title and the current mean value. Let's also add some css for our slider.
+
+Adding the divs is quite trivial, we just put a couple of divs in the fig container, and define their style somewhere inside the `render`:
+
+```tsx
+// Put this inside the fig container div
+<div style={textContainerStyle}>
+  Poisson distribution
+</div>
+<div style={textContainerStyle}>
+  Mean: {this.state.mean}
+</div>
+
+// and this by the other container style.
+let textContainerStyle = {
+  textAlign: "center",
+  lineHeight: 1.6,
+  fontSize: "xx-large"
+}
+```
+
+And finally, you can copy and paste [w3school's range sliders CSS](https://www.w3schools.com/howto/howto_js_rangeslider.asp) into your CSS files (which, in my case, resides in `/styles/global.css`). Once you do it (and add `className="slider"` to the input tag), you get.
+
+<FinalChart />
+
+<Heading aria-label="React components" as="h2" hash="MakingItResponsive">Conclusion and more references</Heading>
