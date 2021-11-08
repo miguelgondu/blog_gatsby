@@ -36,7 +36,7 @@ class ExportLayout extends React.Component {
             <div style={{ margin: `3rem auto`, maxWidth: 900, padding: `0 1rem` }}>
                 <Helmet>
                     <meta charset="UTF-8"></meta>
-                    <meta name="description" content="Miguel González Duque's blog about mathematics, Machine Learning and the brain."></meta>
+                    <meta name="description" content="Miguel González Duque's blog."></meta>
                     <meta name="author" content="Miguel González Duque"></meta>
                     <title>miguelgondu's blog</title>
                 </Helmet>
