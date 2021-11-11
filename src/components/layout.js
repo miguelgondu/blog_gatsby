@@ -5,7 +5,7 @@ import "katex/dist/katex.min.css"
 import { MDXProvider } from "@mdx-js/react"
 import Heading from "./Heading"
 import { defineCustomElements as deckDeckGoHighlightElement } from '@deckdeckgo/highlight-code/dist/loader';
-deckDeckGoHighlightElement();
+// deckDeckGoHighlightElement();
 
 const shortcodes = { Heading }
 
