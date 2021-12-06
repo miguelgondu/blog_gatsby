@@ -1,49 +1,38 @@
 import React from "react"
 import { Link } from "gatsby"
 
-function blogpost(props) {
-    if (props.imgsrc != null) {
-        return (
-            <div key={props.id}>
-                <Link to={props.slug}><img className="blogpost" src={props.imgsrc} alt=""></img></Link>
-                <h2><Link to={props.slug}>{props.title}{" "}</Link></h2>
-                <span>{props.date}{" "}</span>
-                <p>{props.categories.map((category, index, arr) => {
-                        if (arr.length === index + 1) {
-                        return (<span>{category}</span>)
-                        }
-                        else {
-                        return (<span>{category} - </span>)
-                        }
-                })}</p>
-                <p>{props.summary}</p>
-                <hr></hr>
-            </div>
-        )
+const ImageBanner = (props) => {
+    let slug = props.slug
+    let src = props.imgsrc
+
+    if (src != null) {
+        return (<Link to={slug}><img className="blogpost" src={src} alt=""></img></Link>)
     }
-    else {
-        return (
-            <div key={props.id}>
-                <h2><Link to={props.slug}>{props.title}{" "}</Link></h2>
-                <span>{props.date}{" "}</span>
-                <p>{props.categories.map((category, index, arr) => {
-                        if (arr.length === index + 1) {
-                        return (<span>{category}</span>)
-                        }
-                        else {
-                        return (<span>{category} - </span>)
-                        }
-                })}</p>
-                <p>{props.summary}</p>
-                <hr></hr>
-            </div>
-        )
-        
-    }
+
+    return null
 }
 
-const ExportBlogs = ( props ) => (
-    blogpost(props)
-)
+const Blogpost = (props) => {
+    let front = props.node.frontmatter;
+    let slug = props.node.fields.slug;
 
-export default ExportBlogs
+    return (
+        <div key={front.id}>
+            <ImageBanner slug={slug} imgsrc={front.imgsrc} />
+            <h2><Link to={slug}>{front.title}{" "}</Link></h2>
+            <span key={`${front.id}-${front.date}`}>{front.date}{" "}</span>
+            <p>{front.categories.map((category, index, arr) => {
+                    if (arr.length === index + 1) {
+                    return (<span key={`${front.id}-${front.date}-${category}`}>{category}</span>)
+                    }
+                    else {
+                    return (<span key={`${front.id}-${front.date}-${category}`}>{category} - </span>)
+                    }
+            })}</p>
+            <p>{front.summary}</p>
+            <hr></hr>
+        </div>
+    )
+}
+
+export default Blogpost
