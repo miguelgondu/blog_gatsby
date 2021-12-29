@@ -10,7 +10,7 @@ const AllPostsPage = ({ data }) => {
           <div>
             <h1>All Posts</h1>
               {data.allMdx.nodes.map(node  => (
-                  <Blogpost id={node.id} slug={node.fields.slug} title={node.frontmatter.title} date={node.frontmatter.date} categories={node.frontmatter.categories} summary={node.frontmatter.summary}></Blogpost>
+                  <Blogpost key={`b-all-${i}`} node={node}/>
                 )
               )}
           </div>
