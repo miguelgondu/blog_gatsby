@@ -9,7 +9,7 @@ const AllPostsPage = ({ data }) => {
       <Layout to_en_es="/todos-los-posts/">
           <div>
             <h1>All Posts</h1>
-              {data.allMdx.nodes.map(node  => (
+              {data.allMdx.nodes.map((node, i)  => (
                   <Blogpost key={`b-all-${i}`} node={node}/>
                 )
               )}

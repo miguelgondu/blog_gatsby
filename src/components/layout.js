@@ -33,7 +33,7 @@ class ExportLayout extends React.Component {
 
     render () {
         return (
-            <div style={{ margin: `3rem auto`, maxWidth: 900, padding: `0 1rem` }}>
+            <div style={{ margin: `1rem auto`, maxWidth: 900, padding: `0 1rem` }}>
                 <Helmet>
                     <meta charset="UTF-8"></meta>
                     <meta name="description" content="Miguel González Duque's blog."></meta>
