@@ -16,6 +16,17 @@ function allPapers() {
     // }
 
     // Pulling back information geometry paper
+    let vncaPaper = {
+        title: "Variational Neural Cellular Automata",
+        content: (<p>We used an NCA as the decoder of a Variational Autoencoder. (Main work done by <a href="https://rasmusbergpalm.github.io/" target="_blank" rel="noopener noreferrer">Rasmus Berg Palm</a>; I only played a secondary role.)</p>),
+        linkPaper: "https://arxiv.org/pdf/2201.12360.pdf",
+        imgsrc: "/assets/paper_images/vnca_paper.gif",
+        pdfsrc: null,
+        linkArxiv: "https://arxiv.org/abs/2201.12360",
+        linkPublication: null,
+        linkCode: "https://github.com/rasmusbergpalm/vnca",
+    }
+
     let pullingBackInfoGeomPaper = {
         title: "Pulling back information geometry",
         content: "We induced geometries in latent space by pulling back the Fisher-Rao metric.",
@@ -76,6 +87,7 @@ function allPapers() {
     }
 
     return ([
+        vncaPaper,
         pullingBackInfoGeomPaper,
         fastContentAdaptionPaper,
         findingLevelsPaper,
