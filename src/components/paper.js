@@ -33,23 +33,27 @@ function paper(props) {
     let links = getLinks(props)
     if (props.imgsrc != null) {
         return (
-            <div key={props.id}>
-                <Link to={props.linkPaper}>
-                <img class="paper" src={props.imgsrc} alt=""></img>
-                </Link>
-                <h3><Link to={props.linkPaper}>
-                    {props.title}
-                </Link></h3>
-                <p>{props.content}</p>
-                <p>{links.map((l, index, arr) => {
-                        if (arr.length === index + 1) {
-                        return (<span>{l}</span>)
-                        }
-                        else {
-                        return (<span>{l} - </span>)
-                        }
-                })}</p>
-            <hr></hr>
+            <div key={props.id} className="blogpostBanner">
+                <div className="blogpostImageContainer">
+                    <Link to={props.linkPaper}>
+                    <img class="paper" src={props.imgsrc} alt=""></img>
+                    </Link>
+                </div>
+                <div>
+                    <h2><Link to={props.linkPaper}>
+                        {props.title}
+                    </Link></h2>
+                    <p>{props.content}</p>
+                    <p>{links.map((l, index, arr) => {
+                            if (arr.length === index + 1) {
+                            return (<span>{l}</span>)
+                            }
+                            else {
+                            return (<span>{l} - </span>)
+                            }
+                    })}</p>
+                </div>
+            {/* <hr></hr> */}
             </div>
         )
     }

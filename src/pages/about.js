@@ -35,8 +35,8 @@ function allPapers() {
         imgsrc: "/assets/paper_images/sudoku_paper_img.jpg",
         pdfsrc: null,
         linkArxiv: "https://arxiv.org/abs/2105.08484",
-        linkPublication: null,
-        linkCode: null,
+        linkPublication: "https://ieeexplore.ieee.org/document/9619018",
+        linkCode: "https://github.com/miguelgondu/bayesian_roguelike",
     }
 
     // Finding Game Levels paper
@@ -48,7 +48,7 @@ function allPapers() {
         pdfsrc: null,
         linkArxiv: "https://arxiv.org/abs/2005.07677",
         linkPublication: "https://ieeexplore.ieee.org/document/9231548",
-        linkCode: null,
+        linkCode: "https://github.com/miguelgondu/finding_game_levels_paper",
     }
 
     // BRIL paper
