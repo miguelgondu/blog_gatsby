@@ -15,7 +15,7 @@ import CircleAndLine from './circleAndLine'
 # Gaussian Distributions on Riemannian manifolds
 
 <!-- [ a short intro, and a TL;DR ] -->
-Riemannian manifolds are everywhere: from the data that comes up in analysing brain scans to the planet you're (likely) sitting on, manifolds are helpful mathematical abstractions for surfaces and for geometry. It makes sense, then, to try to study probability distributions on these objects. This blogpost showcases *wrapped Gaussian distributions*, which are a way to define the normal distribution over Riemannian manifolds. This construction is not mine; rather, I am implementing the first sections of [*Wrapped Gaussian Process Regression on Riemannian Manifolds*]() by Anton Mallasto and Aasa Ferangen. (Hopefully I'll get to implement the full thing before the end of the year, depending on how busy I get.)
+Riemannian manifolds are everywhere: from the data that comes up in analysing brain scans to the planet you're (likely) sitting on, manifolds are helpful mathematical abstractions for surfaces and for geometry. It makes sense, then, to try to study probability distributions on these objects. This blogpost showcases *wrapped Gaussian distributions*, which are a way to define an analogous of the normal distribution over Riemannian manifolds. This construction is not mine; rather, I am implementing the first sections of [*Wrapped Gaussian Process Regression on Riemannian Manifolds*]() by Dr. Anton Mallasto and Dr. Aasa Ferangen. (Hopefully I'll get to implement the full thing before the end of the year, depending on how busy I get.)
 
 I will introduce the Gaussian distribution, Riemannian manifolds, and the technical tools required to construct wrapped Gaussian distributions. By the end of this post, you should have **some intuition** about
 - what Riemannian manifolds are,
@@ -23,9 +23,11 @@ I will introduce the Gaussian distribution, Riemannian manifolds, and the techni
 - what the exponential map is, and
 - how Mallasto and Ferangen used it to "push forward" and define a normal distribution on arbitrary Riemannian manifolds.
 
+This post expects some familiarity with topological spaces, but not much: if you have done calculus in $\mathbb{R}$ or in $\mathbb{R}^d$, you should be able to pick up the intuitions behind what we'll discuss.
+
 ## The Gaussian distribution
 
-First, there's the usual Gaussian distribution. Which in its multivariate setting is defined by the following density:
+First, there's the usual Gaussian distribution. In its multivariate setting, it is defined by the following density:
 
 $$
 p(\bm{x}\,;\,\bm{\mu}, \Sigma) = \frac{1}{\sqrt{2\pi\det(\Sigma)}}\exp\left(-\frac{1}{2}(\bm{x}-\bm{\mu})^\top\Sigma^{-1}(\bm{x}-\bm{\mu})\right)
@@ -35,17 +37,29 @@ where $\bm{x},\bm{\mu}\in\mathbb{R}^d$ are just real vectors, $\bm{\mu}$ is call
 
 [images with examples]
 
-If we want to define the distribution in the real line $\mathbb{R}$, $\Sigma$ becomes a single number $\sigma^2$, called the **variance**. A univariate Gaussian looks like this:
+If we want to define the distribution on the real line $\mathbb{R}$, $\Sigma$ becomes a single number $\sigma^2$, called the **variance**. A univariate Gaussian looks like this:
 
 [interactive plot of the univariate Gaussian]
 
-## An introduction to differential geometry
+## An guiding example: the circle
 
-[What's a Riemannian manifold, some examples we'll use later on]
+To illustrate what a Riemannian manifold is, what the exponential map is and how wrapped Gaussian distributions are constructed, we will use the circle as a guiding example. The circle, usually denoted $\mathbb{S}^1$, is the set of all points lying at a distance 1 from the origin. In symbols
 
-## An simple example: the circle
+$$
+\mathbb{S}^1 = \{\bm{x}\in\mathbb{R}^2: \|\bm{x}\|_2 = 1\}
+$$
 
-Now, imagine that you're dealing with data that **you know** lies in a circle. How could you randomly sample points? How can you do it if you want something roughly Gaussian-looking, with a priviledged mode point $\bm{\mu}$ and smooth decaying around it? Well, one naïve approach is to sample points from a bivariate Gaussian with mean $\bm{\mu}$ and **then project from the ambient space onto the manifold**.
+This is one way to consider the circle, but I want you to think about something a little bit subtle: how can we capture the nature of the circle without talking about coordinates in $\mathbb{R}^2$? When we were discussing geometry in late highschool/early bachelors, we usually talk about circles in an abstract sense, without relying on coordinates. **This is what differential geometry is about.** In differential geometry, we try to understand the intrinsic properties of these types of spaces, without relying on an ambient space to be able to talk about them.
+
+More precisely, in differential geometry we study **smooth manifolds**, defined as topological spaces that are locally Euclidean.[^not-quite] Putting it in an another way, imagine you're an ant walking on the circle: if you look closely enough, the circle would look like a straight line (i.e. $\mathbb{R}$) for you. Same for the sphere we walk on every day: is a 2-dimensional manifold because it looks like the $\mathbb{R}^2$ plane to us.
+
+Many 1-dimensional manifolds are essentially the same if we think about them only as smooth manifolds. Any closed curve without spikes, cuts or self intersections can be smoothly transformed onto a circle and back, so to differentiate between these smooth manifolds, we need to impose a little bit more structure: a Riemannian metric.
+
+[some discussion on the Riemannian metric]
+
+## Two naïve approaches to defining a normal distribution on the circle
+
+Now, imagine that you're dealing with data that **you know** lies in a circle. How could you randomly sample points under that assumption? How can you do it if you want something roughly Gaussian-looking, with a priviledged mode point $\bm{\mu}$ and smooth decaying around it? Well, one naïve approach is to sample points from a bivariate Gaussian with mean $\bm{\mu}$ and **then project from the ambient space $\mathbb{R}^2$ onto the circle**.
 
 [two images: sampling and then projecting]
 
@@ -55,7 +69,6 @@ Another idea is to consider a **parametrization** of the circle. We know that a 
 
 Notice, however, that these two approaches are somewhat unsatisfactory: to do the first one, we relied on having an ambient space to start with (i.e. having our circle $\mathbb{S}^1$ **embedded** in $\mathbb{R}^2$). This is not usually the case in differential geometry, and we like to deal with manifolds as intrinsic objects, not necessarily living inside some ambient space.[^1] For the second one we relied on a parametrization, which is **precisely** what an embedding is: we are, in this case, embedding a part of $\mathbb{R}$ into $\mathbb{R}^2$.
 
-The great thing about wrapped Gaussian distributions is that they use only intrinsic knowledge about our manifold. We, then, no longer have to rely on embedding our manifold in some ambient space.
 
 ## An idea: using a linear approximation
 
@@ -91,13 +104,47 @@ We saw that we have a notion of distance in Riemannian manifolds: the metric $g$
 
 [formula for length using $g$]
 
-This gives rise to a system of differential equations. Turns out that this geodesic is unique for each point $\bm{\mu}$ and vector $v\in T_\bm{\mu}\mathcal{M}$. This gives us a way of transforming tangent vectors into points in the manifold: given a tangent vector $v$, construct the geodesic $\gamma_v$ that passes by $\bm{\mu}$ at time 0, and define the point to be $\gamma(1)$.
+This gives rise to a system of differential equations. Turns out, this geodesic is unique for each point $\bm{\mu}$ and vector $v\in T_\bm{\mu}\mathcal{M}$. This gives us a way of transforming tangent vectors into points in the manifold: given a tangent vector $v$, construct the geodesic $\gamma_v$ that passes by $\bm{\mu}$ at time 0, and define the point to be $\gamma(1)$.
 
 [Image of the exponential of a given vector]
 
+In summary, we have defined a function
+$$
+\exp_\bm{\mu}\colon T_\bm{\mu}\mathcal{M}\to \mathcal{M}
+$$
+that takes tangent vectors to the manifold and maps them into points. The image for a given tangent vector $v\in T_{\bm{\mu}}\mathcal{M}$ is given by $\gamma(1)$, where $\gamma$ is the unique geodesic that passes by $\bm{\mu}$ at time 0 and that has first derivative $v$. Think of it as something mechanical: you start at $\bm{\mu}$ with a direction $v$, and you walk for $1$ unit of time in that direction. The point you land on is precisely $\exp_\bm{\mu}(v)$.
+
+## Going back to our circle example
+
+This may all sound terribly abstract, but we can actually make it concrete for our guiding example of $\mathbb{S}^1$. If you solve the geodesic equation discussed above, you can actually get a closed form for the geodesic that starts at a point $\bm{\mu}$ with velocity $v$. What are geodesics in our super simple example? Well, **arc paths**! These are given by
+$$
+\gamma(t) = \begin{bmatrix}
+\cos\left(\frac{v_x}{\mu_y}t + t_0\right)\\
+\sin\left(\frac{v_y}{\mu_x}t + t_0\right)\\
+\end{bmatrix}, (\cos(t_0), \sin(t_0)) = \bm{\mu}
+$$
+
+[Image of this]
+
+And so $\exp_\mu(\bm{v}) = (\cos(v_x/\mu_y + t_0), \sin(v_y/\mu_x + t_0))$.[^the-poles-are-difficult] We have a nice closed form for the exponential map in $\mathbb{S}^1$. This will be incredibly useful, because it allows us to map things from the tangent space (which is essentially $\mathbb{R}$) to $\mathbb{S}^1$.
+
+To define a distribution on $\mathbb{S}^1$ we need only define a distribution on the tangent space $\mathbb{R}$ and then "push it forward" through the exponential map. This process is actually fairly common and can be formalized using random variables and their densities/measures. This next section will wrap things up with the appropriate definitions
+
 ## The push-forward of a random variable
 
-[ Define the push-forward ]
+If we have a random variable $X$ that is normally distributed on $\mathbb{R}$ (with mean $m$ and variance $\sigma^2$), we can use it to measure the probability of landing on a particular subset $A\subseteq \mathbb{R}$. The way we do it is through the density function
+$$
+\text{Prob}_X[A] = \int_A \text{pdf}_X(x)\mathrm{d}x.
+$$
+
+Now we have the exponential map "from $\mathbb{R}$" to the circle $\mathbb{S}^1$, we can use $X$ to define a random variable $Y$ on the circle: Given a certain subset $S\subseteq \mathbb{S}^1$ and a point $\bm{\mu}\in\mathbb{S}^1$, define its probability to be
+$$
+\text{Prob}_Y[S] = \text{Prob}_X[\exp_\bm{\mu}^{-1}(S)]
+$$
+
+[ diagram showing how this looks like ]
+
+[Define basepoint and t.s. covariance]
 
 ## More examples: shpere and torus
 
@@ -105,3 +152,5 @@ This gives rise to a system of differential equations. Turns out that this geode
 ## Some footnotes
 
 [^1]: Fun fact, we can actually embed any smooth manifold onto a big enough ambient space. This is known as Nash's Embedding theorem. The proof of this theorem is super complicated and it doesn't provide you with an explicit parametrization. It is one of those theorems that says that something *can* be done, but it doesn't tell you *how* to do it. Most of the manifolds people work with are either embedded or approximately embedded, so my argument here might fall a little bit flat. I would like to argue, as mathematicians like to do, that there's some beauty to it, to treating manifolds as intrinsic objects.
+[^not-quite]: The mathsy among you may have realized that what I'm talking about is not **smooth** manifolds but **topological** manifolds. I made this omission on purpose, because we won't need charts to discuss wrapped Gaussian distributions.
+[^the-poles-are-difficult]: Notice how this is not defined for $\mu_x, \mu_y = 0$. This can be fixed with a couple of rotations in and out.
