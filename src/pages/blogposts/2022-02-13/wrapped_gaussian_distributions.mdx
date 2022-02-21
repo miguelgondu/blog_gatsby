@@ -11,12 +11,12 @@ categories:
 ---
 
 import CircleAndLine from './circleAndLine'
+import InteractiveUnivariateGaussian from './interactiveUnivariateGaussian'
 
-# Gaussian Distributions on Riemannian manifolds
+<!-- # Gaussian Distributions on Riemannian manifolds -->
+<Heading aria-label="Jump to title" as="h1" hash="GaussianDistributionsOnRiemannianManifolds">Gaussian Distributions on Riemannian manifolds</Heading>
 
-<!-- [ a short intro, and a TL;DR ] -->
-
-This blogpost introduces a technique for defining an analogous of the Gaussian distribution, but on Riemannian manifolds. Riemannian manifolds are everywhere: from the data that comes up in analysing brain scans to the planet you're (likely) sitting on, manifolds are helpful mathematical abstractions for surfaces and for geometry. It makes sense, then, to try to study probability distributions on these objects. This technique was published by Anton Mallasto and Aasa Ferangen in their paper [*Wrapped Gaussian Process Regression on Riemannian Manifolds*](). Hopefully I'll get around to discussing the entire thing before the year ends, because their construction of Gaussian Process Regression is both beautiful and useful.
+This blogpost introduces a technique for defining an analogous of the Gaussian distribution, but on Riemannian manifolds. Riemannian manifolds are everywhere: from the data that comes up in analysing brain scans to the planet you're (likely) sitting on, manifolds are helpful mathematical abstractions for surfaces and for geometry. It makes sense, then, to try to study probability distributions on these objects. This technique was published by Anton Mallasto and Aasa Ferangen in their paper [*Wrapped Gaussian Process Regression on Riemannian Manifolds*](https://openaccess.thecvf.com/content_cvpr_2018/papers/Mallasto_Wrapped_Gaussian_Process_CVPR_2018_paper.pdf). Hopefully I'll get around to discussing the entire thing before the year ends, because their construction of Gaussian Process Regression is both beautiful and useful.
 
 First, I wanted to do the mathematician thing of discussing Riemannian manifolds from their technical definition, going back to the abstract way in which they're defined. I decided otherwise: I will introduce their method using common examples, and with as few technical details as I can. This blogpost assumes no background beyond a little bit of linear algebra, probability theory and vector calculus. If you are already versed in differential geometry, you will see that I have treated all Riemannian manifolds as embedded submanifolds of $\mathbb{R}^n$ without taking much care of the formality. I have, however, added footnotes with all the gory, painstaking details.[^and-this-I-owe-to-Santiago]
 
@@ -39,8 +39,9 @@ where $\bm{x},\bm{\mu}\in\mathbb{R}^d$ are just real vectors, $\bm{\mu}$ is call
 If we want to define the distribution on the real line $\mathbb{R}$, $\Sigma$ becomes a single number $\sigma^2$, called the **variance**. A univariate Gaussian looks like this:
 
 [interactive plot of the univariate Gaussian]
+<InteractiveUnivariateGaussian />
 
-If this small introduction falls short, I can definitely recommend [this post]() on distill.pub. It introduces the Gaussian as well as Gaussian Process Regression using more interactive charts.
+This small introduction definitely falls short, so let me recommend [this post](https://distill.pub/2019/visual-exploration-gaussian-processes/) on distill.pub. It introduces the Gaussian as well as Gaussian Process Regression using more interactive charts.
 
 ## An guiding example: the circle
 
@@ -167,7 +168,7 @@ The same thing for a torus, whose exponential map is given by [...].
 [^Nash-is-cool]: Fun fact, we can actually embed any smooth manifold onto a big enough ambient space. This is known as Nash's Embedding theorem. The proof of this theorem is super complicated and it doesn't provide you with an explicit parametrization. It is one of those theorems that says that something *can* be done, but it doesn't tell you *how* to do it. Most of the manifolds people work with are either embedded or approximately embedded, so my argument here might fall a little bit flat. I would like to argue, as mathematicians like to do, that there's some beauty to it, to treating manifolds as intrinsic objects.
 [^not-quite]: The mathsy among you may have realized that what I'm talking about is not **smooth** manifolds but **topological** manifolds. I made this omission on purpose, because we won't need charts to discuss wrapped Gaussian distributions.
 [^the-poles-are-difficult]: Notice how this is not defined for $\mu_x, \mu_y = 0$. This can be fixed with a couple of rotations in and out.
-[^and-this-I-owe-to-Santiago]: I took this idea from a good friend's blog: [homotopico.com](). Santiago is the best lad.
+[^and-this-I-owe-to-Santiago]: I took this idea from a good friend's blog: [homotopico.com](https://www.homotopico.com/). Santiago is the best lad.
 [^the-full-details]: Well, a smooth manifold is a topological manifold (a topological space that is Hausdorff, 2-countable and locally Euclidean).
 [^the-formal-definition]: [add the formal definition of the tangent space, or a link to it.]
 [^the-geodesic-equation]: [add the geodesic equation and how it looks like for the circle]
