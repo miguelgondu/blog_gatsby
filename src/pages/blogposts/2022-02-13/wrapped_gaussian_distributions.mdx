@@ -38,7 +38,6 @@ where $\bm{x},\bm{\mu}\in\mathbb{R}^d$ are just real vectors, $\bm{\mu}$ is call
 
 If we want to define the distribution on the real line $\mathbb{R}$, $\Sigma$ becomes a single number $\sigma^2$, called the **variance**. A univariate Gaussian looks like this:
 
-[interactive plot of the univariate Gaussian]
 <InteractiveUnivariateGaussian />
 
 This small introduction definitely falls short, so let me recommend [this post](https://distill.pub/2019/visual-exploration-gaussian-processes/) on distill.pub. It introduces the Gaussian as well as Gaussian Process Regression using more interactive charts.
@@ -53,7 +52,7 @@ $$
 
 This is one way to think about the circle, but there are two more: one of them is to think about it as the set of all points $(\cos(\theta), \sin(\theta))$ for $\theta\in\mathbb{R}$, and another one is to identify $\mathbb{R}^2$ with the complex plane. If we do it, these points can easily be expressed as $e^{i\theta}$.
 
-This circle is an example of an embedded Riemannian Manifold. In differential geometry we study **smooth manifolds**, defined as surfaces that are locally Euclidean.[^not-quite] Putting it in an another way, imagine you're an ant walking on the circle: if you look closely enough, the circle would look like a straight line (i.e. $\mathbb{R}$) for you. Same for the sphere we walk on every day: is a 2-dimensional manifold because it looks like the $\mathbb{R}^2$ plane to us. Riemannian Manifolds are smooth manifolds with a little bit more structure on them (something called a metric that allows us to give the smooth manifold a distinct curvature, and compute distances between points).[^the-full-details].
+This circle is an example of an embedded Riemannian Manifold. In differential geometry we study **smooth manifolds**, defined as surfaces that are locally Euclidean.[^not-quite] Putting it in an another way, imagine you're an ant walking on the circle: if you look closely enough, the circle would look like a straight line (i.e. $\mathbb{R}$) for you. Same for the sphere we walk on every day: our planet is a 2-dimensional manifold because it looks like the $\mathbb{R}^2$ plane to us. Riemannian Manifolds are smooth manifolds with a little bit more structure on them (something called a metric, which allows us to give the smooth manifold a distinct curvature, and compute distances between points).[^the-full-details].
 
 ## Two naïve approaches to defining a normal distribution on the circle
 
