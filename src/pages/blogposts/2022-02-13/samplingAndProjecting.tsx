@@ -35,6 +35,18 @@ const erf = (x: number) => {
     }
 }
 
+// Sampling with Box-Müller transform
+const sampleUnitNormal = () => {
+    let [u, v] = [0.0, 0.0]
+    while(u === 0) u = Math.random(); //Converting [0,1) to (0,1)
+    while(v === 0) v = Math.random();
+    return Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
+}
+
+const sampleNormal = (mu: number, sigma: number) => {
+    return mu + sigma * sampleUnitNormal()
+}
+
 class SampleAndProjectPlot extends Component {
     pointX: number
     pointY: number
@@ -77,13 +89,44 @@ class SampleAndProjectPlot extends Component {
 
     sample (p: Point) {
         // Samples some bivariate Gaussian around p.
+        let xs = [];
+        let ys = [];
+        for (let i = 0; i < 15; i++) {
+            xs.push(sampleNormal(p.x, 1.0))
+            ys.push(sampleNormal(p.y, 1.0))
+        }
 
-        let mean = [p.x, p.y]
-        let covarianceMatrix = [
-            [1.0, 0.0],
-            [0.0, 1.0]
-        ]
+        let points = xs.map((x, i) => {return [x, ys[i]]})
 
-        let uniformRandomPoints
+        return points
+    }
+
+    render () {
+        let Circle = () => {
+            return <circle key={`main-circle-2`} cx={this.x(0)} cy={this.y(0)} r={this.x(1) - this.x(0)} stroke="black" fill="none"></circle>
+        }
+
+        let Mean = () => {
+            return <circle key={`mean-dot-2`}
+                           cx={this.x(this.state.pointX)}
+                           cy={this.y(this.state.pointY)}
+                           r={5} stroke="black"
+                           fill="black"/>
+        }
+
+        let figContainerStyle: CSSProperties = {
+            textAlign: "center"
+        }
+
+        return (<>
+            <div style={figContainerStyle}>
+                <svg width={this.figureWidth} height={this.figureHeight}>
+                    <Circle />
+                    <Mean />
+                </svg>
+            </div>
+        </>)
     }
 }
+
+export default SampleAndProjectPlot;
