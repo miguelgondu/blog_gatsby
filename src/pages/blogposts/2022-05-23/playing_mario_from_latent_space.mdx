@@ -1,6 +1,6 @@
 ---
 date: "2022-05-23"
-title: "Playing Mario directly from latent space"
+title: "Playing Mario directly from a Variational Autoencoder"
 summary: "In this blogpost I open-source tools for training VAEs on Mario, and playing its levels using an A star agent"
 lang: "en"
 show: true
@@ -11,15 +11,15 @@ categories:
     - PyTorch
 ---
 
-<Heading aria-label="Jump to title" as="h1" hash="PlayingMario">Playing Mario directly from latent space.</Heading>
+<Heading aria-label="Jump to title" as="h1" hash="PlayingMario">Playing Mario directly from a Variational Autoencoder.</Heading>
 
-We recently open sourced an implementation of a categorical VAE trained on levels from the classic game Super Mario Bros. In this blogpost I expand on how it works, and how it can be used to play content directly from latent space. This blogpost covers how the model is defined and how the simulator can be used to automatically extract things like how many jumps were performed, or whether the level is solvable by a super-human agent.
+We recently open sourced an implementation of a categorical VAE trained on levels from the classic game Super Mario Bros. In this blogpost I expand on how it works, and how it can be used to play content directly from latent space. This blogpost covers how the model is defined and how the simulator we provide can be used to automatically extract things like how many jumps were performed, or whether the level is solvable by an artificial agent.
 
 This post assumes you know a little bit about about how Variational Autoencoders work (e.g. what the ELBO loss is), that you know how to use Python up to an intermediate level, and that's it!
 
 <Heading aria-label="Jump to the data" as="h2" hash="TheData">The data: levels from Super Mario Bros</Heading>
 
-In the [Video Game Level Corpus](https://github.com/TheVGLC/TheVGLC) you can find post-processed versions of content for several different games, including Super Mario Bros 1 and 2. These processed levels, in the case of SMB 1, are long text files with 14 rows and $n$ columns. In these files, all sprites are encoded using a unique token: `"-"` represents empty space, `"X"` represents the floor... There are in total 11 unique sprites, so you can think of Mario levels as sentences with 14x14 characters using only 11 unique letters.
+In the [Video Game Level Corpus](https://github.com/TheVGLC/TheVGLC) you can find post-processed versions of content for several different games, including Super Mario Bros 1 and 2. These processed levels, in the case of SMB 1, are long text files with 14 rows and $n$ columns. In these files, all sprites are encoded using a unique token: `"-"` represents empty space, `"X"` represents the floor... There are 11 unique sprites in total.
 
 We split them into 14x14 chuncks by rolling a window across all levels. In total, we have 2713 levels saved in `./data/all_levels_onehot.npz` as `(n_sprites=11, height=14, width=14)` arrays. To load them, you can run `np.load(that_path)["levels"]`. Here are three random examples of said levels, visualized using some of the tools provided in the repo:
 
