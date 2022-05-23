@@ -13,7 +13,7 @@ categories:
 
 <Heading aria-label="Jump to title" as="h1" hash="PlayingMario">Playing Mario directly from a Variational Autoencoder.</Heading>
 
-We recently open sourced an implementation of a categorical VAE trained on levels from the classic game Super Mario Bros. In this blogpost I expand on how it works, and how it can be used to play content directly from latent space. This blogpost covers how the model is defined and how the simulator we provide can be used to automatically extract things like how many jumps were performed, or whether the level is solvable by an artificial agent.
+[We recently open sourced an implementation of a categorical VAE trained on levels from the classic game Super Mario Bros.](https://github.com/miguelgondu/minimal_VAE_on_Mario) In this blogpost I expand on how it works, and how it can be used to play content directly from latent space. This blogpost covers how the model is defined and how the simulator we provide can be used to automatically extract things like how many jumps were performed, or whether the level is solvable by an artificial agent.
 
 This post assumes you know a little bit about about how Variational Autoencoders work (e.g. what the ELBO loss is), that you know how to use Python up to an intermediate level, and that's it!
 
@@ -31,7 +31,7 @@ We split them into 14x14 chuncks by rolling a window across all levels. In total
 
 We used a simple Variational Autoencoder with multi-layer perceptrons for both the encoder and the decoder. Remember that a Variational Autoencoder models the latent variables $z$ that generate a given piece of content $x$ by proposing a variational distribution $q(z|x)$ (which is usually a multivariate Normal), and approximating the distribution of the data given a latent code $z$ with a distribution $p(x|z)$ that depends on the nature of the data. In our case, we model the distribution of the data using **a categorical distribution**. These two distributions are parametrized using neural networks (the encoder and decoder, respectively).
 
-With [PyTorch Distributions](https://pytorch.org/docs/stable/distributions.html), implementing these distributions is easy! We model the encoder using the following encoding layers:
+With [PyTorch Distributions](https://pytorch.org/docs/stable/distributions.html), implementing these distributions is easy! We model the encoder using the following layers:
 
 ```python
 self.encoder = nn.Sequential(
@@ -71,7 +71,7 @@ self.decoder = nn.Sequential(
 ).to(self.device)
 ```
 
-and then, using the `Categorical` distribution inside torch:
+using the `Categorical` distribution inside `torch`:
 ```python
 def decode(self, z: t.Tensor) -> Categorical:
     # Returns p(x | z) = Cat(logits=what the decoder network says)
@@ -101,7 +101,7 @@ def elbo_loss_function(
     return (rec_loss + kld).mean()
 ```
 
-The upside of using torch distributions is that you could change the distribution of your data with minimal changes to this error function. the `log_prob` method works as a multiclass cross-entropy loss function when `p_x_given_z` is the categorical, but it could easily have been a MSE loss if we had used the Normal distribution instead.
+The upside of using `torch.distributions` is that you could change the distribution of your data with minimal changes to this error function. the `log_prob` method works as a multiclass cross-entropy loss function when `p_x_given_z` is the categorical, but it could easily have been a MSE loss if we had used the Normal distribution instead.
 
 You can find the entire description of the model [here](https://github.com/miguelgondu/minimal_VAE_on_Mario/blob/main/vae.py). In the repo, you can find an already-trained model under `./models/example.pt`. If you wanna see the entire latent space, take a look at [this image](/assets/massive_latent_space_2D.png).
 
