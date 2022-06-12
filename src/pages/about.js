@@ -15,7 +15,19 @@ function allPapers() {
     //     linkCode: null,
     // }
 
-    // Pulling back information geometry paper
+    // Mario plays on a manifold paper
+    let marioPaper = {
+        title: "Mario Plays on a Manifold",
+        content: (<p>We train 2-dimensional VAEs on Mario and Zelda and define a graph in latent space only where playable levels live. This lets us sample and interpolate safely.</p>),
+        linkPaper: "https://arxiv.org/pdf/2206.00106.pdf",
+        imgsrc: "/assets/mario_blogpost/1175.png",
+        pdfsrc: null,
+        linkArxiv: "https://arxiv.org/abs/2206.00106",
+        linkPublication: null,
+        linkCode: null,
+    }
+    
+    // VNCA paper
     let vncaPaper = {
         title: "Variational Neural Cellular Automata",
         content: (<p>We used an NCA as the decoder of a Variational Autoencoder. (Main work done by <a href="https://rasmusbergpalm.github.io/" target="_blank" rel="noopener noreferrer">Rasmus Berg Palm</a>; I only played a secondary role.)</p>),
@@ -26,7 +38,8 @@ function allPapers() {
         linkPublication: null,
         linkCode: "https://github.com/rasmusbergpalm/vnca",
     }
-
+    
+    // PBIG paper
     let pullingBackInfoGeomPaper = {
         title: "Pulling back information geometry",
         content: "We induced geometries in latent space by pulling back the Fisher-Rao metric.",
@@ -87,6 +100,7 @@ function allPapers() {
     }
 
     return ([
+        marioPaper,
         vncaPaper,
         pullingBackInfoGeomPaper,
         fastContentAdaptionPaper,
