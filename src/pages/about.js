@@ -20,7 +20,7 @@ function allPapers() {
         title: "Mario Plays on a Manifold",
         content: (<p>We train 2-dimensional VAEs on Mario and Zelda and define a graph in latent space only where playable levels live. This lets us sample and interpolate safely.</p>),
         linkPaper: "https://arxiv.org/pdf/2206.00106.pdf",
-        imgsrc: "/assets/mario_blogpost/1175.png",
+        imgsrc: "/assets/paper_images/mario_plays.png",
         pdfsrc: null,
         linkArxiv: "https://arxiv.org/abs/2206.00106",
         linkPublication: null,
