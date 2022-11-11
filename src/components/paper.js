@@ -43,6 +43,7 @@ function paper(props) {
                     <h2><Link to={props.linkPaper}>
                         {props.title}
                     </Link></h2>
+                    <p className="authors">{props.authors}</p>
                     <p>{props.content}</p>
                     <p>{links.map((l, index, arr) => {
                             if (arr.length === index + 1) {
