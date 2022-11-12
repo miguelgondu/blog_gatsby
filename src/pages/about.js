@@ -6,6 +6,7 @@ import profile_photo from "../../static/profile_photo.jpg"
 function allPapers() {
     // let paperTemplate = {
     //     title: null,
+    //     authors: null,
     //     content: null,
     //     linkPaper: null,
     //     imgsrc: null,
@@ -21,7 +22,7 @@ function allPapers() {
         authors: (<p>Noémie Jaquier, Leonel Rozo, <b>Miguel González-Duque</b>, Viacheslav Borovitskiy, Tamim Asfour</p>),
         content: (<p>We embed humanoid poses in hyperbolic space, and have the latent distances match a robotics taxonomy. Main work done by <a href="https://njaquier.ch/" target="_blank" rel="noopener noreferrer">Noémie Jaquier</a>.</p>),
         linkPaper: "https://arxiv.org/abs/2210.01672",
-        imgsrc: "",
+        imgsrc: "/assets/paper_images/gphlvm_added_poses.png",
         pdfsrc: null,
         linkArxiv: "https://arxiv.org/abs/2210.01672",
         linkPublication: null,
