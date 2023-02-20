@@ -36,14 +36,16 @@ function paper(props) {
             <div key={props.id} className="blogpostBanner">
                 <div className="blogpostImageContainer">
                     <Link to={props.linkPaper}>
-                    <img class="paper" src={props.imgsrc} alt=""></img>
+                        <span class="helper">
+                            <img class="paper" src={props.imgsrc} alt=""></img>
+                        </span>
                     </Link>
                 </div>
                 <div>
                     <h2><Link to={props.linkPaper}>
                         {props.title}
                     </Link></h2>
-                    <p className="authors">{props.authors}</p>
+                    <p className="authors">{props.authors}{props.conference}</p>
                     <p>{props.content}</p>
                     <p>{links.map((l, index, arr) => {
                             if (arr.length === index + 1) {

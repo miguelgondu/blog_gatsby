@@ -36,6 +36,8 @@ img.paper {
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
+	margin-top: auto;
+	margin-bottom: auto;
 }
 
 div.centered {
@@ -69,12 +71,23 @@ img.blogpostBanner {
 	max-height: 450px;
 	margin-left: auto;
 	margin-right: auto;
-	margin-bottom: 0px;
+	/* margin-bottom: 0px; */
+}
+
+.helper {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
 }
 
 div.blogpostImageContainer {
 	display: flex;
 	justify-content: center;
+    vertical-align: middle;
+}
+
+a.paper {
+    vertical-align: middle;
 }
 
 div.blogpostBanner {
