@@ -164,7 +164,7 @@ const AboutPage = () => (
 
         <h2>Some publications</h2>
 
-        <p>For a complete list of publications, check <a href="https://leonelrozo.weebly.com/" target="_blank" rel="noopener noreferrer">my Google Scholar profile</a>.</p>
+        <p>For a complete list of publications, check <a href="https://scholar.google.com/citations?user=eje0FAYAAAAJ" target="_blank" rel="noopener noreferrer">my Google Scholar profile</a>.</p>
 
         {allPapers().map((p) => {
             return (
