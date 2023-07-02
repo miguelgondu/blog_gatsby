@@ -17,7 +17,7 @@ const AboutPageEs = () => (
         <ul>
             <li><a href="https://miguelgondu.com/assets/phdthesis.pdf" target="_blank" rel="noopener noreferrer">Mi tesis doctoral</a>, en la que usé optimización Bayesiana y modelos generativos para crear y adaptar contenido de videojuegos.</li>
             <li><a href="https://github.com/miguelgondu/bayesian_dungeoncrawler" target="_blank" rel="noopener noreferrer">Una página web</a> en donde usé optimización Bayesiana para adaptar contenido de videojuegos.</li>
-            <li><a href="https://github.com/juanrloaiza/latinamerican-philosophy-mining" target="_blank" rel="noopener noreferrer">Modelamiento de tópicos</a> de la revista indexada en filosofía con más trayectoria en Colombia ("Ideas y Valores", de la Nacional en Bogotá)</li>
+            <li><a href="https://github.com/juanrloaiza/latinamerican-philosophy-mining" target="_blank" rel="noopener noreferrer">Modelamiento de tópicos</a> de la revista indexada en filosofía con más trayectoria en Colombia ("Ideas y Valores", de la Nacional en Bogotá).</li>
         </ul>
 
         <p>Para contactarme, puedes escribirme al correo miguelgondu(at)gmail(dot)com.</p>
