@@ -10,13 +10,19 @@ const AboutPageEs = () => (
             <img src={profile_photo} class="profile_pic" alt=""></img>
         </div>
 
-        <p>Soy Miguel González Duque, un matemático de la Universidad Nacional de Colombia. Me interesa más que todo en la intersección entre modelamiento probabilístico y geometría diferencial.</p>
+        <p>Soy Miguel González Duque, un matemático de la Universidad Nacional de Colombia, y doctor de la Universidad IT de Copenhague (supervisado por <a href="http://sebastianrisi.com/" target="_blank" rel="noopener noreferrer">Sebastian Risi</a> y <a href="http://www2.compute.dtu.dk/~sohau/" target="_blank" rel="noopener noreferrer">Søren Hauberg</a>).</p>
         
-        <p>En este momento soy un estudiante de doctorado del <a href="https://game.itu.dk/groups/creativeai/" target="_blank" rel="noopener noreferrer">Creative AI Lab</a> en la Universidad IT de Copenhague, bajo la dirección del Prof. <a href="http://sebastianrisi.com/" target="_blank" rel="noopener noreferrer">Sebastian Risi</a>. Estamos desarrollando sistemas que crean y adaptan contenido de videojuegos. También comencé a colaborar con el grupo de <a href="http://www2.compute.dtu.dk/~sohau/" target="_blank" rel="noopener noreferrer">Søren Hauberg</a> en DTU, trabajando en modelamiento generativo y geometría diferencial. También estoy haciendo un sabático de mi PhD en el Bosch Center for AI, trabajando con <a href="https://leonelrozo.weebly.com/" target="_blank" rel="noopener noreferrer">Leonel Rozo</a>.</p>
+        <p>Me interesa más que todo las aplicaciones de la modelación probabilística y la geometría diferencial. Si te interesan mis projectos, los puedes encontrar en <a href="https://github.com/miguelgondu" target="_blank" rel="noopener noreferrer">mi perfil en GitHub</a> o en el link de <a href="https://miguelgondu.com/projects" target="_blank" rel="noopener noreferrer">Proyectos</a> arriba. Los más importantes:</p>
+
+        <ul>
+            <li><a href="https://miguelgondu.com/assets/phdthesis.pdf" target="_blank" rel="noopener noreferrer">Mi tesis doctoral</a>, en la que usé optimización Bayesiana y modelos generativos para crear y adaptar contenido de videojuegos.</li>
+            <li><a href="https://github.com/miguelgondu/bayesian_dungeoncrawler" target="_blank" rel="noopener noreferrer">Una página web</a> en donde usé optimización Bayesiana para adaptar contenido de videojuegos.</li>
+            <li><a href="https://github.com/juanrloaiza/latinamerican-philosophy-mining" target="_blank" rel="noopener noreferrer">Modelamiento de tópicos</a> de la revista indexada en filosofía con más trayectoria en Colombia ("Ideas y Valores", de la Nacional en Bogotá)</li>
+        </ul>
 
         <p>Para contactarme, puedes escribirme al correo miguelgondu(at)gmail(dot)com.</p>
 
-        <p>Mis publicaciones están en esta página, pero en inglés. Si quieres verlas, has clic <Link to="/about">aquí</Link>.</p>
+        <p>Mi experiencia profecional y mis publicaciones están en esta página, pero en inglés. Si quieres verlas, has clic <Link to="/about">aquí</Link>.</p>
     </LayoutEs>
 )
 

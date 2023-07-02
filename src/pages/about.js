@@ -16,7 +16,7 @@ function allPapers() {
     //     linkCode: null,
     // }
 
-    // GPHLVM paper
+    // MarioGPT paper
     let marioGPTPaper = {
         title: "MarioGPT: Open-ended Text2Level Generation through Large Language Models",
         authors: (<p>Shyam Sudhakaran, <b>Miguel González-Duque</b>, Claire Glanois, Matthias Freiberger, Elias Najarro, Sebastian Risi</p>),
@@ -156,15 +156,27 @@ const AboutPage = () => (
         <h1>About Me</h1>
         <img src={profile_photo} class="profile_pic" alt=""></img>
 
-        <p>I'm Miguel González Duque, a mathematician from the Universidad Nacional de Colombia. I'm mostly interested in the intersection between probabilistic modeling and geometry, and their applications to real-world problems. I'm also really curious about Python development, as can be seen in this blog and in <a href="https://github.com/miguelgondu" target="_blank" rel="noopener noreferrer">my GitHub profile</a>.</p>
+        <p>I'm Miguel González Duque, a mathematician from the Universidad Nacional de Colombia, and a PhD in Machine Learning from the IT University of Copenhagen (supervised by <a href="http://sebastianrisi.com/" target="_blank" rel="noopener noreferrer">Sebastian Risi</a> and <a href="http://www2.compute.dtu.dk/~sohau/" target="_blank" rel="noopener noreferrer">Søren Hauberg</a>)</p>
+            
+        <p>I'm mostly interested in applications of probabilistic modeling and geometry. You can find some of my projects on <a href="https://github.com/miguelgondu" target="_blank" rel="noopener noreferrer">my GitHub profile</a>. Some of these <a href="https://miguelgondu.com/projects" target="_blank" rel="noopener noreferrer">projects</a> are also available in the link above. Some highlights:</p>
 
-        <p>I have worked on really diverse projects. From building <a href="https://github.com/miguelgondu/bayesian_dungeoncrawler" target="_blank" rel="noopener noreferrer">web applications and APIs for content adaption</a>, through learning latent representations in robotics and video games (see below), to <a href="https://github.com/juanrloaiza/latinamerican-philosophy-mining" target="_blank" rel="noopener noreferrer">learning the different topics that are discussed in Colombia's longest running philosophy journal automatically using LDAs</a>.</p>
-        
-        <p>I'm currently a PhD student at the <a href="https://game.itu.dk/groups/creativeai/" target="_blank" rel="noopener noreferrer">Creative AI Lab</a> at the IT University of Copenhagen, under the supervision of Prof. <a href="http://sebastianrisi.com/" target="_blank" rel="noopener noreferrer">Sebastian Risi</a>. We are developing systems that create and adapt game content to users. I have also collaborated with <a href="http://www2.compute.dtu.dk/~sohau/" target="_blank" rel="noopener noreferrer">Søren Hauberg</a>'s lab at DTU, working on generative modelling and differential geometry. I did a 6-month PhD Sabbatical at the Bosch Center for AI working with <a href="https://leonelrozo.weebly.com/" target="_blank" rel="noopener noreferrer">Leonel Rozo</a> on using Gaussian Processes for representation and regression of robotic data.</p>
+        <ul>
+            <li><a href="https://miguelgondu.com/assets/phdthesis.pdf" target="_blank" rel="noopener noreferrer">My PhD thesis</a>, which applied Bayesian Optimization and generative modeling to video game content adaption.</li>
+            <li><a href="https://github.com/miguelgondu/bayesian_dungeoncrawler" target="_blank" rel="noopener noreferrer">A web API</a> for a Bayesian Optimization process for adapting game content to users.</li>
+            <li><a href="https://github.com/juanrloaiza/latinamerican-philosophy-mining" target="_blank" rel="noopener noreferrer">Topic modeling</a> of Colombia's longest running philosophy journal "Ideas y Valores"</li>
+        </ul>
+
+        <p>Feel free to contact me at miguelgondu(at)gmail(dot)com.</p>
+
+        <h2>Experience</h2>
+
+        <ul>
+            <li>PhD Fellow at the <a href="https://game.itu.dk/groups/creativeai/" target="_blank" rel="noopener noreferrer">Creative AI Lab</a>, IT University of Copenhagen (2019-2023).</li>
+            <li>PhD Sabbatical at the <i>Bosch Center for AI</i>, working with <a href="https://leonelrozo.weebly.com/" target="_blank" rel="noopener noreferrer">Leonel Rozo</a> on using Gaussian Processes for representation and regression of robotic data (6 months in 2022).</li>
+        </ul>
 
         <p>For more details on my professional experience, <a href="https://www.linkedin.com/in/miguelgondu/" target="_blank" rel="noopener noreferrer">check my LinkedIn</a>.</p>
 
-        <p>Feel free to contact me at miguelgondu(at)gmail(dot)com.</p>
 
         <h2>Some publications</h2>
 
