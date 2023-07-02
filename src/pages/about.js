@@ -156,7 +156,7 @@ const AboutPage = () => (
         <h1>About Me</h1>
         <img src={profile_photo} class="profile_pic" alt=""></img>
 
-        <p>I'm Miguel González Duque, a mathematician from the Universidad Nacional de Colombia, and a PhD in Machine Learning from the IT University of Copenhagen (supervised by <a href="http://sebastianrisi.com/" target="_blank" rel="noopener noreferrer">Sebastian Risi</a> and <a href="http://www2.compute.dtu.dk/~sohau/" target="_blank" rel="noopener noreferrer">Søren Hauberg</a>)</p>
+        <p>I'm Miguel González Duque, a mathematician from the Universidad Nacional de Colombia, and a PhD in Machine Learning from the IT University of Copenhagen (supervised by <a href="http://sebastianrisi.com/" target="_blank" rel="noopener noreferrer">Sebastian Risi</a> and <a href="http://www2.compute.dtu.dk/~sohau/" target="_blank" rel="noopener noreferrer">Søren Hauberg</a>).</p>
             
         <p>I'm mostly interested in applications of probabilistic modeling and geometry. You can find some of my projects on <a href="https://github.com/miguelgondu" target="_blank" rel="noopener noreferrer">my GitHub profile</a>. Some of these <a href="https://miguelgondu.com/projects" target="_blank" rel="noopener noreferrer">projects</a> are also available in the link above. Some highlights:</p>
 
