@@ -162,7 +162,7 @@ const AboutPage = () => (
 
         <ul>
             <li><a href="https://miguelgondu.com/assets/phdthesis.pdf" target="_blank" rel="noopener noreferrer">My PhD thesis</a>, which applied Bayesian Optimization and generative modeling to video game content adaption.</li>
-            <li><a href="https://github.com/miguelgondu/bayesian_dungeoncrawler" target="_blank" rel="noopener noreferrer">A web API</a> for a Bayesian Optimization process for adapting game content to users.</li>
+            <li><a href="https://github.com/miguelgondu/bayesian_dungeoncrawler" target="_blank" rel="noopener noreferrer">A web game</a> which uses Bayesian Optimization to adapt its game content to users.</li>
             <li><a href="https://github.com/juanrloaiza/latinamerican-philosophy-mining" target="_blank" rel="noopener noreferrer">Topic modeling</a> of Colombia's longest running philosophy journal "Ideas y Valores"</li>
         </ul>
 
