@@ -16,6 +16,20 @@ function allPapers() {
     //     linkCode: null,
     // }
 
+    // My PhD thesis
+    let phdThesis = {
+        title: "Probabilistic modeling for game content creation and adaption",
+        authors: (<p><b>Miguel González-Duque</b></p>),
+        content: (<p>My PhD thesis, where I explore applications of Gaussian Processes and Variational Autoencoders for modeling players and game content.</p>),
+        conference: null,
+        linkPaper: "https://miguelgondu.com/assets/phdthesis.pdf",
+        imgsrc: "/assets/paper_images/gp_with_all_traces_phd_thesis.jpg",
+        pdfsrc: null,
+        linkArxiv: null,
+        linkPublication: "https://miguelgondu.com/assets/phdthesis.pdf",
+        linkCode: null,
+    }
+
     // MarioGPT paper
     let marioGPTPaper = {
         title: "MarioGPT: Open-ended Text2Level Generation through Large Language Models",
@@ -139,6 +153,7 @@ function allPapers() {
     }
 
     return ([
+        phdThesis,
         marioGPTPaper,
         gphlvmPaper,
         marioPaper,
@@ -158,7 +173,7 @@ const AboutPage = () => (
 
         <p>I'm Miguel González Duque, a mathematician from the Universidad Nacional de Colombia, and a PhD in Machine Learning from the IT University of Copenhagen (supervised by <a href="http://sebastianrisi.com/" target="_blank" rel="noopener noreferrer">Sebastian Risi</a> and <a href="http://www2.compute.dtu.dk/~sohau/" target="_blank" rel="noopener noreferrer">Søren Hauberg</a>).</p>
             
-        <p>I'm mostly interested in applications of probabilistic modeling and geometry. You can find some of my projects on <a href="https://github.com/miguelgondu" target="_blank" rel="noopener noreferrer">my GitHub profile</a>. Some of these <a href="https://miguelgondu.com/projects" target="_blank" rel="noopener noreferrer">projects</a> are also available in the link above. Some highlights:</p>
+        <p>I'm mostly interested in applications of probabilistic modeling and geometry. You can find some of my projects on <a href="https://github.com/miguelgondu" target="_blank" rel="noopener noreferrer">my GitHub profile</a>. Some of these are also available <a href="https://miguelgondu.com/projects" target="_blank" rel="noopener noreferrer">in the link above</a>. Highlights:</p>
 
         <ul>
             <li><a href="https://miguelgondu.com/assets/phdthesis.pdf" target="_blank" rel="noopener noreferrer">My PhD thesis</a>, which applied Bayesian Optimization and generative modeling to video game content adaption.</li>
