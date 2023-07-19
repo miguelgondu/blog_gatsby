@@ -1,7 +1,7 @@
 ---
 date: "2023-04-08"
-title: "Comparing Bayesian Optimization with some evolutionary strategies"
-summary: "A simple implementation and comparison of Bayesian Optimization with evolutionary strategies like CMA-ES"
+title: "Comparing Bayesian Optimization against evolutionary strategies"
+summary: "A simple implementation of Bayesian Optimization using GPyTorch and BoTorch, and a comparison with evolutionary strategies like CMA-ES implemented in EvoTorch"
 lang: "en"
 show: true
 imgsrc: null
@@ -15,35 +15,38 @@ categories:
     - Optimization
 ---
 
-# Comparing Bayesian Optimization with some evolutionary strategies
+# Comparing Bayesian Optimization against Evolutionary Strategies
 
-[A couple of sentences about black-box optimization]
+> This blogpost contains a longer version of a chapter in [my dissertation](). Check it out if you're interested!
 
-[Prerequisites: Gaussian Processes, familiarity with the Gaussian distribution]
+Bayesian Optimization (BO) is a tool for black-box optimization. By black-box, we mean functions to which we only have access by querying: expensive simulations of the interaction between a molecule and a folded protein, users interacting with our websites, or the accuracy of a Machine Learning algorithm with a given configuration of hyperparameters.
 
-[Tools: EvoTorch, GPyTorch and BoTorch]
+BO is not the only alternative for black-box optimization, and in this blogpost we do a short comparison against evolutionary strategies. Folk knowledge says that BO doesn't scale well with the dimensions of the input space (indeed, some people say it doesn't work beyond 20).[^folk]
 
-[References are at the end]
+This blogpost introduces Bayesian Optimization, and provides code snippets for the experiments performed. The tools used include GPyTorch and BoTorch as the main engines for Gaussian Processes and BO, and EvoTorch for the evolutionary strategies.
+
+Some prerequisites: This blogpost goes pretty fast through what Gaussian Processes are, and how evolutionary strategies work. Links are provided at the beginning of these sections.
+
+[^folk]: TODO Add reference.
 
 ## Running examples: $x\sin(x)$, Easom, and Cross-in-tray
 
-In this blogpost we will use three running examples to run the comparison. The first one is the function $f(x) = x\sin(x)$, which is one-dimensional in its inputs and allows us to visualize how GPs approximate the uncertainty. The two remaining ones are part of a plethora of test functions that are usually included in black-box optimization benchmarks:[^optimization-benchmarks] `Easom` and `Cross-in-tray`. Their formulas are given by
+In this blogpost we will use three running examples to run the comparison. The first one is the function $f(x) = x\sin(x)$, which is one-dimensional in its inputs and allows us to visualize how GPs handle uncertainty. The two remaining ones are part of a plethora of test functions that are usually included in black-box optimization benchmarks:[^optimization-benchmarks] `Easom` and `Cross-in-tray`. Their formulas are given by
 
 $$\text{\texttt{Easom}}(\bm{x}) = \cos(x_1)\cos(x_2)\exp\left(-(x_1-\pi)^2 - (x_2 - \pi)^2\right),$$
 
 $$\text{\texttt{Cross-in-tray}}(\bm{x}) = \left|\sin(x_1)\sin(x_2)\exp\left(\left|10 - \frac{\sqrt{x_1^2 + x_2^2}}{\pi}\right|\right)\right|^{0.1}.$$
 
-Notice how these functions can be extended easily to higher dimensions. The `Easom` test function has its optimum in $(\pi, \pi)$, and the `Cross-in-tray` has its optima in (TODO: add...).
+We take the 2D versions of these functions for visualization, but notice how these can easily be extended to higher dimensions. The `Easom` test function has its optimum at $(\pi, \pi)$, and the `Cross-in-tray` has 4 equally good optima at $(\pm 1.35, \pm 1.35)$, approximately.
 
-The next figure shows all three running examples
+<p align="center">
+  <img src={"/assets/bo_blogpost/all_three_test_functions.jpg"}  width="100%"/>
+</p>
 
-[TODO: all three figures...]
-
-[^optimization-benchmarks]: There are plenty more test functions for optimization in [this link]().
+[^optimization-benchmarks]: There are plenty more test functions for optimization in [this link](https://www.sfu.ca/~ssurjano/optimization.html).
 
 ## A couple of words on Gaussian Processes
 
-<!-- [GPs on $f(x) = x\sin(x)$] -->
 Gaussian Processes are a **probabilistic regression method**. This means that they approximate a function $f\colon\mathcal{X}\to\mathbb{R}$ while quantifying values like **expectations** and **variances**. More formally,
 
 **Definition:** A function $f$ is a **Gaussian Process** (denoted $f\sim\text{GP}(\mu_0, k)$) if any finite collection of evaluations $\{f(\bm{x}_1), \dots, f(\bm{x}_N)\}$ is normally distributed like
@@ -62,7 +65,7 @@ k(\bm{x}_1, \bm{x}_1) & \cdots & k(\bm{x}_1, \bm{x}_N) \\
 k(\bm{x}_N, \bm{x}_1) & \cdots & k(\bm{x}_N, \bm{x}_N) 
 \end{bmatrix}\right)$
 
-The matrix $\bm{K} = [k(\bm{x}_i, \bm{x}_j)]$ is known as the **Gram matrix**, and since we're using it as a covariance matrix, this imposes some restrictions on our choice of **kernel** (or **covariance function**) $k$: it must be symmetric positive-definite, in the sense that the Gram matrices it spans should be symmetric positive definite. The function $\mu_0$ is called a **prior**, and it allows us to inject expert knowledge in our modeling (if e.g. we know that our function should be something like a line or a parabola, we can set such $\mu_0$). It is pretty common to set $\mu_0 \equiv 0$ (or a constant), and let the function speak for itself.
+The matrix $\bm{K} = [k(\bm{x}_i, \bm{x}_j)]$ is known as the **Gram matrix**, and since we're using it as a covariance matrix, this imposes some restrictions on our choice of **kernel** (or covariance function) $k$: it must be symmetric positive-definite, in the sense that the Gram matrices it spans should be symmetric positive definite. The function $\mu_0$ is called a **prior**, and it allows us to inject expert knowledge in our modeling (if e.g. we know that our function should be something like a line or a parabola, we can set such $\mu_0$). It's pretty common to set $\mu_0 \equiv 0$ (or a constant), and let the data speak for itself.
 
 Assuming $f\sim \text{GP}(\mu, k)$ allows for computing **an entire distribution** over newly seen points. If you have a dataset $\{(x_1, f(x_1)), \dots, (x_N, f(x_N))\}$ and a new point $x_*$, you can consider the joint distribution of $\{f(x_1), \dots, f(x_N), f(x_*)\}$ and compute the conditional distribution of $f(x_*)$ given the dataset:
 
@@ -78,7 +81,7 @@ Common choices of kernels are the RBF and the Matérn:
 
 $$ ... $$
 
-These have some hyperparameters in them (like the lengthscale matrix $\bm{\theta}$ or the output scale $\theta_{\text{out}}$). **Fitting** a Gaussian Process to a given dataset consists of estimating these hyperparameters by maximizing the likelihood. Here are a couple of examples of fitting a GP with an RBF kernel to our running example of $f(x) = x\sin(x)$ (notice how we can "sample" from the space of functions):
+These have some hyperparameters in them (like the lengthscale matrix $\bm{\theta}_l$ or the output scale $\theta_{\text{out}}$). **Fitting** a Gaussian Process to a given dataset consists of estimating these hyperparameters by maximizing the likelihood. Here are a couple of examples of fitting a GP with an RBF kernel to our running example of $f(x) = x\sin(x)$ (notice how we can "sample" from the space of functions):
 
 [Images]
 
@@ -94,31 +97,43 @@ As discussed in the introduction, this presentation of GPs is quick and to-the-p
 
 ## A visual description of Bayesian Optimization
 
-Bayesian Optimization has three key ingredients:
+Bayesian Optimization (B.O.) has three key ingredients:
 
-- A black-box objective function $f\colon\mathcal{X}\to\mathbb{R}$, where $\mathcal{X}$ is usually a subset of some $\mathbb{R}^D$, which we are trying to maximize. $f$ is called the **objective function**.
-- A prior $\mu_0\colon\mathcal{X}\to\mathbb{R}$ and kernel $k$ to build **Gaussian Processes** with.[^other-surrogate-models]
-- An **acquisition function**, which is easy to query, and measures the "potential" of new points. If a given $\bm{x}_*\in\mathcal{X}$ scores high in the acquisition function, then it potentially maximizes the objective function $f$.
+- A black-box **objective function** $f\colon\mathcal{X}\to\mathbb{R}$, where $\mathcal{X}$ is usually a subset of some $\mathbb{R}^D$, which we are trying to maximize. $f$ is called the objective function.
+- A probabilistic surrogate model $\tilde{f}\colon\mathcal{X}\to\mathbb{R}$, whose goal is to approximate the objective function. Since we will use Gaussian Processes, the ingredients we will need are a prior $\mu_0\colon\mathcal{X}\to\mathbb{R}$ and kernel $k$.[^other-surrogate-models]
+- An **acquisition function** $\alpha(\bm{x}|\tilde{f})$ which measures the "potential" of new points using the surrogate model. If a given $\bm{x}_*\in\mathcal{X}$ scores high in the acquisition function, then it potentially maximizes the objective function $f$.
 
-As we discussed in the introduction, examples of black-box objective functions include [...]. Now we discuss four examples of acquisition functions.
+The usual loop in a B.O. goes like this:
 
-[^other-surrogate-models]: We are using Gaussian Processes as a surrogate model here, but other ones could be used! The main requirement is for them to allow us to have good uncertainty estimates of the objective function.
+1. Fit the surrogate model $\tilde{f}$ to the data you have collected so far.
+2. Using $\tilde{f}$, query the acquisition function $\alpha$ to find the best candidate $\bm{x}$ (i.e. find $\bm{x} = \arg\max \alpha(\cdot|\tilde{f})$).
+3. Query the expensive objective function on $\bm{x}$ and repeat from 1 including this new data pair.
+
+We usually stop after finding an optimum that is high enough, or after a fixed number of iterations.[^stopping-criteria]
+
+As we discussed in the introduction, examples of black-box objective functions include [TODO: add]. Now we discuss four examples of acquisition functions.
+
+[^stopping-criteria]: It's not so simple. The stopping criteria of BO are a topic that is currently under plenty of research. See the references.
+
+[^other-surrogate-models]: We are using Gaussian Processes as a surrogate model here, but other ones could be used! The main requirement is for them to allow us to have good uncertainty estimates of the objective function. [Recent research by AGW has explored this direction]().
 
 ### Thompson Sampling
 
-The simplest of all acquisition functions is to sample one approximation of $f$ and to optimize it.
+The simplest of all acquisition functions is to sample one approximation of $f$ and to optimize it. This can be done quite easily in most probabilistic regression methods, including Gaussian Processes.
+
+Circling back to our guiding example of $x\sin(x)$, this would be the candidate proposed by Thompson Sampling (TS):
 
 [Plot with one sample]
 
 ### Improvement-based policies
 
-Since we have estimates of the posterior mean $\mu$ and the posterior variance at each step, we have access to a lot more than just a single sample (as in TS). For each new point $\bm{x}$, consider its "improvement":
+Since we have estimates of the posterior mean $\mu$ and the posterior variance $\sigma^2$ at each step, we have access to a lot more than just a single sample (as in TS). For each new point $\bm{x}$, consider its "improvement":
 
 $$ I(\bm{x}; \mathcal{D}) = \max(0, f(\bm{x}) - f_{\text{best}})$$
 
-where $f_{\text{best}}$ is the maximum value in our trace $\mathcal{D}$. The improvement measures how much we are gaining at point $f(\bm{x})$, compared to the current best.
+where $f_{\text{best}}$ is the maximum value in our trace $\mathcal{D} = \{(\bm{x}_n, f(\bm{x}_n))\}$. The improvement measures how much we are gaining at point $f(\bm{x})$, compared to the current best.
 
-since we have a probabilistic approximation of $f$, we can compute quantities like the **probability of improvement** (PI).
+since we have a probabilistic approximation of $f$, we can compute quantities like the **probability of improvement** (PI):
 
 $$ \alpha_{\text{PI}}(\bm{x}; \mathcal{D}) = \text{Prob}[I(\bm{x};\mathcal{D}) > 0] = \text{Prob}[f(\bm{x}) > f_{\text{best}}], $$
 
@@ -128,86 +143,93 @@ $$ \alpha_{\text{EI}}(\bm{x}; \mathcal{D}) = \mathbb{E}[I(\bm{x};\mathcal{D})] =
 
 which measures by how much a given $\bm{x}$ may improve on the current best.
 
+Given the running example, here are the improvement-based policies visually. [TODO: add and explain].
+
 ### Upper-Confidence Bound
 
 Another type of acquisition function is the Upper-Confidence Bound (UCB), which optimistically chooses the points are on the upper bounds of the uncertainty. More explicitly, let $\mu$ and $\sigma$ be the posterior mean and standard deviation on a given point $\bm{x}$ after fitting the GP, then
 
 $$ \alpha_{\text{UCB}}(\bm{x}; \mathcal{D}) = \mu(\bm{x}) + \kappa\sigma(\bm{x}), $$
 
-where $\kappa > 0$ is a hyperparameter that states how optimistic we are on the upper bound of the variance. High values of $\kappa$ encourage exploration (i.e. exploring regions with higher uncertainty), while lower values of $\kappa$ encourage exploitation (staying close to what the posterior mean has learned).
+where $\kappa > 0$ is a hyperparameter that states how optimistic we are on the upper bound of the variance. High values of $\kappa$ encourage exploration (i.e. exploring regions with higher uncertainty), while lower values of $\kappa$ encourage exploitation (staying close to what the posterior mean has learned). Here are some examples of the UCB acquisition function:
 
-### Visualizing acquisition functions
+[TODO: add]
 
-Given the same randomly sampled points for our running example $f(x) = x\sin(x)$, we can visualize the values for the different acquisition functions:
-
-[TODO: add plot...]
-
-[discuss the pracitcalities]
-
-### What people say and do
+## What people say and do
 
 [A discussion on the folk choices of acq. function]
 
+## About high dimensional BO
+
+[High dimensional BO doesn't really work that well, and we have to rely on other alternatives]
+
+## Can we parallelize?
+
 [A discussion on parallelizability]
+
+## Optimizing the acquisition might be hard
 
 [Optimizing it might be hard. Differential approximations. CMA-ES inside BO]
 
-### The Bayesian Optimization loop
+## Bayesian Optimization loops for our examples
 
-The way Bayesian Optimization approaches optimization is sequential in nature: given a probabilistic model for the objective function $f$ (which, in our case, is fitted using Gaussian Processes), we find the next candidate by maximizing the acquisition function, which is easy to query. We stop after finding an optimum that is high enough, or after a fixed number of iterations.[^stopping-criteria]
+As we discussed above, the way Bayesian Optimization approaches optimization is sequential: given a probabilistic model for the objective function $f$ (which, in our case, is fitted using Gaussian Processes), we find the next candidate by maximizing the acquisition function.
 
-This algorithm is pretty simple, and we can write it in ~~pseudocode~~ Python[^code-link]:
-
-```python
-# TODO: add the code
-```
-
-This sequential nature allows for really cool videos. In the following, we show the model's approximation, and the values that the acquisition function takes for a Bayesian Optimization run on both the `Easom` and the `Cross-in-tray` test functions.
+Here are videos showing the sequence of queries in for `Easom` and `Cross-In-Tray`:[^code-link]
 
 [TODO: add Video]
 
 Notice how [TODO: describe the video...]
 
-[^stopping-criteria]: It's not so simple. The stopping criteria of BO are a topic that is currently under plenty of research. See the references.
-[^code-link]: This code snippet focuses on the essentials, but of course wouldn't run after copy-pasting. [A working version of all the code in this blogpost can be found here](), and [this particular Bayesian Optimization loop can be found here]().
+[^code-link]: [A working version of all the code in this blogpost can be found here](), and [this particular Bayesian Optimization loop can be found here]().
 
 ### BO's drawbacks
 
 - How do we optimize the acquisition function?
 - Scaling to high dimensions and big datasets.
 - Parallelizing.
+- Stopping criteria?
 
-## Some evolutionary strategies
+## A couple of evolutionary strategies
 
-Instead of building a model of the objective function $f$, evolutionary strategies (ES) maintain a mean $m$ and covariance matrix $\Sigma$, parametrizing a Gaussian distribution around the current best-performing element of the search space. At each step, an ES algorithm samples a population centered at $m$ with covariance $\Sigma$, and updates them according to the new maxima found (if any).
+Instead of building a model of the objective function $f$, evolutionary strategies (ES) maintain a mean $m$ and covariance matrix $\Sigma$ which parametrize a Gaussian distribution around the current best-performing elements of the search space. At each step, an ES algorithm samples a population centered at $m$ with covariance $\Sigma$, and updates them according to the new maxima found (if any).
 
 This section briefly introduces a couple ES. [A great visual introduction (which inspired this blogpost) is available here.]()
 
 ### Simple ES
 
-The simplest version of ES is to consider a fixed covariance $\Sigma = s\bm{I}_{D}$ where $\bm{I}_D$ is the identity matrix of size $D$, the size of the search space $\mathcal{X}$, and $s>0$ is a scale hyperparameter that governs the size of the covariance.
+The simplest version of ES is to consider a fixed covariance $\Sigma = s\bm{I}_{D}$ where $\bm{I}_D$ is the identity matrix of size $D$, the size of the search space $\mathcal{X}$, and $s>0$ is a scale hyperparameter that governs the size of the covariance. The update rule only considers the mean, and computes it either greedily as the single best performing element, or as the average of e.g. 25% of the best performing members of the population.
 
 Here's a simple ES in practice in Easom and in Cross-in-tray. Depending on the size of the scale $s$, a simple ES algorithm might get stuck in local optima.
 
-...
+[TODO: add video]
 
-### PGPE
-
-...
 
 ### CMA-ES
 
-A smarter strategy is to adapt the covariance matrix, shaping it by considering only the best fourth of the population. The rule for adapting the distribution becomes
+A smarter strategy is to adapt the covariance matrix, shaping it by only the best fourth of the population. The rule for adapting the distribution becomes
 
-...
+[TODO: add rule for adaptation]
+
+Similarly, we can run CMA-ES on Easom and Cross-in-tray:
+
+[...]
 
 ### ES' drawbacks
 
+- Sometimes $D$ is so large that storing a $D^2$ matrix (the covariance) is prohibitive.
+- It's highly sample inefficient.
+- That's it, I think.
+
 ## A comparison: sample efficiency
 
-...
+In these examples we have shown a single trace on our test functions. What happens if we run several? Will these optimization algorithms always converge? And if so, how many queries to the objective function did they require?
 
-## Taking BO to its limits
+Notice that, in general, evolutionary strategies query the objective function in a large number of points for each generation (i.e. the population size). On the other hand, Bayesian Optimization queries one point per iteration. We can expect Bayesian Optimization to converge with less queries than evolutionary strategies.
+
+In this final example, we run the evolutionary strategies and Bayesian Optimization on both test function 100 times, stopping after finding an optima that is at least 95% the global optima. The results go as follows:
+
+## Conclusion
 
 - Folk knowledge about vanilla BO being only good below 20D
 - Comparing with higher dimensional versions of easom and cross-in-tray.
