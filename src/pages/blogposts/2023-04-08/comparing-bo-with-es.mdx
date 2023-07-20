@@ -67,32 +67,54 @@ k(\bm{x}_N, \bm{x}_1) & \cdots & k(\bm{x}_N, \bm{x}_N)
 
 The matrix $\bm{K} = [k(\bm{x}_i, \bm{x}_j)]$ is known as the **Gram matrix**, and since we're using it as a covariance matrix, this imposes some restrictions on our choice of **kernel** (or covariance function) $k$: it must be symmetric positive-definite, in the sense that the Gram matrices it spans should be symmetric positive definite. The function $\mu_0$ is called a **prior**, and it allows us to inject expert knowledge in our modeling (if e.g. we know that our function should be something like a line or a parabola, we can set such $\mu_0$). It's pretty common to set $\mu_0 \equiv 0$ (or a constant), and let the data speak for itself.
 
-Assuming $f\sim \text{GP}(\mu, k)$ allows for computing **an entire distribution** over newly seen points. If you have a dataset $\{(x_1, f(x_1)), \dots, (x_N, f(x_N))\}$ and a new point $x_*$, you can consider the joint distribution of $\{f(x_1), \dots, f(x_N), f(x_*)\}$ and compute the conditional distribution of $f(x_*)$ given the dataset:
+Assuming $f\sim \text{GP}(\mu, k)$ allows for computing **an entire distribution** over newly seen points. As an example, let's say you have a dataset $\mathcal{D} = \{(x_1, f(x_1)), \dots, (x_N, f(x_N))\}$ for our test function $f(x)=x\sin(x)$, measured with a little bit of noise: 
+
+<p align="center">
+  <img src={"/assets/bo_blogpost/xsinx_w_noisy_samples.jpg"}  width="100%"/>
+</p>
+
+Given a new point $x_*$, you can consider the joint distribution of $\{f(x_1), \dots, f(x_N), f(x_*)\}$ and compute the conditional distribution of $f(x_*)$ given the dataset:[^the-ugly-details]
 
 $$ f(\bm{x}_*) \sim \mathcal{N}(\mu_0(\bm{x}_*) + \bm{k}_*^\top \bm{K}^{-1}(\bm{f} - \bm{\mu_0}), k(\bm{x}_*, \bm{x}_*) - \bm{k}_*^\top \bm{K}^{-1} \bm{k}_*) $$
 
-This is what we mean, visually:
+[^the-ugly-details]: The math goes as follows...
 
-[Plot explaining the distribution]
+Let's visualize this distribution for all points in the interval [-10, 10], highlighting what happens at e.g. $x=7$:
+
+[TODO: finish this plot]
+
+<p align="center">
+  <img src={"/assets/bo_blogpost/xsinx_gp_fit.jpg"}  width="100%"/>
+</p>
 
 That is, we have an estimate of the **mean** value $f(\bm{x}_*)$ may take, and we also know "how certain" we are about it via the variance estimate.
 
-Common choices of kernels are the RBF and the Matérn:
+Gaussian Processes, as well as other nonparametric methods for regression, allow us to sample from "the space of functions". We can sample a given instance of our approximation:
+
+[TODO: plots with samples]
+
+This space of functions is determined by our choice of kernel, which spans a "Reproducing Kernel Hilbert Space" (RKHS).[^ugly-detail-RKHS] Common choices of kernels are the RBF and the Matérn family:
+
+[^ugly-detail-RKHS]: Hilbert Spaces are a special kind of vector space, which have both a dot product and a topology that is complete w.r.t. this dot product. If you are curious about the formalities, check [TODO: add reference]. 
 
 $$ ... $$
 
-These have some hyperparameters in them (like the lengthscale matrix $\bm{\theta}_l$ or the output scale $\theta_{\text{out}}$). **Fitting** a Gaussian Process to a given dataset consists of estimating these hyperparameters by maximizing the likelihood. Here are a couple of examples of fitting a GP with an RBF kernel to our running example of $f(x) = x\sin(x)$ (notice how we can "sample" from the space of functions):
+These kernels have some hyperparameters in them (like the lengthscale matrix $\bm{\theta}_l$ or the output scale $\theta_{\text{out}}$). **Fitting** a Gaussian Process to a given dataset consists of estimating these hyperparameters by maximizing the likelihood of the data:
 
-[Images]
+[TODO: add].
 
 To summarize,
-- GPs assume that finite collections of evaluations are distributed normally around a certain prior $\mu_0$, with covariances dictated by a kernel $k$.
+- By using GPs, we assume that finite collections of evaluations of a function are distributed normally around a certain prior $\mu_0$, with covariances dictated by a kernel $k$.
 - This assumption allows us to compute distributions over previously unseen points.
 - Kernels come with certain hyperparameters that we need to fit by maximizing the likelihood.
 
-As discussed in the introduction, this presentation of GPs is quick and to-the-point. Slower and more thorough introductions can be found here:
-- [here]()
-- [here]() 
+## Gaussian Processes in practice: Scikit-learn and GPyTorch
+
+[A section about sklearn, GPyTorch]
+
+[Other tools]
+
+As discussed in the introduction, this presentation of GPs is quick and to-the-point. Slower and more thorough introductions can be found in the references. [TODO: add the two blogposts, and the relevant chapters in GPML].
 
 
 ## A visual description of Bayesian Optimization
@@ -236,8 +258,11 @@ In this final example, we run the evolutionary strategies and Bayesian Optimizat
 - Let's grab an off-the-shelf TurBO implementation and test it somewhere big (bipedal walker, for example).
 - Let's see if CMA-ES/Simple ES does better.
 
+## Cite this blogpost
 
-### References
+[TODO: add bibtex].
+
+## References
 
 [More on GPs]
 
