@@ -4,7 +4,7 @@ title: "Comparing Bayesian Optimization against evolutionary strategies"
 summary: "A simple implementation of Bayesian Optimization using GPyTorch and BoTorch, and a comparison with evolutionary strategies like CMA-ES implemented in EvoTorch"
 lang: "en"
 show: true
-imgsrc: null
+imgsrc: "/assets/bo_blogpost/xsinx_gp_all_distributions.gif"
 categories:
     - Bayesian Optimization
     - Evolutionary Strategies
@@ -21,9 +21,11 @@ categories:
 
 Bayesian Optimization (BO) is a tool for black-box optimization. By black-box, we mean functions to which we only have access by querying: expensive simulations of the interaction between a molecule and a folded protein, users interacting with our websites, or the accuracy of a Machine Learning algorithm with a given configuration of hyperparameters.
 
+The gist of BO is to approximate the function we are trying to optimize with a regression model that is uncertainty aware, and to use these uncertainty estimates to determine what our next test point should be. It is usual practice to do BO using Gaussian Processes (GPs), and this blogpost starts with an introduction to GP regression.
+
 BO is not the only alternative for black-box optimization, and in this blogpost we do a short comparison against evolutionary strategies. Folk knowledge says that BO doesn't scale well with the dimensions of the input space (indeed, some people say it doesn't work beyond 20).[^folk]
 
-This blogpost introduces Bayesian Optimization, and provides code snippets for the experiments performed. The tools used include GPyTorch and BoTorch as the main engines for Gaussian Processes and BO, and EvoTorch for the evolutionary strategies.
+This blogpost introduces (Gaussian Process based) Bayesian Optimization, and provides code snippets for the experiments performed. The tools used include GPyTorch and BoTorch as the main engines for Gaussian Processes and BO, and EvoTorch for the evolutionary strategies.
 
 Some prerequisites: This blogpost goes pretty fast through what Gaussian Processes are, and how evolutionary strategies work. Links are provided at the beginning of these sections.
 
@@ -45,7 +47,7 @@ We take the 2D versions of these functions for visualization, but notice how the
 
 [^optimization-benchmarks]: There are plenty more test functions for optimization in [this link](https://www.sfu.ca/~ssurjano/optimization.html).
 
-## A couple of words on Gaussian Processes
+## A short introduction to Gaussian Processes
 
 Gaussian Processes are a **probabilistic regression method**. This means that they approximate a function $f\colon\mathcal{X}\to\mathbb{R}$ while quantifying values like **expectations** and **variances**. More formally,
 
@@ -67,37 +69,45 @@ k(\bm{x}_N, \bm{x}_1) & \cdots & k(\bm{x}_N, \bm{x}_N)
 
 The matrix $\bm{K} = [k(\bm{x}_i, \bm{x}_j)]$ is known as the **Gram matrix**, and since we're using it as a covariance matrix, this imposes some restrictions on our choice of **kernel** (or covariance function) $k$: it must be symmetric positive-definite, in the sense that the Gram matrices it spans should be symmetric positive definite. The function $\mu_0$ is called a **prior**, and it allows us to inject expert knowledge in our modeling (if e.g. we know that our function should be something like a line or a parabola, we can set such $\mu_0$). It's pretty common to set $\mu_0 \equiv 0$ (or a constant), and let the data speak for itself.
 
-Assuming $f\sim \text{GP}(\mu, k)$ allows for computing **an entire distribution** over newly seen points. As an example, let's say you have a dataset $\mathcal{D} = \{(x_1, f(x_1)), \dots, (x_N, f(x_N))\}$ for our test function $f(x)=x\sin(x)$, measured with a little bit of noise: 
+Assuming $f\sim \text{GP}(\mu, k)$ allows for computing **an entire distribution** over previously unseen points. As an example, let's say you have a dataset $\mathcal{D} = \{(x_1, f(x_1)), \dots, (x_N, f(x_N))\}$ for our test function $f(x)=x\sin(x)$, measured with a little bit of noise: 
 
 <p align="center">
   <img src={"/assets/bo_blogpost/xsinx_w_noisy_samples.jpg"}  width="100%"/>
 </p>
 
-Given a new point $x_*$, you can consider the joint distribution of $\{f(x_1), \dots, f(x_N), f(x_*)\}$ and compute the conditional distribution of $f(x_*)$ given the dataset:[^the-ugly-details]
-
-$$ f(\bm{x}_*) \sim \mathcal{N}(\mu_0(\bm{x}_*) + \bm{k}_*^\top \bm{K}^{-1}(\bm{f} - \bm{\mu_0}), k(\bm{x}_*, \bm{x}_*) - \bm{k}_*^\top \bm{K}^{-1} \bm{k}_*) $$
+Given a new point $x_*$ that's not on the dataset, you can consider the joint distribution of $\{f(x_1), \dots, f(x_N), f(x_*)\}$ and compute the conditional distribution of $f(x_*)$ given the dataset:[^the-ugly-details]
 
 [^the-ugly-details]: The math goes as follows...
 
-Let's visualize this distribution for all points in the interval [-10, 10], highlighting what happens at e.g. $x=7$:
+$$ f(\bm{x}_*) \sim \mathcal{N}(\mu_0(\bm{x}_*) + \bm{k}_*^\top \bm{K}^{-1}(\bm{f} - \bm{\mu_0}), k(\bm{x}_*, \bm{x}_*) - \bm{k}_*^\top \bm{K}^{-1} \bm{k}_*) $$
 
-[TODO: finish this plot]
+Consider the distribution around $x_*=0$ in our running example, assuming that the prior $\mu_0$ equals $0$. The closest values we have in the dataset are at $x=-0.7$ and $x=1.1$, which means $x_*=0$ is far away from the training set. This is automatically quantified by the variance in the posterior distribution of $f(x_*)$:
 
 <p align="center">
-  <img src={"/assets/bo_blogpost/xsinx_gp_fit.jpg"}  width="100%"/>
+  <img src={"/assets/bo_blogpost/xsinx_dist_at_0.jpg"}  width="100%"/>
 </p>
 
-That is, we have an estimate of the **mean** value $f(\bm{x}_*)$ may take, and we also know "how certain" we are about it via the variance estimate.
+Let's visualize this distribution for all points in the interval [-10, 10], sweeping through them and highlighting the actual value of the function $f(x) = x\sin(x)$.
 
-Gaussian Processes, as well as other nonparametric methods for regression, allow us to sample from "the space of functions". We can sample a given instance of our approximation:
+<p align="center">
+  <img src={"/assets/bo_blogpost/xsinx_gp_all_distributions.gif"}  width="100%"/>
+</p>
 
-[TODO: plots with samples]
+This process generalizes to collections of previously unseen points $\bm{X}_*$, allowing us consider the mean prediction and the uncertainties around it. The math is essentially the same, and the details can be found in the references.[^the-ugly-details-multidim]
 
-This space of functions is determined by our choice of kernel, which spans a "Reproducing Kernel Hilbert Space" (RKHS).[^ugly-detail-RKHS] Common choices of kernels are the RBF and the Matérn family:
+[^the-ugly-details-multidim]: See e.g. [TODO: add ref].
 
-[^ugly-detail-RKHS]: Hilbert Spaces are a special kind of vector space, which have both a dot product and a topology that is complete w.r.t. this dot product. If you are curious about the formalities, check [TODO: add reference]. 
+If we consider a fine enough grid of points and consider their posterior distribution, we can essentially "sample a function" out of our Gaussian Process using the same formulas described above. For example, these are 5 different samples of potential approximations of $f(x) = x\sin(x)$ according to the posterior of the GP:
 
-$$ ... $$
+<p align="center">
+  <img src={"/assets/bo_blogpost/xsinx_samples.jpg"}  width="100%"/>
+</p>
+
+This process of sampling functions out of a Gaussian Process can actually be made formal: a kernel $k$ spans a *Reproducing Kernel Hilbert Space* (RKHS),[^ugly-detail-RKHS] which is a space of functions from which the GP samples [TODO: read a bit more and add here]. Common choices of kernels are the RBF and the Matérn family:
+
+$$ [TODO: add kernels] $$
+
+[^ugly-detail-RKHS]: Hilbert Spaces are a special kind of vector space, which have both a dot product and a topology that is complete w.r.t. this dot product. If you are curious about the formalities, check [TODO: add reference].
 
 These kernels have some hyperparameters in them (like the lengthscale matrix $\bm{\theta}_l$ or the output scale $\theta_{\text{out}}$). **Fitting** a Gaussian Process to a given dataset consists of estimating these hyperparameters by maximizing the likelihood of the data:
 
@@ -106,16 +116,13 @@ These kernels have some hyperparameters in them (like the lengthscale matrix $\b
 To summarize,
 - By using GPs, we assume that finite collections of evaluations of a function are distributed normally around a certain prior $\mu_0$, with covariances dictated by a kernel $k$.
 - This assumption allows us to compute distributions over previously unseen points.
-- Kernels come with certain hyperparameters that we need to fit by maximizing the likelihood.
+- Kernels define the space of functions we can use to approximate, and come with certain hyperparameters that we need to fit by maximizing the likelihood.
 
 ## Gaussian Processes in practice: Scikit-learn and GPyTorch
 
 [A section about sklearn, GPyTorch]
 
 [Other tools]
-
-As discussed in the introduction, this presentation of GPs is quick and to-the-point. Slower and more thorough introductions can be found in the references. [TODO: add the two blogposts, and the relevant chapters in GPML].
-
 
 ## A visual description of Bayesian Optimization
 
