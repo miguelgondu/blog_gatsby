@@ -87,9 +87,9 @@ Let's visualize this distribution for all points in the interval [-10, 10], swee
 
 <CenteredImage size={"largeSize"} src={"/assets/bo_blogpost/xsinx_gp_all_distributions.gif"} alt={"An animation showing several Gaussian distributions predicted by a GP, sweeping through the x axis, of x * sin(x)"} />
 
-Notice how the distribution spikes when close to the training points, and flattens outside the support of the data. This is exactly what we mean by quantifying the uncertainty.
+Notice how the distribution spikes when close to the training points, and flattens outside the support of the data. This is exactly what we mean by uncertainty quantification.
 
-This process generalizes to collections of previously unseen points $\bm{X}_*$, allowing us consider the mean prediction and the uncertainties around it. The math is essentially the same, and the details can be found in the references.[^the-ugly-details-multidim]
+This process of predicting Gaussian distributions generalizes to collections of previously unseen points $\bm{X}_*$, allowing us consider the mean prediction and the uncertainties around it. The math is essentially the same, and the details can be found in the references.[^the-ugly-details-multidim]
 
 [^the-ugly-details-multidim]: See e.g. [TODO: add ref].
 
@@ -149,6 +149,8 @@ Bayesian Optimization (B.O.) has three key ingredients:
 - A probabilistic surrogate model $\tilde{f}\colon\mathcal{X}\to\mathbb{R}$, whose goal is to approximate the objective function. Since we will use Gaussian Processes, the ingredients we will need are a prior $\mu_0\colon\mathcal{X}\to\mathbb{R}$ and kernel $k$.[^other-surrogate-models]
 - An **acquisition function** $\alpha(\bm{x}|\tilde{f})$ which measures the "potential" of new points using the surrogate model. If a given $\bm{x}_*\in\mathcal{X}$ scores high in the acquisition function, then it potentially maximizes the objective function $f$.
 
+[^other-surrogate-models]: We are using Gaussian Processes as a surrogate model here, but other ones could be used! The main requirement is for them to allow us to have good uncertainty estimates of the objective function. [Recent research by AGW has explored this direction]().
+
 The usual loop in a B.O. goes like this:
 
 1. Fit the surrogate model $\tilde{f}$ to the data you have collected so far.
@@ -157,45 +159,43 @@ The usual loop in a B.O. goes like this:
 
 We usually stop after finding an optimum that is high enough, or after a fixed number of iterations.[^stopping-criteria]
 
-As we discussed in the introduction, examples of black-box objective functions include [TODO: add]. Now we discuss four examples of acquisition functions.
-
 [^stopping-criteria]: It's not so simple. The stopping criteria of BO are a topic that is currently under plenty of research. See the references.
 
-[^other-surrogate-models]: We are using Gaussian Processes as a surrogate model here, but other ones could be used! The main requirement is for them to allow us to have good uncertainty estimates of the objective function. [Recent research by AGW has explored this direction]().
+As we discussed in the introduction, examples of black-box objective functions include the output of expensive simulations in physics and biology, or the accuracy of an ML setup. Now we discuss four examples of acquisition functions.
 
 ### Thompson Sampling
 
 The simplest of all acquisition functions is to sample one approximation of $f$ and to optimize it. This can be done quite easily in most probabilistic regression methods, including Gaussian Processes.
 
-Circling back to our guiding example of $x\sin(x)$, this would be the candidate proposed by Thompson Sampling (TS):
+Circling back to our guiding example of $x\sin(x)$, let's start from a single random sample and iteratively query the next proposal suggested by Thompson sampling:
 
-[Plot with one sample]
+[TODO: build this animation]
 
 ### Improvement-based policies
 
-Since we have estimates of the posterior mean $\mu$ and the posterior variance $\sigma^2$ at each step, we have access to a lot more than just a single sample (as in TS). For each new point $\bm{x}$, consider its "improvement":
+Since we have estimates of the posterior mean $\mu$ and the posterior variance $\sigma^2$ at each step, we have access to a lot more than just a single sample (as in TS). For each new point $\bm{x}_*$, consider its "improvement":
 
-$$ I(\bm{x}; \mathcal{D}) = \max(0, f(\bm{x}) - f_{\text{best}})$$
+$$ I(\bm{x}_*; \mathcal{D}) = \max(0, f(\bm{x}_*) - f_{\text{best}})$$
 
-where $f_{\text{best}}$ is the maximum value in our trace $\mathcal{D} = \{(\bm{x}_n, f(\bm{x}_n))\}$. The improvement measures how much we are gaining at point $f(\bm{x})$, compared to the current best.
+where $f_{\text{best}}$ is the maximum value in our trace $\mathcal{D} = \{(\bm{x}_n, f(\bm{x}_n))\}_{n=1}^N$. The improvement measures how much we are gaining at point $f(\bm{x}_*)$, compared to the current best.
 
 since we have a probabilistic approximation of $f$, we can compute quantities like the **probability of improvement** (PI):
 
-$$ \alpha_{\text{PI}}(\bm{x}; \mathcal{D}) = \text{Prob}[I(\bm{x};\mathcal{D}) > 0] = \text{Prob}[f(\bm{x}) > f_{\text{best}}], $$
+$$ \alpha_{\text{PI}}(\bm{x}_*; \mathcal{D}) = \text{Prob}[I(\bm{x}_*;\mathcal{D}) > 0] = \text{Prob}[f(\bm{x}_*) > f_{\text{best}}], $$
 
 In other words, PI measures the probability that a given point will be better than the current maximum. Another quantity we can measure is the **expected improvement** (EI)
 
-$$ \alpha_{\text{EI}}(\bm{x}; \mathcal{D}) = \mathbb{E}[I(\bm{x};\mathcal{D})] = ..., $$
+$$ \alpha_{\text{EI}}(\bm{x}_*; \mathcal{D}) = \mathbb{E}[I(\bm{x}_*;\mathcal{D})] = ..., $$
 
-which measures by how much a given $\bm{x}$ may improve on the current best.
+which measures by how much a given $\bm{x}_*$ may improve on the current best.
 
-Given the running example, here are the improvement-based policies visually. [TODO: add and explain].
+Using the same running example and sample we showed for TS, here are the improvement-based policies visually: [TODO: add and explain].
 
 ### Upper-Confidence Bound
 
 Another type of acquisition function is the Upper-Confidence Bound (UCB), which optimistically chooses the points are on the upper bounds of the uncertainty. More explicitly, let $\mu$ and $\sigma$ be the posterior mean and standard deviation on a given point $\bm{x}$ after fitting the GP, then
 
-$$ \alpha_{\text{UCB}}(\bm{x}; \mathcal{D}) = \mu(\bm{x}) + \kappa\sigma(\bm{x}), $$
+$$ \alpha_{\text{UCB}}(\bm{x}_*; \mathcal{D}) = \mu(\bm{x}_*) + \kappa\sigma(\bm{x}_*), $$
 
 where $\kappa > 0$ is a hyperparameter that states how optimistic we are on the upper bound of the variance. High values of $\kappa$ encourage exploration (i.e. exploring regions with higher uncertainty), while lower values of $\kappa$ encourage exploitation (staying close to what the posterior mean has learned). Here are some examples of the UCB acquisition function:
 
