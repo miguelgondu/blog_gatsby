@@ -15,6 +15,8 @@ categories:
     - Optimization
 ---
 
+import CenteredImage from './CenteredImage'
+
 # Comparing Bayesian Optimization against Evolutionary Strategies
 
 > This blogpost contains a longer version of a chapter in [my dissertation](). Check it out if you're interested!
@@ -41,9 +43,7 @@ $$\text{\texttt{Cross-in-tray}}(\bm{x}) = \left|\sin(x_1)\sin(x_2)\exp\left(\lef
 
 We take the 2D versions of these functions for visualization, but notice how these can easily be extended to higher dimensions. The `Easom` test function has its optimum at $(\pi, \pi)$, and the `Cross-in-tray` has 4 equally good optima at $(\pm 1.35, \pm 1.35)$, approximately.
 
-<p align="center">
-  <img src={"/assets/bo_blogpost/all_three_test_functions.jpg"}  width="100%"/>
-</p>
+<CenteredImage size={"largeSize"} src={"/assets/bo_blogpost/all_three_test_functions.jpg"} alt={"Three test functions: x * sin(x), Easom and Cross-in-tray"} />
 
 [^optimization-benchmarks]: There are plenty more test functions for optimization in [this link](https://www.sfu.ca/~ssurjano/optimization.html).
 
@@ -71,9 +71,7 @@ The matrix $\bm{K} = [k(\bm{x}_i, \bm{x}_j)]$ is known as the **Gram matrix**, a
 
 Assuming $f\sim \text{GP}(\mu, k)$ allows for computing **an entire distribution** over previously unseen points. As an example, let's say you have a dataset $\mathcal{D} = \{(x_1, f(x_1)), \dots, (x_N, f(x_N))\}$ for our test function $f(x)=x\sin(x)$, measured with a little bit of noise: 
 
-<p align="center">
-  <img src={"/assets/bo_blogpost/xsinx_w_noisy_samples.jpg"}  width="100%"/>
-</p>
+<CenteredImage size={"midSize"} src={"/assets/bo_blogpost/xsinx_w_noisy_samples.jpg"} alt="Noisy samples from x * sin(x)" />
 
 Given a new point $x_*$ that's not on the dataset, you can consider the joint distribution of $\{f(x_1), \dots, f(x_N), f(x_*)\}$ and compute the conditional distribution of $f(x_*)$ given the dataset:[^the-ugly-details]
 
@@ -83,46 +81,65 @@ $$ f(\bm{x}_*) \sim \mathcal{N}(\mu_0(\bm{x}_*) + \bm{k}_*^\top \bm{K}^{-1}(\bm{
 
 Consider the distribution around $x_*=0$ in our running example, assuming that the prior $\mu_0$ equals $0$. The closest values we have in the dataset are at $x=-0.7$ and $x=1.1$, which means $x_*=0$ is far away from the training set. This is automatically quantified by the variance in the posterior distribution of $f(x_*)$:
 
-<p align="center">
-  <img src={"/assets/bo_blogpost/xsinx_dist_at_0.jpg"}  width="100%"/>
-</p>
+<CenteredImage size={"midSize"} src={"/assets/bo_blogpost/xsinx_dist_at_0.jpg"} alt={"A Gaussian distribution with mean and variance predicted by a Gaussian Process, fitted on noisy samples of x * sin(x)"} />
 
 Let's visualize this distribution for all points in the interval [-10, 10], sweeping through them and highlighting the actual value of the function $f(x) = x\sin(x)$.
 
-<p align="center">
-  <img src={"/assets/bo_blogpost/xsinx_gp_all_distributions.gif"}  width="100%"/>
-</p>
+<CenteredImage size={"largeSize"} src={"/assets/bo_blogpost/xsinx_gp_all_distributions.gif"} alt={"An animation showing several Gaussian distributions predicted by a GP, sweeping through the x axis, of x * sin(x)"} />
+
+Notice how the distribution spikes when close to the training points, and flattens outside the support of the data. This is exactly what we mean by quantifying the uncertainty.
 
 This process generalizes to collections of previously unseen points $\bm{X}_*$, allowing us consider the mean prediction and the uncertainties around it. The math is essentially the same, and the details can be found in the references.[^the-ugly-details-multidim]
 
 [^the-ugly-details-multidim]: See e.g. [TODO: add ref].
 
-If we consider a fine enough grid of points and consider their posterior distribution, we can essentially "sample a function" out of our Gaussian Process using the same formulas described above. For example, these are 5 different samples of potential approximations of $f(x) = x\sin(x)$ according to the posterior of the GP:
+If we consider a fine enough grid of points and consider their posterior distribution, we can essentially "sample a function" out of our Gaussian Process using the same formulas described above. For example, these are 5 different samples of potential approximations of $f(x) = x\sin(x)$ according to the posterior of the GP:[^ugly-detail-RKHS]
 
-<p align="center">
-  <img src={"/assets/bo_blogpost/xsinx_samples.jpg"}  width="100%"/>
-</p>
+<CenteredImage size={"midSize"} src={"/assets/bo_blogpost/xsinx_samples.jpg"} alt={"Five samples from a GP fitted on the noisy evaluations of x * sin(x)"} />
 
-This process of sampling functions out of a Gaussian Process can actually be made formal: a kernel $k$ spans a *Reproducing Kernel Hilbert Space* (RKHS),[^ugly-detail-RKHS] which is a space of functions from which the GP samples [TODO: read a bit more and add here]. Common choices of kernels are the RBF and the Matérn family:
+Common choices of kernels are the RBF and the Matérn family:
 
-$$ [TODO: add kernels] $$
+- $k_{\text{RBF}}(\bm{x},\bm{x}';\; \theta_{\text{out}}, \bm{\theta}_\text{l}) = \theta_{\text{out}}\exp\left(-\frac{1}{2}r(\bm{x}, \bm{x}'; \bm{\theta}_{\text{l}})\right)$
 
-[^ugly-detail-RKHS]: Hilbert Spaces are a special kind of vector space, which have both a dot product and a topology that is complete w.r.t. this dot product. If you are curious about the formalities, check [TODO: add reference].
+- $k_\nu(\bm{x}, \bm{x}';\; \theta_{\text{out}}, \bm{\theta}_\text{l}) = \theta_{\text{out}}\frac{2^{1 - \nu}}{\Gamma(\nu)}(\sqrt{2\nu}r)^\nu K_\nu(\sqrt{2\nu}r(\bm{x}, \bm{x}'; \bm{\theta}_{\text{l}}))$
 
-These kernels have some hyperparameters in them (like the lengthscale matrix $\bm{\theta}_l$ or the output scale $\theta_{\text{out}}$). **Fitting** a Gaussian Process to a given dataset consists of estimating these hyperparameters by maximizing the likelihood of the data:
+[^ugly-detail-RKHS]: This process of sampling functions out of a Gaussian Process can actually be made formal: a kernel $k$ spans a *Reproducing Kernel Hilbert Space* (RKHS), which is a space of functions from which the GP samples [TODO: read a bit more and add here]. Hilbert Spaces are a special kind of vector space, which have both a dot product and a topology that is complete w.r.t. this dot product. If you are curious about the formalities, check [TODO: add reference].
 
-[TODO: add].
+Where
+- $r(\bm{x}, \bm{x}'; \bm{\theta}_{\text{l}}) = (\bm{x} - \bm{x}')^\top(\bm{\theta}_{\text{l}})(\bm{x} - \bm{x}')$ is the distance between $\bm{x}$ and $\bm{x}'$ mediated by a diagonal matrix of lengthscales $\bm{\theta}_{\text{l}}$, $\theta_{\text{out}} > 0$ is a positive hyperparameter,
+- $\Gamma$ is the [Gamma function](TODOADD), $K_\nu$ is the [modified Bessel function](TODOADD) of the second kind, and
+- $\nu$ is usually 5/2, but it can be any positive real number. For $\nu = i + 1/2$ (with $i$ a positive integer) the kernel takes a nice closed form.[^details-on-matern]
+
+[^details-on-matern]: For more details, see [Probabilistic Numerics, Sec. 5.5.]().
+
+These kernels have some hyperparameters in them (like the lengthscale matrix $\bm{\theta}_l$ or the output scale $\theta_{\text{out}}$). **Fitting** a Gaussian Process to a given dataset consists of estimating these hyperparameters by maximizing the likelihood of the data.
 
 To summarize,
 - By using GPs, we assume that finite collections of evaluations of a function are distributed normally around a certain prior $\mu_0$, with covariances dictated by a kernel $k$.
 - This assumption allows us to compute distributions over previously unseen points.
 - Kernels define the space of functions we can use to approximate, and come with certain hyperparameters that we need to fit by maximizing the likelihood.
 
-## Gaussian Processes in practice: Scikit-learn and GPyTorch
+## Gaussian Processes in practice
 
-[A section about sklearn, GPyTorch]
+### scikit-learn
 
-[Other tools]
+There are several open source implementations of Gaussian Process Regression, as described above. First, there's `scikit-learn`'s interface, which quickly allows for specifying a kernel. This is the code you would need to create the noisy samples described above, and to fit a Gaussian Process to those samples:
+
+```python
+TODO: ADD
+```
+
+Internally, `scikit-learn` uses `scipy`'s optimizers to maximize the likelihood w.r.t. the kernel parameters. You can check the kernel's optimized parameters by printing `model.kernel_`.
+
+`scikit-learn`'s implementation is great, but it only deals with the classic **exact** inference, in which we solve for the inverse of the Gram matrix. This is prohibitively expensive for large datasets, since the complexity of computing this inverse scales cubically with the size of the dataset. More contemporary approaches use approximate versions of this inference.
+
+### GPyTorch
+
+[A section about GPyTorch]
+
+### Other tools
+
+[Jaxpy (?), GPFlow]
 
 ## A visual description of Bayesian Optimization
 
@@ -181,6 +198,10 @@ Another type of acquisition function is the Upper-Confidence Bound (UCB), which 
 $$ \alpha_{\text{UCB}}(\bm{x}; \mathcal{D}) = \mu(\bm{x}) + \kappa\sigma(\bm{x}), $$
 
 where $\kappa > 0$ is a hyperparameter that states how optimistic we are on the upper bound of the variance. High values of $\kappa$ encourage exploration (i.e. exploring regions with higher uncertainty), while lower values of $\kappa$ encourage exploitation (staying close to what the posterior mean has learned). Here are some examples of the UCB acquisition function:
+
+[TODO: add]
+
+## Bayesian Optimization in practice: BoTorch
 
 [TODO: add]
 
