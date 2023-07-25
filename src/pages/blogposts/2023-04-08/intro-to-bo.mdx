@@ -17,7 +17,7 @@ import CenteredImage from './CenteredImage'
 
 # Bayesian Optimization using Gaussian Processes: an introduction
 
-> This blogpost contains a longer version of a chapter in [my dissertation](). Check it out if you're interested!
+> This blogpost contains a longer version of Chap. 3 in [my dissertation](). Check it out if you're interested!
 
 Bayesian Optimization (BO) is a tool for black-box optimization. By black-box, we mean functions to which we only have access by querying: expensive simulations of the interaction between a molecule and a folded protein, users interacting with our websites, or the accuracy of a Machine Learning algorithm with a given configuration of hyperparameters.
 
@@ -39,7 +39,7 @@ We take the 2D versions of these functions for visualization, but notice how the
 
 [^optimization-benchmarks]: There are plenty more test functions for optimization in [this link](https://www.sfu.ca/~ssurjano/optimization.html).
 
-## A short introduction to Gaussian Processes
+## An introduction to Gaussian Processes
 
 Gaussian Processes are a **probabilistic regression method**. This means that they approximate a function $f\colon\mathcal{X}\to\mathbb{R}$ while quantifying values like **expectations** and **variances**. More formally,
 
@@ -108,7 +108,7 @@ These kernels have some hyperparameters in them (like the lengthscale matrix $\b
 
 To summarize,
 - By using GPs, we assume that finite collections of evaluations of a function are distributed normally around a certain prior $\mu_0$, with covariances dictated by a kernel $k$.
-- This assumption allows us to compute distributions over previously unseen points.
+- This assumption allows us to compute distributions over previously unseen points $\bm{x}_*$.
 - Kernels define the space of functions we can use to approximate, and come with certain hyperparameters that we need to fit by maximizing the likelihood.
 
 ## Gaussian Processes in practice
@@ -159,7 +159,7 @@ And this is the predicted mean and uncertainty:
 
 <CenteredImage size={"midSize"} src={"/assets/bo_blogpost/gp_in_sklearn.jpg"} alt={"A GP fitted on the noisy evaluations of x * sin(x) using an RBF kernel with diagonal noise, using scikit-learn as the backend."} />
 
-A pretty good fit! `scikit-learn`'s implementation is great, but it only deals with the classic **exact** inference, in which we solve for the inverse of the Gram matrix exactly. This is prohibitively expensive for large datasets, since the complexity of computing this inverse scales cubically with the size of the dataset. More contemporary approaches use approximate versions of this inference.
+A pretty good fit! `scikit-learn`'s implementation is great, but it only deals with the classic **exact** inference, in which we solve for the inverse of the Gram matrix of all the data. This is prohibitively expensive for large datasets, since the complexity of computing this inverse scales cubically with the size of the dataset. More contemporary approaches use approximate versions of this inference.
 
 ### GPyTorch
 
@@ -291,7 +291,7 @@ There are three other tools for building GPs that come to mind:
 - [GPJax, made by Thomas Pinder](https://github.com/JaxGaussianProcesses/GPJax). Instead of using PyTorch for the backend, it uses Jax. I'd love to try it at some point!
 - [GPFlow, made by James Hensman and Alexander G. de G. Matthews](https://github.com/GPflow/GPflow). It uses Tensorflow as the backend.
 
-## A visual description of Bayesian Optimization
+## A visual introduction to Bayesian Optimization
 
 Bayesian Optimization (B.O.) has three key ingredients:
 
@@ -319,7 +319,7 @@ The simplest of all acquisition functions is to sample one approximation of $f$ 
 
 Circling back to our guiding example of $x\sin(x)$, let's start from a single random sample and iteratively query the next proposal suggested by Thompson sampling:
 
-[TODO: build this animation]
+<CenteredImage size={"midSize"} src={"/assets/bo_blogpost/bo_w_TS.gif"} alt={"A GIF showing how Thompson Sampling works: we fit a Gaussian Process, sample from it, and consider this sample's optimum."} />
 
 ### Improvement-based policies
 
@@ -335,11 +335,15 @@ $$ \alpha_{\text{PI}}(\bm{x}_*; \mathcal{D}) = \text{Prob}[I(\bm{x}_*;\mathcal{D
 
 In other words, PI measures the probability that a given point will be better than the current maximum. Another quantity we can measure is the **expected improvement** (EI)
 
-$$ \alpha_{\text{EI}}(\bm{x}_*; \mathcal{D}) = \mathbb{E}[I(\bm{x}_*;\mathcal{D})] = ..., $$
+$$ \alpha_{\text{EI}}(\bm{x}_*; \mathcal{D}) = \mathbb{E}[I(\bm{x}_*;\mathcal{D})]$$
 
-which measures by how much a given $\bm{x}_*$ may improve on the current best.
+which measures by how much a given $\bm{x}_*$ may improve on the current best.[^closed-form]
 
-Using the same running example and sample we showed for TS, here are the improvement-based policies visually: [TODO: add and explain].
+[^closed-form]: These two acquisition functions have closed form when we use vanilla Gaussian Processes. For the technical details, check [TODO: add].
+
+Using the same running example and sample we showed for TS, here's how EI fairs:
+
+<CenteredImage size={"midSize"} src={"/assets/bo_blogpost/bo_w_EI.gif"} alt={"A GIF showing how Expected Improvement-based Bayesian Optimization works: we fit a Gaussian Process and use the uncertainty estimates (mean and covariance) to determine the potential improvement of each point in the domain."} />
 
 ### Upper-Confidence Bound
 
@@ -349,13 +353,11 @@ $$ \alpha_{\text{UCB}}(\bm{x}_*; \mathcal{D}, \beta) = \mu(\bm{x}_*) + \beta\sig
 
 where $\beta > 0$ is a hyperparameter that states how optimistic we are on the upper bound of the variance. High values of $\beta$ encourage exploration (i.e. exploring regions with higher uncertainty), while lower values of $\beta$ encourage exploitation (staying close to what the posterior mean has learned). To showcase the impact of this hyperparameter, here are two versions of BO on our running example: one with $\beta=1$, and another with $\beta=5$.
 
-[TODO: add]
+<CenteredImage size={"midSize"} src={"/assets/bo_blogpost/bo_w_UCB_100.gif"} alt={"A GIF showing how Upper Confidence Bound-based Bayesian Optimization works: we fit a Gaussian Process and use the uncertainty estimates to compute the mean plus a multiple of the standard deviation, which we consider an optimistic choice for where to sample next."} />
 
-Notice that, for $\beta=1$, the optimization gets stuck on the first global optima.
+Notice that, for $\beta=1$, the optimization gets stuck on the first global optima. This doesn't happen for $\beta=5$:
 
-[TODO: add]
-
-
+<CenteredImage size={"midSize"} src={"/assets/bo_blogpost/bo_w_UCB_500.gif"} alt={"A GIF showing how Upper Confidence Bound-based Bayesian Optimization works: we fit a Gaussian Process and use the uncertainty estimates to compute the mean plus a multiple of the standard deviation, which we consider an optimistic choice for where to sample next. In this case, the beta is chosen to be 5."} />
 
 ## Bayesian Optimization in practice: BoTorch
 
@@ -373,50 +375,12 @@ Notice how [TODO: describe the video...]
 
 [^code-link]: [A working version of all the code in this blogpost can be found here](), and [this particular Bayesian Optimization loop can be found here]().
 
-### BO's drawbacks
+## Bayesian Optimization's drawbacks
 
 - How do we optimize the acquisition function?
 - Scaling to high dimensions and big datasets.
 - Parallelizing.
 - Stopping criteria?
-
-## A couple of evolutionary strategies
-
-Instead of building a model of the objective function $f$, evolutionary strategies (ES) maintain a mean $m$ and covariance matrix $\Sigma$ which parametrize a Gaussian distribution around the current best-performing elements of the search space. At each step, an ES algorithm samples a population centered at $m$ with covariance $\Sigma$, and updates them according to the new maxima found (if any).
-
-This section briefly introduces a couple ES. [A great visual introduction (which inspired this blogpost) is available here.]()
-
-### Simple ES
-
-The simplest version of ES is to consider a fixed covariance $\Sigma = s\bm{I}_{D}$ where $\bm{I}_D$ is the identity matrix of size $D$, the size of the search space $\mathcal{X}$, and $s>0$ is a scale hyperparameter that governs the size of the covariance. The update rule only considers the mean, and computes it either greedily as the single best performing element, or as the average of e.g. 25% of the best performing members of the population.
-
-Here's a simple ES in practice in Easom and in Cross-in-tray. Depending on the size of the scale $s$, a simple ES algorithm might get stuck in local optima.
-
-[TODO: add video]
-
-### CMA-ES
-
-A smarter strategy is to adapt the covariance matrix, shaping it by only the best fourth of the population. The rule for adapting the distribution becomes
-
-[TODO: add rule for adaptation]
-
-Similarly, we can run CMA-ES on Easom and Cross-in-tray:
-
-[...]
-
-### ES' drawbacks
-
-- Sometimes $D$ is so large that storing a $D^2$ matrix (the covariance) is prohibitive.
-- It's highly sample inefficient.
-- That's it, I think.
-
-## A comparison: sample efficiency
-
-In these examples we have shown a single trace on our test functions. What happens if we run several? Will these optimization algorithms always converge? And if so, how many queries to the objective function did they require?
-
-Notice that, in general, evolutionary strategies query the objective function in a large number of points for each generation (i.e. the population size). On the other hand, Bayesian Optimization queries one point per iteration. We can expect Bayesian Optimization to converge with less queries than evolutionary strategies.
-
-In this final example, we run the evolutionary strategies and Bayesian Optimization on both test function 100 times, stopping after finding an optima that is at least 95% the global optima. The results go as follows:
 
 ## Conclusion
 
