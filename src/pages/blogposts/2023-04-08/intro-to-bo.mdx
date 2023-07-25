@@ -1,15 +1,13 @@
 ---
 date: "2023-04-08"
-title: "Comparing Bayesian Optimization against evolutionary strategies"
-summary: "A simple implementation of Bayesian Optimization using GPyTorch and BoTorch, and a comparison with evolutionary strategies like CMA-ES implemented in EvoTorch"
+title: "Bayesian Optimization using Gaussian Processes: an introduction"
+summary: "A tutorial on Bayesian Optimization using GPyTorch and BoTorch, including an introduction to Gaussian Process Regression."
 lang: "en"
 show: true
 imgsrc: "/assets/bo_blogpost/xsinx_gp_all_distributions.gif"
 categories:
     - Bayesian Optimization
-    - Evolutionary Strategies
     - PyTorch
-    - EvoTorch
     - GPyTorch
     - BoTorch
     - Optimization
@@ -17,7 +15,7 @@ categories:
 
 import CenteredImage from './CenteredImage'
 
-# Comparing Bayesian Optimization against Evolutionary Strategies
+# Bayesian Optimization using Gaussian Processes: an introduction
 
 > This blogpost contains a longer version of a chapter in [my dissertation](). Check it out if you're interested!
 
@@ -25,17 +23,11 @@ Bayesian Optimization (BO) is a tool for black-box optimization. By black-box, w
 
 The gist of BO is to approximate the function we are trying to optimize with a regression model that is uncertainty aware, and to use these uncertainty estimates to determine what our next test point should be. It is usual practice to do BO using Gaussian Processes (GPs), and this blogpost starts with an introduction to GP regression.
 
-BO is not the only alternative for black-box optimization, and in this blogpost we do a short comparison against evolutionary strategies. Folk knowledge says that BO doesn't scale well with the dimensions of the input space (indeed, some people say it doesn't work beyond 20).[^folk]
-
 This blogpost introduces (Gaussian Process based) Bayesian Optimization, and provides code snippets for the experiments performed. The tools used include GPyTorch and BoTorch as the main engines for Gaussian Processes and BO, and EvoTorch for the evolutionary strategies.
-
-Some prerequisites: This blogpost goes pretty fast through what Gaussian Processes are, and how evolutionary strategies work. Links are provided at the beginning of these sections.
-
-[^folk]: TODO Add reference.
 
 ## Running examples: $x\sin(x)$, Easom, and Cross-in-tray
 
-In this blogpost we will use three running examples to run the comparison. The first one is the function $f(x) = x\sin(x)$, which is one-dimensional in its inputs and allows us to visualize how GPs handle uncertainty. The two remaining ones are part of a plethora of test functions that are usually included in black-box optimization benchmarks:[^optimization-benchmarks] `Easom` and `Cross-in-tray`. Their formulas are given by
+In this blogpost we will use three running examples to explain GPs and BO. The first one is the function $f(x) = x\sin(x)$, which is one-dimensional in its inputs and allows us to visualize how GPs handle uncertainty. The two remaining ones are part of a plethora of test functions that are usually included in black-box optimization benchmarks:[^optimization-benchmarks] `Easom` and `Cross-in-tray`. Their formulas are given by
 
 $$\text{\texttt{Easom}}(\bm{x}) = \cos(x_1)\cos(x_2)\exp\left(-(x_1-\pi)^2 - (x_2 - \pi)^2\right),$$
 
@@ -106,7 +98,7 @@ Common choices of kernels are the RBF and the Matérn family:
 [^ugly-detail-RKHS]: This process of sampling functions out of a Gaussian Process can actually be made formal: a kernel $k$ spans a *Reproducing Kernel Hilbert Space* (RKHS), which is a space of functions from which the GP samples [TODO: read a bit more and add here]. Hilbert Spaces are a special kind of vector space, which have both a dot product and a topology that is complete w.r.t. this dot product. If you are curious about the formalities, check [TODO: add reference].
 
 Where
-- $r(\bm{x}, \bm{x}'; \bm{\theta}_{\text{l}}) = (\bm{x} - \bm{x}')^\top(\bm{\theta}_{\text{l}})(\bm{x} - \bm{x}')$ is the distance between $\bm{x}$ and $\bm{x}'$ mediated by a diagonal matrix of lengthscales $\bm{\theta}_{\text{l}}$, $\theta_{\text{out}} > 0$ is a positive hyperparameter,
+- $r(\bm{x}, \bm{x}'; \bm{\theta}_{\text{l}}) = (\bm{x} - \bm{x}')^\top(\bm{\theta}_{\text{l}})(\bm{x} - \bm{x}')$ is the distance between $\bm{x}$ and $\bm{x}'$ mediated by a diagonal matrix of lengthscales $\bm{\theta}_{\text{l}}$, $\theta_{\text{out}} > 0$ is a positive hyperparameter called the output scale,
 - $\Gamma$ is the [Gamma function](TODOADD), $K_\nu$ is the [modified Bessel function](TODOADD) of the second kind, and
 - $\nu$ is usually 5/2, but it can be any positive real number. For $\nu = i + 1/2$ (with $i$ a positive integer) the kernel takes a nice closed form.[^details-on-matern]
 
@@ -126,20 +118,178 @@ To summarize,
 There are several open source implementations of Gaussian Process Regression, as described above. First, there's `scikit-learn`'s interface, which quickly allows for specifying a kernel. This is the code you would need to create the noisy samples described above, and to fit a Gaussian Process to those samples:
 
 ```python
-TODO: ADD
+from sklearn.gaussian_process import GaussianProcessRegressor
+from sklearn.gaussian_process.kernels import RBF, WhiteKernel
+
+import numpy as np
+
+def fit_gaussian_process(
+    inputs: np.ndarray, outputs: np.ndarray
+) -> GaussianProcessRegressor:
+    """
+    Fits a Gaussian Process with an RBF kernel
+    to the given inputs and outputs.
+    """
+
+    # --------- Defining the kernel ---------
+    # the "1 *" in front is understood as the
+    # output scale, and will be optimized during
+    # training. Besides the RBF, we also add a
+    # WhiteKernel, which corresponds to adding a
+    # constant to the diagonal of the covariance.
+    kernel = 1 * RBF() + WhiteKernel()
+
+    # ------ Defining the Gaussian Process -----
+    # Besides the kernel, we could also specify the
+    # internal optimizer, the number of iterations,
+    # etc.
+    model = GaussianProcessRegressor(kernel=kernel)
+    model.fit(inputs, outputs)
+
+    return model
 ```
 
-Internally, `scikit-learn` uses `scipy`'s optimizers to maximize the likelihood w.r.t. the kernel parameters. You can check the kernel's optimized parameters by printing `model.kernel_`.
+Internally, `scikit-learn` uses `scipy`'s optimizers to maximize the likelihood w.r.t. the kernel parameters. You can check the kernel's optimized parameters by printing `model.kernel_`. These are the hyperparameters for our running example on $f(x) = x\sin(x)$:
 
-`scikit-learn`'s implementation is great, but it only deals with the classic **exact** inference, in which we solve for the inverse of the Gram matrix. This is prohibitively expensive for large datasets, since the complexity of computing this inverse scales cubically with the size of the dataset. More contemporary approaches use approximate versions of this inference.
+```
+4.72**2 * RBF(length_scale=1.58) + WhiteKernel(noise_level=0.229)
+```
+
+And this is the predicted mean and uncertainty:
+
+<CenteredImage size={"midSize"} src={"/assets/bo_blogpost/gp_in_sklearn.jpg"} alt={"A GP fitted on the noisy evaluations of x * sin(x) using an RBF kernel with diagonal noise, using scikit-learn as the backend."} />
+
+A pretty good fit! `scikit-learn`'s implementation is great, but it only deals with the classic **exact** inference, in which we solve for the inverse of the Gram matrix exactly. This is prohibitively expensive for large datasets, since the complexity of computing this inverse scales cubically with the size of the dataset. More contemporary approaches use approximate versions of this inference.
 
 ### GPyTorch
 
-[A section about GPyTorch]
+GPyTorch was developed with other forms of Gaussian Processes in mind, plus scalable exact inference. The authors promise exact inference with millions of datapoints, and they achieve this by reducing the computational complexity of inference from $O(n^3)$ to $O(n^2)$. [Check their paper for more details](https://arxiv.org/abs/1809.11165). These other forms of Gaussian Processes include approximations using inducing points, and deep kernel learning (where we use a neural network to project high-dimensional data to a low-dimensional feature space before applying the kernel) (?).
 
-### Other tools
+Following the tutorials, this is how you would specify the same Gaussian Process we did for scikit-learn:
 
-[Jaxpy (?), GPFlow]
+```python
+import torch
+
+from gpytorch.models import ExactGP
+from gpytorch.distributions import MultivariateNormal
+from gpytorch.likelihoods import GaussianLikelihood
+from gpytorch.means import ZeroMean
+from gpytorch.kernels import ScaleKernel, RBFKernel
+
+from gpytorch.mlls import ExactMarginalLogLikelihood
+
+
+class OurGP(ExactGP):
+    def __init__(
+        self,
+        train_inputs: torch.Tensor,
+        train_targets: torch.Tensor,
+        likelihood: GaussianLikelihood,
+    ):
+        super().__init__(train_inputs, train_targets, likelihood)
+
+        # Defining the mean
+        # The convention is to call it "mean_module",
+        # but I call it mean.
+        self.mean = ZeroMean()
+
+        # Defining the kernel
+        # The convention is to call it "covar_module",
+        # but I usually just call it kernel.
+        self.kernel = ScaleKernel(RBFKernel())
+
+    def forward(self, inputs: torch.Tensor) -> MultivariateNormal:
+        """
+        The forward method is used to compute the
+        predictive distribution of the GP.
+        """
+        mean = self.mean(inputs)
+        covar = self.kernel(inputs)
+
+        return MultivariateNormal(mean, covar)
+
+
+def fit_gaussian_process(
+    inputs: torch.Tensor,
+    outputs: torch.Tensor,
+) -> OurGP:
+    """
+    Fits a Gaussian Process with an RBF kernel to
+    the given inputs and outputs
+    """
+
+    # ------- Defining the likelihood ----------
+    # The likelihood is the distribution of the outputs
+    # given the inputs and the GP.
+    likelihood = GaussianLikelihood()
+
+    # ------------ Defining the model ------------
+    model = OurGP(inputs, outputs, likelihood)
+
+    # ------------ Training the model ------------
+    # The marginal log likelihood is the objective
+    # function we want to maximize.
+    mll = ExactMarginalLogLikelihood(likelihood, model)
+    mll.train()
+
+    # We optimize the marginal likelihood just like
+    # optimize any other PyTorch model. The model
+    # parameters in this case come from the kernel
+    # and likelihood.
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.1)
+
+    for iteration in range(3000):
+        optimizer.zero_grad()
+        dist_ = model(inputs)
+        loss = -mll(dist_, outputs).mean()
+        loss.backward()
+        optimizer.step()
+
+        if iteration % 100 == 0:
+            print(f"Iteration {iteration + 1}/{3000}: Loss = {loss.item()}")
+
+    # It is IMPORTANT to call model.eval(). This
+    # will tell GPyTorch that the forward calls
+    # are now inference calls, computing the 
+    # posterior distribution with the given
+    # kernel hyperparameters.
+    model.eval()
+
+    return model
+```
+
+Notice that, to train a model using GPyTorch, we need to write significantly more code: specifying that the likelihood is Gaussian,[^other-likelihoods] define the optimizer explicity, and optimize the likelihood manually. This might seem verbose, but it's actually giving us plenty of flexibility! We could e.g. include a neural network in our `forward`, use other likelihoods, or interplay with other PyTorch-based libraries.
+
+[^other-likelihoods]: TODO: discuss e.g. the Categorical likelihood.
+
+You can also see the kernel hyperparameters:
+
+```python
+print("lengthscale: ", model.kernel.base_kernel.lengthscale.item())
+print("output scale: ", model.kernel.outputscale.item())
+print("noise: ", model.likelihood.noise_covar.noise.item())
+```
+
+Which outputs something pretty similar to what scikit-learn gave us:
+
+```
+lengthscale:  1.5464047193527222
+output scale:  20.46845245361328
+white noise:  0.23084479570388794
+```
+
+And the predictive posterior looks like this:
+
+<CenteredImage size={"midSize"} src={"/assets/bo_blogpost/gp_in_gpytorch.jpg"} alt={"A GP fitted on the noisy evaluations of x * sin(x) using an RBF kernel with diagonal noise and outputscale, using GPyTorch as the backend."} />
+
+Pretty similar to scikit-learn! Which is to be expected: the equations are exactly the same, and the kernel and likelihood hyperparameters are close.
+
+### Other tools for Gaussian Process Regression
+
+There are three other tools for building GPs that come to mind:
+- [GPy, developed by Neil Lawrence and his team when he was still at Sheffield](https://github.com/SheffieldML/GPy). 
+- [GPJax, made by Thomas Pinder](https://github.com/JaxGaussianProcesses/GPJax). Instead of using PyTorch for the backend, it uses Jax. I'd love to try it at some point!
+- [GPFlow, made by James Hensman and Alexander G. de G. Matthews](https://github.com/GPflow/GPflow). It uses Tensorflow as the backend.
 
 ## A visual description of Bayesian Optimization
 
@@ -154,7 +304,7 @@ Bayesian Optimization (B.O.) has three key ingredients:
 The usual loop in a B.O. goes like this:
 
 1. Fit the surrogate model $\tilde{f}$ to the data you have collected so far.
-2. Using $\tilde{f}$, query the acquisition function $\alpha$ to find the best candidate $\bm{x}$ (i.e. find $\bm{x} = \arg\max \alpha(\cdot|\tilde{f})$).
+2. Using $\tilde{f}$, optimize the acquisition function $\alpha$ to find the best candidate $\bm{x}$ (i.e. find $\bm{x} = \arg\max \alpha(\cdot|\tilde{f})$).
 3. Query the expensive objective function on $\bm{x}$ and repeat from 1 including this new data pair.
 
 We usually stop after finding an optimum that is high enough, or after a fixed number of iterations.[^stopping-criteria]
@@ -195,33 +345,23 @@ Using the same running example and sample we showed for TS, here are the improve
 
 Another type of acquisition function is the Upper-Confidence Bound (UCB), which optimistically chooses the points are on the upper bounds of the uncertainty. More explicitly, let $\mu$ and $\sigma$ be the posterior mean and standard deviation on a given point $\bm{x}$ after fitting the GP, then
 
-$$ \alpha_{\text{UCB}}(\bm{x}_*; \mathcal{D}) = \mu(\bm{x}_*) + \kappa\sigma(\bm{x}_*), $$
+$$ \alpha_{\text{UCB}}(\bm{x}_*; \mathcal{D}, \beta) = \mu(\bm{x}_*) + \beta\sigma(\bm{x}_*), $$
 
-where $\kappa > 0$ is a hyperparameter that states how optimistic we are on the upper bound of the variance. High values of $\kappa$ encourage exploration (i.e. exploring regions with higher uncertainty), while lower values of $\kappa$ encourage exploitation (staying close to what the posterior mean has learned). Here are some examples of the UCB acquisition function:
+where $\beta > 0$ is a hyperparameter that states how optimistic we are on the upper bound of the variance. High values of $\beta$ encourage exploration (i.e. exploring regions with higher uncertainty), while lower values of $\beta$ encourage exploitation (staying close to what the posterior mean has learned). To showcase the impact of this hyperparameter, here are two versions of BO on our running example: one with $\beta=1$, and another with $\beta=5$.
 
 [TODO: add]
+
+Notice that, for $\beta=1$, the optimization gets stuck on the first global optima.
+
+[TODO: add]
+
+
 
 ## Bayesian Optimization in practice: BoTorch
 
 [TODO: add]
 
-## What people say and do
-
-[A discussion on the folk choices of acq. function]
-
-## About high dimensional BO
-
-[High dimensional BO doesn't really work that well, and we have to rely on other alternatives]
-
-## Can we parallelize?
-
-[A discussion on parallelizability]
-
-## Optimizing the acquisition might be hard
-
-[Optimizing it might be hard. Differential approximations. CMA-ES inside BO]
-
-## Bayesian Optimization loops for our examples
+## Bayesian Optimization loops for Easom and Cross-in-Tray
 
 As we discussed above, the way Bayesian Optimization approaches optimization is sequential: given a probabilistic model for the objective function $f$ (which, in our case, is fitted using Gaussian Processes), we find the next candidate by maximizing the acquisition function.
 
@@ -253,7 +393,6 @@ The simplest version of ES is to consider a fixed covariance $\Sigma = s\bm{I}_{
 Here's a simple ES in practice in Easom and in Cross-in-tray. Depending on the size of the scale $s$, a simple ES algorithm might get stuck in local optima.
 
 [TODO: add video]
-
 
 ### CMA-ES
 
