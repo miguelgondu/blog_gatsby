@@ -10,7 +10,7 @@ import { defineCustomElements as deckDeckGoHighlightElement } from '@deckdeckgo/
 const shortcodes = { Heading }
 
 const ListLink = props => (
-    <li style={{ display: `inline-block`, marginRight: `1rem`, fontSize: "15px" }}>
+    <li style={{ display: `inline-block`, marginRight: `1rem`, fontSize: "15px"}}>
         <Link to={props.to}>{props.children}</Link>
     </li>
 )
@@ -41,7 +41,7 @@ class ExportLayout extends React.Component {
                     <title>miguelgondu's blog</title>
                 </Helmet>
                 <header style={{ marginBottom: `4.5rem` }}>
-                    <Link to="/" style={{ textShadow: `none`, backgroundImage: `none` }}>
+                    <Link to="/" style={{ textShadow: `none`, backgroundImage: `none`}}>
                         <h1 style={{ display: `inline` }}>miguelgondu's blog</h1>
                     </Link>
                     <ul style={{ listStyle: `none`, float: `right` }}>

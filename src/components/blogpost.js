@@ -19,7 +19,7 @@ const Blogpost = (props) => {
     return (
         <div key={front.id}>
             <ImageBanner slug={slug} imgsrc={front.imgsrc} />
-            <h2><Link to={slug}>{front.title}{" "}</Link></h2>
+            <h2><Link to={slug} style={{color: "dodgerblue"}}>{front.title}{" "}</Link></h2>
             <span key={`${front.id}-${front.date}`}>{front.date}{" "}</span>
             <p>{front.categories.map((category, index, arr) => {
                     if (arr.length === index + 1) {

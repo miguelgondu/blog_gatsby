@@ -10,7 +10,7 @@ deckDeckGoHighlightElement();
 const shortcodes = { Heading }
 
 const ListLink = props => (
-    <li style={{ display: `inline-block`, marginRight: `1rem`, fontSize: "15px" }}>
+    <li style={{ display: `inline-block`, marginRight: `1rem`, fontSize: "15px"}}>
         <Link to={props.to}>{props.children}</Link>
     </li>
 )
