@@ -317,13 +317,17 @@ As we discussed in the introduction, examples of black-box objective functions i
 
 The simplest of all acquisition functions is to sample one approximation of $f$ and to optimize it. This can be done quite easily in most probabilistic regression methods, including Gaussian Processes.
 
-Circling back to our guiding example of $x\sin(x)$, let's start from a single random sample and iteratively query the next proposal suggested by Thompson sampling:
+Circling back to our guiding example of $x\sin(x)$, let's start by only having $\mathcal{D}_{\text{init}} = \{(0, f(0))\}$ in our dataset, and iteratively query the next proposal suggested by Thompson sampling:
 
 <CenteredImage size={"midSize"} src={"/assets/bo_blogpost/bo_w_TS.gif"} alt={"A GIF showing how Thompson Sampling works: we fit a Gaussian Process, sample from it, and consider this sample's optimum."} />
 
+At first, the samples are not approximating the objective function at all, and so we end up exploring the domain almost at random. These initial explorations allow us to get a better approximation of the function. TS quickly finds the left optimum, and tends to get stuck there, since all samples start to have their maximum there.
+
 ### Improvement-based policies
 
-Since we have estimates of the posterior mean $\mu$ and the posterior variance $\sigma^2$ at each step, we have access to a lot more than just a single sample (as in TS). For each new point $\bm{x}_*$, consider its "improvement":
+Since we have estimates of the posterior mean $\mu$ and the posterior variance $\sigma^2$ at each step, we have access to a lot more than just a single sample (as in TS): we can query for probabilistic quantities such as expectations or probabilities.
+
+For each new point $\bm{x}_*$, consider its "improvement":
 
 $$ I(\bm{x}_*; \mathcal{D}) = \max(0, f(\bm{x}_*) - f_{\text{best}})$$
 
@@ -345,6 +349,8 @@ Using the same running example and sample we showed for TS, here's how EI fairs:
 
 <CenteredImage size={"midSize"} src={"/assets/bo_blogpost/bo_w_EI.gif"} alt={"A GIF showing how Expected Improvement-based Bayesian Optimization works: we fit a Gaussian Process and use the uncertainty estimates (mean and covariance) to determine the potential improvement of each point in the domain."} />
 
+Notice that the right size of this plot now shows the values for $\alpha_{\text{EI}}$ in a different scale. At first, all points have almost the same expected improvement (since we haven't explored the function at all, and so we are uncertain). Querying the maximum of $\alpha_{\text{EI}}$ iteratively allows us to find not only the left optimum, but also the right one!
+
 ### Upper-Confidence Bound
 
 Another type of acquisition function is the Upper-Confidence Bound (UCB), which optimistically chooses the points are on the upper bounds of the uncertainty. More explicitly, let $\mu$ and $\sigma$ be the posterior mean and standard deviation on a given point $\bm{x}$ after fitting the GP, then
@@ -361,7 +367,7 @@ Notice that, for $\beta=1$, the optimization gets stuck on the first global opti
 
 ## Bayesian Optimization in practice: BoTorch
 
-[TODO: add]
+BoTorch is a Python library that interoperates well with GPyTorch for running BO experiments. All the animations I presented above were made by quickly fitting BoTorch's models for exact GP inference, and by using their implementations of the acquisition functions (except for Thompson Sampling).
 
 ## Bayesian Optimization loops for Easom and Cross-in-Tray
 

@@ -52,7 +52,7 @@ img.paper {
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: auto;
-	margin-bottom: auto;
+	margin-bottom: 15px;
 }
 
 div.centered {
@@ -62,6 +62,8 @@ div.centered {
 
 a {
 	background-image: none;
+    text-decoration: none;
+    color: #2374AB;
 }
 
 .image-link {
@@ -115,6 +117,7 @@ div.blogpostBanner {
 		height: 100%; /* Can be anything */
 		width: 100%; /* Can be anything */
 		position: relative;
+        padding-bottom: 100px;
 	}
 	/* img.blogpostBanner {
 		box-shadow: 0pt;
@@ -126,6 +129,16 @@ div.blogpostBanner {
 		display: block;
 		margin: auto;
 	} */
+    img.paper {
+        /* border-radius: 50%; */
+        /* height: 250px; */
+        width: 100%;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: auto;
+        margin-bottom: auto;
+    }
 
 	img.blogpostBanner {
 		max-height: 95%;
