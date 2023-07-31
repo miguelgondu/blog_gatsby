@@ -3,8 +3,8 @@ date: "2023-04-08"
 title: "Bayesian Optimization using Gaussian Processes: an introduction"
 summary: "A tutorial on Bayesian Optimization using GPyTorch and BoTorch, including an introduction to Gaussian Process Regression."
 lang: "en"
-show: true
-imgsrc: "/assets/bo_blogpost/xsinx_gp_all_distributions.gif"
+show: false
+imgsrc: "/assets/bo_blogpost/bo_easom_thumbnail.gif"
 categories:
     - Bayesian Optimization
     - PyTorch
@@ -15,9 +15,11 @@ categories:
 
 import CenteredImage from './CenteredImage'
 
-# Bayesian Optimization using Gaussian Processes: an introduction
+<CenteredImage size={"midSize"} src={"/assets/bo_blogpost/bo_w_TS.gif"} alt={"A Gaussian Process-based Bayesian Optimization using Thompson Sampling."} />
 
-> This blogpost contains a longer version of Chap. 3 in [my dissertation](). Check it out if you're interested!
+<Heading aria-label="Jump to title" as="h1" hash="BayesianOptimizationIntro">Bayesian Optimization using Gaussian Processes: an introduction</Heading>
+
+> This blogpost is an adaptation of Chap. 3 in [my dissertation](https://www.miguelgondu.com/assets/phdthesis.pdf). Check it out if you're interested!
 
 Bayesian Optimization (BO) is a tool for black-box optimization. By black-box, we mean functions to which we only have access by querying: expensive simulations of the interaction between a molecule and a folded protein, users interacting with our websites, or the accuracy of a Machine Learning algorithm with a given configuration of hyperparameters.
 
@@ -25,7 +27,7 @@ The gist of BO is to approximate the function we are trying to optimize with a r
 
 This blogpost introduces (Gaussian Process based) Bayesian Optimization, and provides code snippets for the experiments performed. The tools used include GPyTorch and BoTorch as the main engines for Gaussian Processes and BO, and EvoTorch for the evolutionary strategies.
 
-## Running examples: $x\sin(x)$, Easom, and Cross-in-tray
+<Heading aria-label="Running examples" as="h2" hash="RunningExamples">Running examples: x sin(x), Easom, and Cross-in-tray</Heading>
 
 In this blogpost we will use three running examples to explain GPs and BO. The first one is the function $f(x) = x\sin(x)$, which is one-dimensional in its inputs and allows us to visualize how GPs handle uncertainty. The two remaining ones are part of a plethora of test functions that are usually included in black-box optimization benchmarks:[^optimization-benchmarks] `Easom` and `Cross-in-tray`. Their formulas are given by
 
@@ -39,7 +41,7 @@ We take the 2D versions of these functions for visualization, but notice how the
 
 [^optimization-benchmarks]: There are plenty more test functions for optimization in [this link](https://www.sfu.ca/~ssurjano/optimization.html).
 
-## An introduction to Gaussian Processes
+<Heading aria-label="Intro to GPs" as="h2" hash="IntroToGPs">An introduction to Gaussian Processes</Heading>
 
 Gaussian Processes are a **probabilistic regression method**. This means that they approximate a function $f\colon\mathcal{X}\to\mathbb{R}$ while quantifying values like **expectations** and **variances**. More formally,
 
@@ -67,7 +69,7 @@ Assuming $f\sim \text{GP}(\mu, k)$ allows for computing **an entire distribution
 
 Given a new point $x_*$ that's not on the dataset, you can consider the joint distribution of $\{f(x_1), \dots, f(x_N), f(x_*)\}$ and compute the conditional distribution of $f(x_*)$ given the dataset:[^the-ugly-details]
 
-[^the-ugly-details]: The math goes as follows...
+[^the-ugly-details]: I will skip the ugly details in this blogpost. The computation of a Gaussian Process' predictive posterior can be found in Sec. 2.2. of [Gaussian Processes for Machine Learning, by Rasmussen and Williams](https://gaussianprocess.org/gpml/chapters/RW2.pdf), or on Sec. 4.2.2. of [Probabilistic Numerics, by Hennig et al.](https://www.probabilistic-numerics.org/assets/ProbabilisticNumerics.pdf). Notice that I'm skipping the discussion on diagonal noise modeling.
 
 $$ f(\bm{x}_*) \sim \mathcal{N}(\mu_0(\bm{x}_*) + \bm{k}_*^\top \bm{K}^{-1}(\bm{f} - \bm{\mu_0}), k(\bm{x}_*, \bm{x}_*) - \bm{k}_*^\top \bm{K}^{-1} \bm{k}_*) $$
 
@@ -81,11 +83,9 @@ Let's visualize this distribution for all points in the interval [-10, 10], swee
 
 Notice how the distribution spikes when close to the training points, and flattens outside the support of the data. This is exactly what we mean by uncertainty quantification.
 
-This process of predicting Gaussian distributions generalizes to collections of previously unseen points $\bm{X}_*$, allowing us consider the mean prediction and the uncertainties around it. The math is essentially the same, and the details can be found in the references.[^the-ugly-details-multidim]
+This process of predicting Gaussian distributions generalizes to collections of previously unseen points $\bm{X}_*$, allowing us consider the mean prediction and the uncertainties around it. The math is essentially the same, and the details can be found in the references.
 
-[^the-ugly-details-multidim]: See e.g. [TODO: add ref].
-
-If we consider a fine enough grid of points and consider their posterior distribution, we can essentially "sample a function" out of our Gaussian Process using the same formulas described above. For example, these are 5 different samples of potential approximations of $f(x) = x\sin(x)$ according to the posterior of the GP:[^ugly-detail-RKHS]
+If we consider a fine enough grid of points and consider their posterior distribution, we can essentially "sample a function" out of our Gaussian Process using the same formulas described above. For example, these are 5 different samples of potential approximations of $f(x) = x\sin(x)$ according to the posterior of the GP:
 
 <CenteredImage size={"midSize"} src={"/assets/bo_blogpost/xsinx_samples.jpg"} alt={"Five samples from a GP fitted on the noisy evaluations of x * sin(x)"} />
 
@@ -95,14 +95,12 @@ Common choices of kernels are the RBF and the Matérn family:
 
 - $k_\nu(\bm{x}, \bm{x}';\; \theta_{\text{out}}, \bm{\theta}_\text{l}) = \theta_{\text{out}}\frac{2^{1 - \nu}}{\Gamma(\nu)}(\sqrt{2\nu}r)^\nu K_\nu(\sqrt{2\nu}r(\bm{x}, \bm{x}'; \bm{\theta}_{\text{l}}))$
 
-[^ugly-detail-RKHS]: This process of sampling functions out of a Gaussian Process can actually be made formal: a kernel $k$ spans a *Reproducing Kernel Hilbert Space* (RKHS), which is a space of functions from which the GP samples [TODO: read a bit more and add here]. Hilbert Spaces are a special kind of vector space, which have both a dot product and a topology that is complete w.r.t. this dot product. If you are curious about the formalities, check [TODO: add reference].
-
 Where
 - $r(\bm{x}, \bm{x}'; \bm{\theta}_{\text{l}}) = (\bm{x} - \bm{x}')^\top(\bm{\theta}_{\text{l}})(\bm{x} - \bm{x}')$ is the distance between $\bm{x}$ and $\bm{x}'$ mediated by a diagonal matrix of lengthscales $\bm{\theta}_{\text{l}}$, $\theta_{\text{out}} > 0$ is a positive hyperparameter called the output scale,
-- $\Gamma$ is the [Gamma function](TODOADD), $K_\nu$ is the [modified Bessel function](TODOADD) of the second kind, and
+- $\Gamma$ is the [Gamma function](https://mathworld.wolfram.com/GammaFunction.html), $K_\nu$ is the [modified Bessel function](https://en.wikipedia.org/wiki/Bessel_function) of the second kind, and
 - $\nu$ is usually 5/2, but it can be any positive real number. For $\nu = i + 1/2$ (with $i$ a positive integer) the kernel takes a nice closed form.[^details-on-matern]
 
-[^details-on-matern]: For more details, see [Probabilistic Numerics, Sec. 5.5.]().
+[^details-on-matern]: For more details, see [Probabilistic Numerics, Sec. 5.5.](https://www.probabilistic-numerics.org/assets/ProbabilisticNumerics.pdf).
 
 These kernels have some hyperparameters in them (like the lengthscale matrix $\bm{\theta}_l$ or the output scale $\theta_{\text{out}}$). **Fitting** a Gaussian Process to a given dataset consists of estimating these hyperparameters by maximizing the likelihood of the data.
 
@@ -111,9 +109,9 @@ To summarize,
 - This assumption allows us to compute distributions over previously unseen points $\bm{x}_*$.
 - Kernels define the space of functions we can use to approximate, and come with certain hyperparameters that we need to fit by maximizing the likelihood.
 
-## Gaussian Processes in practice
+<Heading aria-label="GPs in practice" as="h2" hash="GPsInPractice">Gaussian Processes in practice</Heading>
 
-### scikit-learn
+<Heading aria-label="GPs in practice - scikit-learn" as="h3" hash="GPsSklearn">scikit-learn</Heading>
 
 There are several open source implementations of Gaussian Process Regression, as described above. First, there's `scikit-learn`'s interface, which quickly allows for specifying a kernel. This is the code you would need to create the noisy samples described above, and to fit a Gaussian Process to those samples:
 
@@ -161,7 +159,7 @@ And this is the predicted mean and uncertainty:
 
 A pretty good fit! `scikit-learn`'s implementation is great, but it only deals with the classic **exact** inference, in which we solve for the inverse of the Gram matrix of all the data. This is prohibitively expensive for large datasets, since the complexity of computing this inverse scales cubically with the size of the dataset. More contemporary approaches use approximate versions of this inference.
 
-### GPyTorch
+<Heading aria-label="GPs in practice - GPyTorch" as="h3" hash="GPsGPyTorch">GPyTorch</Heading>
 
 GPyTorch was developed with other forms of Gaussian Processes in mind, plus scalable exact inference. The authors promise exact inference with millions of datapoints, and they achieve this by reducing the computational complexity of inference from $O(n^3)$ to $O(n^2)$. [Check their paper for more details](https://arxiv.org/abs/1809.11165). These other forms of Gaussian Processes include approximations using inducing points, and deep kernel learning (where we use a neural network to project high-dimensional data to a low-dimensional feature space before applying the kernel) (?).
 
@@ -258,9 +256,7 @@ def fit_gaussian_process(
     return model
 ```
 
-Notice that, to train a model using GPyTorch, we need to write significantly more code: specifying that the likelihood is Gaussian,[^other-likelihoods] define the optimizer explicity, and optimize the likelihood manually. This might seem verbose, but it's actually giving us plenty of flexibility! We could e.g. include a neural network in our `forward`, use other likelihoods, or interplay with other PyTorch-based libraries.
-
-[^other-likelihoods]: TODO: discuss e.g. the Categorical likelihood.
+Notice that, to train a model using GPyTorch, we need to write significantly more code: specifying that the likelihood is Gaussian, define the optimizer explicity, and optimize the likelihood manually. This might seem verbose, but it's actually giving us plenty of flexibility! We could e.g. include a neural network in our `forward`, use other likelihoods, or interplay with other PyTorch-based libraries.
 
 You can also see the kernel hyperparameters:
 
@@ -284,14 +280,14 @@ And the predictive posterior looks like this:
 
 Pretty similar to scikit-learn! Which is to be expected: the equations are exactly the same, and the kernel and likelihood hyperparameters are close.
 
-### Other tools for Gaussian Process Regression
+<Heading aria-label="GPs in practice - other tools" as="h3" hash="GPsOtherTools">Other tools for Gaussian Process Regression</Heading>
 
 There are three other tools for building GPs that come to mind:
 - [GPy, developed by Neil Lawrence and his team when he was still at Sheffield](https://github.com/SheffieldML/GPy). 
 - [GPJax, made by Thomas Pinder](https://github.com/JaxGaussianProcesses/GPJax). Instead of using PyTorch for the backend, it uses Jax. I'd love to try it at some point!
 - [GPFlow, made by James Hensman and Alexander G. de G. Matthews](https://github.com/GPflow/GPflow). It uses Tensorflow as the backend.
 
-## A visual introduction to Bayesian Optimization
+<Heading aria-label="BOs visually" as="h2" hash="BOsVisually">A visual introduction to Bayesian Optimization</Heading>
 
 Bayesian Optimization (B.O.) has three key ingredients:
 
@@ -299,7 +295,7 @@ Bayesian Optimization (B.O.) has three key ingredients:
 - A probabilistic surrogate model $\tilde{f}\colon\mathcal{X}\to\mathbb{R}$, whose goal is to approximate the objective function. Since we will use Gaussian Processes, the ingredients we will need are a prior $\mu_0\colon\mathcal{X}\to\mathbb{R}$ and kernel $k$.[^other-surrogate-models]
 - An **acquisition function** $\alpha(\bm{x}|\tilde{f})$ which measures the "potential" of new points using the surrogate model. If a given $\bm{x}_*\in\mathcal{X}$ scores high in the acquisition function, then it potentially maximizes the objective function $f$.
 
-[^other-surrogate-models]: We are using Gaussian Processes as a surrogate model here, but other ones could be used! The main requirement is for them to allow us to have good uncertainty estimates of the objective function. [Recent research by AGW has explored this direction]().
+[^other-surrogate-models]: We are using Gaussian Processes as a surrogate model here, but other ones could be used! The main requirement is for them to allow us to have good uncertainty estimates of the objective function. [Recent research by Yucen Lily Li, Tim Rudner and Andrew Gordon Wilson has explored this direction](https://arxiv.org/abs/2305.20028).
 
 The usual loop in a B.O. goes like this:
 
@@ -313,7 +309,7 @@ We usually stop after finding an optimum that is high enough, or after a fixed n
 
 As we discussed in the introduction, examples of black-box objective functions include the output of expensive simulations in physics and biology, or the accuracy of an ML setup. Now we discuss four examples of acquisition functions.
 
-### Thompson Sampling
+<Heading aria-label="BO - Thompson Sampling" as="h3" hash="BoTS">Thompson Sampling</Heading>
 
 The simplest of all acquisition functions is to sample one approximation of $f$ and to optimize it. This can be done quite easily in most probabilistic regression methods, including Gaussian Processes.
 
@@ -323,7 +319,7 @@ Circling back to our guiding example of $x\sin(x)$, let's start by only having $
 
 At first, the samples are not approximating the objective function at all, and so we end up exploring the domain almost at random. These initial explorations allow us to get a better approximation of the function. TS quickly finds the left optimum, and tends to get stuck there, since all samples start to have their maximum there.
 
-### Improvement-based policies
+<Heading aria-label="BO - improvement based" as="h3" hash="BoImprovementBased">Improvement-based policies</Heading>
 
 Since we have estimates of the posterior mean $\mu$ and the posterior variance $\sigma^2$ at each step, we have access to a lot more than just a single sample (as in TS): we can query for probabilistic quantities such as expectations or probabilities.
 
@@ -343,7 +339,7 @@ $$ \alpha_{\text{EI}}(\bm{x}_*; \mathcal{D}) = \mathbb{E}[I(\bm{x}_*;\mathcal{D}
 
 which measures by how much a given $\bm{x}_*$ may improve on the current best.[^closed-form]
 
-[^closed-form]: These two acquisition functions have closed form when we use vanilla Gaussian Processes. For the technical details, check [TODO: add].
+[^closed-form]: These two acquisition functions have closed form when we use vanilla Gaussian Processes. For the technical details, check the references.
 
 Using the same running example and sample we showed for TS, here's how EI fairs:
 
@@ -351,7 +347,7 @@ Using the same running example and sample we showed for TS, here's how EI fairs:
 
 Notice that the right size of this plot now shows the values for $\alpha_{\text{EI}}$ in a different scale. At first, all points have almost the same expected improvement (since we haven't explored the function at all, and so we are uncertain). Querying the maximum of $\alpha_{\text{EI}}$ iteratively allows us to find not only the left optimum, but also the right one!
 
-### Upper-Confidence Bound
+<Heading aria-label="BO - UCB" as="h3" hash="BoUCB">Upper-Confidence Bound</Heading>
 
 Another type of acquisition function is the Upper-Confidence Bound (UCB), which optimistically chooses the points are on the upper bounds of the uncertainty. More explicitly, let $\mu$ and $\sigma$ be the posterior mean and standard deviation on a given point $\bm{x}$ after fitting the GP, then
 
@@ -365,49 +361,191 @@ Notice that, for $\beta=1$, the optimization gets stuck on the first global opti
 
 <CenteredImage size={"midSize"} src={"/assets/bo_blogpost/bo_w_UCB_500.gif"} alt={"A GIF showing how Upper Confidence Bound-based Bayesian Optimization works: we fit a Gaussian Process and use the uncertainty estimates to compute the mean plus a multiple of the standard deviation, which we consider an optimistic choice for where to sample next. In this case, the beta is chosen to be 5."} />
 
-## Bayesian Optimization in practice: BoTorch
+<Heading aria-label="BOs in practice" as="h2" hash="BOsInPractice">Bayesian Optimization in practice: BoTorch</Heading>
 
 BoTorch is a Python library that interoperates well with GPyTorch for running BO experiments. All the animations I presented above were made by quickly fitting BoTorch's models for exact GP inference, and by using their implementations of the acquisition functions (except for Thompson Sampling).
 
-## Bayesian Optimization loops for Easom and Cross-in-Tray
+Following their tutorial (and adapting it to our example), this is a minimal working version of the code for doing a Bayesian Optimization loop:
 
-As we discussed above, the way Bayesian Optimization approaches optimization is sequential: given a probabilistic model for the objective function $f$ (which, in our case, is fitted using Gaussian Processes), we find the next candidate by maximizing the acquisition function.
+```python
+from typing import Callable, Tuple
 
-Here are videos showing the sequence of queries in for `Easom` and `Cross-In-Tray`:[^code-link]
+import torch
+from gpytorch.mlls import ExactMarginalLogLikelihood
+from gpytorch.means import ZeroMean
 
-[TODO: add Video]
+# Single Task GP is a Gaussian Process on one value,
+# using certain defaults for kernel and mean.
+# mean: a constant that gets optimized.
+# kernel: Matérn 5/2 kernel with output scale.
+from botorch.models import SingleTaskGP
 
-Notice how [TODO: describe the video...]
+# BoTorch provides tools for fitting these
+# models easily.
+from botorch.fit import fit_gpytorch_model
 
-[^code-link]: [A working version of all the code in this blogpost can be found here](), and [this particular Bayesian Optimization loop can be found here]().
-
-## Bayesian Optimization's drawbacks
-
-- How do we optimize the acquisition function?
-- Scaling to high dimensions and big datasets.
-- Parallelizing.
-- Stopping criteria?
-
-## Conclusion
-
-- Folk knowledge about vanilla BO being only good below 20D
-- Comparing with higher dimensional versions of easom and cross-in-tray.
-- Let's grab an off-the-shelf TurBO implementation and test it somewhere big (bipedal walker, for example).
-- Let's see if CMA-ES/Simple ES does better.
-
-## Cite this blogpost
-
-[TODO: add bibtex].
-
-## References
-
-[More on GPs]
-
-[More on BO]
+# Using the UCB acquisition function
+from botorch.acquisition import UpperConfidenceBound
 
 
+def bayesian_optimization(
+    objective_f: Callable[[float], float],
+    n_iterations: int = 20,
+) -> Tuple[torch.Tensor, torch.Tensor]:
+    # Some hyperparameters
+    ACQ_BETA = 1.0
+    domain = torch.linspace(-10, 10, 200)
 
-[More on stopping criteria for BO]
+    # Querying at 0
+    # This could be modified to sample at random
+    # from the domain instead.
+    inputs_trace = [torch.Tensor([0])]
+    outputs_trace = [objective_f(inputs_trace[-1])]
 
+    for _ in range(n_iterations):
+        # Consolidating the inputs and outputs
+        # for this iteration
+        inputs = torch.Tensor(torch.cat(inputs_trace))
+        outputs = torch.Tensor(torch.cat(outputs_trace))
 
-...
+        # --- Fitting the GP using BoTorch's tools ---
+        # Defining the model.
+        # Instead of using the constant mean given by
+        # BoTorch as a default, we go for a zero mean.
+        gp_model = SingleTaskGP(
+            inputs.unsqueeze(1),
+            outputs.unsqueeze(1),
+            mean_module=ZeroMean(),
+        )
+
+        # Defining the marginal log-likelihood
+        mll = ExactMarginalLogLikelihood(
+            gp_model.likelihood,
+            gp_model,
+        )
+
+        # Maximizing the log-likelihood
+        fit_gpytorch_model(mll)
+
+        gp_model.eval()
+
+        # ---- Maximizing the acquisition function -----
+        acq_function = UpperConfidenceBound(model=gp_model, beta=ACQ_BETA)
+        # BoTorch expects the input to be
+        # of shape (b, 1, 1) in this case.
+        acq_values = acq_function(domain.reshape(-1, 1, 1))
+
+        # The next candidate is wherever the
+        # acquisition function is maximized
+        next_candidate = domain[acq_values.argmax()]
+
+        # ---- Querying the obj. function ---------
+        inputs_trace.append(
+            torch.Tensor([next_candidate])
+        )
+        outputs_trace.append(
+            torch.Tensor([objective_f(next_candidate)])
+        )
+
+    return (
+        torch.Tensor(torch.cat(inputs_trace)),
+        torch.Tensor(torch.cat(outputs_trace)),
+    )
+```
+
+<Heading aria-label="BOs in Easom and Cross-in-tray" as="h2" hash="BOsEasomCrossintray">Bayesian Optimization loops for Easom and Cross-in-Tray</Heading>
+
+Bayesian Optimization works for black-box objective function with general domains $\mathcal{X}\subseteq\mathbb{R}^D$. To showcase this, we can run BO in $\mathbb{R}^2$ on the test functions `Easom` and `Cross-in-tray`:
+
+<CenteredImage size={"midSize"} src={"/assets/bo_blogpost/bo_easom.gif"} alt={"A GIF showing how Bayesian Optimization works in the easom 2D test function."} />
+
+<CenteredImage size={"midSize"} src={"/assets/bo_blogpost/bo_cross_in_tray.gif"} alt={"A GIF showing how Bayesian Optimization works in the cross-in-tray 2D test function."} />
+
+`Cross-in-tray` is a particularly difficult function for black-box optimization algorithms based on Evolutionary Strategies.[^David-Ha-blogpost] Let me show you e.g. CMA-ES trying to optimize it:
+
+[^David-Ha-blogpost]: If you're not familiar with evolutionary strategies, I can't recommend [David Ha's introduction](https://blog.otoro.net/2017/10/29/visual-evolution-strategies/) enough.
+
+<CenteredImage size={"midSize"} src={"/assets/bo_blogpost/cma_es.gif"} alt={"A GIF showing how CMA-ES works in the cross-in-tray 2D test function."} />
+
+Unless it gets lucky with the initialization, CMA-ES tends to get stuck in one of the many local optima of `Cross-in-tray`. Of course, there are ways to encourage more exploration in Evolutionary Strategies, but this is something that is accounted for automatically in BO. 
+
+Another advantage of BO vs. Evolutionary Strategies is **sample efficiency**: for each generation, an evolutionary strategy must query the objective function as many times as the population size. This is prohibitively expensive if the objective function is e.g. an expensive simulation that cannot be run in parallel.[^sample-efficiency-comparison]
+
+[^sample-efficiency-comparison]: In [Sec. 3.4. of my dissertation](https://www.miguelgondu.com/assets/phdthesis.pdf) I run a sample-efficiency comparison between BO and CMA-ES for these two test functions. The results show that BO reliably finds an optima in less queries to the objective function. I plan to run experiments on higher-dimensional examples in the future.
+
+<Heading aria-label="BOs drawbacks" as="h2" hash="BOsDrawbacks">Bayesian Optimization's drawbacks</Heading>
+
+Bayesian Optimization is a major achievement of Bayesian statistics. It, however, has major drawbacks and hidden assumptions. Let's list a couple of them:
+
+<Heading aria-label="BO's drawbacks - acquisition" as="h3" hash="BoDrawbacksAcquisition">How do we optimize the acquisition function?</Heading>
+
+You might have noticed that, in our running example, we optimized the acquisition function by evaluating it on the entire domain, and then querying its maximum (i.e. we just did a grid search). This obviously doesn't scale to higher dimensions!
+
+There are several alternatives to this. Since we can evaluate the acq. function easily, we could simply use Evolutionary Strategies (like CMA-ES, shown above) to optimize it. Otherwise, we could rely on gradient-based optimization.[^gps-are-differentiable]
+
+[^gps-are-differentiable]: Depending on our choice of kernel, we can also compute distributions over the gradient of a Gaussian Process. I would love to dive deeper here, but I think it's a topic on its own. Check [Sec. 9.4. of *Gaussian Processes for Machine Learning*](https://gaussianprocess.org/gpml/chapters/RW9.pdf) or [this paper on estimating gradients of acquisition functions](https://proceedings.neurips.cc/paper_files/paper/2018/file/498f2c21688f6451d9f5fd09d53edda7-Paper.pdf) for more details.
+
+Other alternatives to high dimensional inputs focus on running the optimization of the acquisition function on only **trust regions**, centered around the best performing points. These trust regions are essentially small cubes, whose size adapts over the optimization.
+
+<Heading aria-label="BO's drawbacks - scaling" as="h3" hash="BoDrawbacksScaling">(Exact) Gaussian Processes don't scale well</Heading>
+
+Vanilla versions of kernel methods and Gaussian Processes don't scale well with either the size of the dataset, or the dimension of the input space. Folk knowledge says that (vanilla) Gaussian Processes don't fit well above 20 input dimensions.[^folk]
+
+[^folk]: Check for example [this Stack Exchange question](https://stats.stackexchange.com/questions/564528/why-does-bayesian-optimization-perform-poorly-in-more-than-20-dimensions).
+
+When it comes to large datasets, exact GP inference may be possible with GPyTorch and their implementation. Approximate inference is usually done through inducing points, which are a set of points that's representative of the entire dataset.[^inducing-points]
+
+[^inducing-points]: The classic reference to cite for inducing points is [a paper by Quiñonero-Candela and Rasmussen](https://proceedings.neurips.cc/paper_files/paper/2018/file/498f2c21688f6451d9f5fd09d53edda7-Paper.pdf). Check it if you're interested!
+
+High dimensional inputs are usually projected to lower-dimensional spaces, using either linear mappings (assuming e.g. that there are several dimensions that are uninformative and can be ignored), or using neural networks. Another alternative is also to provide a handcrafted mapping from solution to a so-called *behavior space* (as they do in the Intelligent Trial-and-Error paper, using MAP-Elites).[^intelligent-trial-and-error]
+
+[^intelligent-trial-and-error]: See [*Robots that can adapt like animals*, by Cully et al](https://www.nature.com/articles/nature14422). The authors learn a corpus of different robot controllers using handcrafted dimensions, and then adapt to damage using Bayesian Optimization.
+
+<Heading aria-label="BO's drawbacks - parallelizing" as="h3" hash="BoDrawbacksParallelizing">Parallelizing</Heading>
+
+As formulated above, BO is sequential in nature: we fit a surrogate model to the current dataset, we use this surrogate model to construct an acquisition function, which we optimize to get the next point. Parallelizing BO isn't trivial, and the literature shows that the principled ways for parallelization are highly dependant on the acquisition function. See the references for more details.
+
+<Heading aria-label="BO's drawbacks - stopping criteria" as="h3" hash="BoDrawbacksStopping">Stopping criteria</Heading>
+
+A problem that is transversal to black-box optimization algorithms is knowing when to stop. Most practitioners just have a fixed amount of compute, or decide to stop when they have found a solution that is "good enough" for them (e.g. a hyperparameter search that's above a certain accuracy).
+
+There are theory-driven ways to solve this problem. Gaussian Processes allows for computing notions of "regret", which are being used to define optimization processes that stop automatically.
+
+<Heading aria-label="Conclusion" as="h2" hash="Conclusion">Conclusion</Heading>
+
+Bayesian Optimization lets you optimize black-box functions (i.e. functions that have no closed form, and are expensive to query) by approximating them using a probabilistic surrogate model. In this blogpost, we explored using Gaussian Processes as surrogates, and several acquisition functions that leverage the uncertainties that GPs give. We briefly showed how these different acquisition functions explore and exploit the domain to find a suitable optimum.
+
+When compared to e.g. Evolutionary Strategies, we briefly saw how CMA-ES might get stuck in local optima if the landscape is tough. BO is also more sample efficient, since Evolutionary Strategies need to query the objective function in entire populations at each generation.
+
+We wrapped up by discussing some of the drawbacks of BO: optimizing the acquisition function is not trivial in high dimensions, Gaussian Processes rely on approximations to fit large or high dimensional datasets, and parallelization depends highly on the choice of acquisition function.
+
+<Heading aria-label="Cite" as="h2" hash="Cite">Cite this blogpost</Heading>
+
+If you found this blogpost useful, feel free to cite it.
+
+```
+@online{gonzalez-duque2023,
+  title = {Bayesian Optimization using Gaussian Processes: an introduction},
+  author = {Miguel González-Duque},
+  year = {2023},
+  url = {https://miguelgondu.com/blogposts/2023-04-08/intro-to-bo}
+}
+```
+
+<Heading aria-label="References" as="h2" hash="References">References</Heading>
+
+<Heading aria-label="ReferencesGP" as="h3" hash="ReferencesGP">Gaussian Processes</Heading>
+
+- [*Gaussian Processes for Machine Learning* by Rasmussen and Williams. Chapters 2, 4 and 9.](https://gaussianprocess.org/gpml/). This book is "the bible" of Gaussian Processes.
+- [*Probabilistic Numerics* by Hennig, Osborne and Kersting. Secs. 4.2 and 5.5](https://www.probabilistic-numerics.org/textbooks/). I really like their presentation of Gaussian algebra and of Gaussian Processes. The computations for the posterior GP can be found either here or in the bible.
+- [*A Unifying View of Sparse Approximate Gaussian Process Regression*, by Quiñonero-Candela and Rasmussen](https://proceedings.neurips.cc/paper_files/paper/2018/file/498f2c21688f6451d9f5fd09d53edda7-Paper.pdf). A paper about inducing points/active sets/pseudo-inputs in GPs.
+- [Exact Gaussian Processes on a Million Data Points](https://arxiv.org/abs/1903.08114).
+
+<Heading aria-label="ReferencesBO" as="h3" hash="ReferencesBO">Bayesian Optimization</Heading>
+
+- [*Taking the human out of the loop: a review of Bayesian Optimization*, by Shahriari et al.](https://www.cs.ox.ac.uk/people/nando.defreitas/publications/BayesOptLoop.pdf). What a classic.
+- [*Maximizing acquisition functions for Bayesian optimization*, by Wilson, Hutter and Deisenroth.](https://proceedings.neurips.cc/paper_files/paper/2018/file/498f2c21688f6451d9f5fd09d53edda7-Paper.pdf) This paper discusses how to approximate the gradients of acquisition functions using MC, and leveraging differentiable kernels.
+- [*Scalable Global Optimization via Local Bayesian Optimization*, by Eriksson et al.](https://arxiv.org/abs/1910.01739). This paper introduces `TurBO`, or Bayesian Optimization with trust regions.
+- Alexander Balandat has several papers on parallel versions of Bayesian Optimization. [Check his google scholar for some examples](https://scholar.google.com/citations?user=xvnfpkMAAAAJ&hl=en).
+- The stopping criteria is currently under plenty of research. Check for example the work of [Anastasiia Makarova](https://scholar.google.com/citations?user=skAF5s8AAAAJ&hl=en&oi=sra). In particular [*Automatic Termination for Hyperparameter Optimization*](https://proceedings.mlr.press/v188/makarova22a/makarova22a.pdf).
+- [*Robots that can adapt like animals*, by Cully et al](https://www.nature.com/articles/nature14422). A great example of Bayesian Optimization on top of handcrafted features.
