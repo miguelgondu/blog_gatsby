@@ -39,7 +39,7 @@ We take the 2D versions of these functions for visualization, but notice how the
 
 <CenteredImage size={"largeSize"} src={"/assets/bo_blogpost/all_three_test_functions.jpg"} alt={"Three test functions: x * sin(x), Easom and Cross-in-tray"} />
 
-[^optimization-benchmarks]: There are plenty more test functions for optimization in [this link](https://www.sfu.ca/~ssurjano/optimization.html).
+[^optimization-benchmarks]: (Optimization benchmarks) There are plenty more test functions for optimization in [this link](https://www.sfu.ca/~ssurjano/optimization.html).
 
 <Heading aria-label="Intro to GPs" as="h2" hash="IntroToGPs">An introduction to Gaussian Processes</Heading>
 
@@ -69,7 +69,7 @@ Assuming $f\sim \text{GP}(\mu, k)$ allows for computing **an entire distribution
 
 Given a new point $x_*$ that's not on the dataset, you can consider the joint distribution of $\{f(x_1), \dots, f(x_N), f(x_*)\}$ and compute the conditional distribution of $f(x_*)$ given the dataset:[^the-ugly-details]
 
-[^the-ugly-details]: I will skip the ugly details in this blogpost. The computation of a Gaussian Process' predictive posterior can be found in Sec. 2.2. of [Gaussian Processes for Machine Learning, by Rasmussen and Williams](https://gaussianprocess.org/gpml/chapters/RW2.pdf), or on Sec. 4.2.2. of [Probabilistic Numerics, by Hennig et al.](https://www.probabilistic-numerics.org/assets/ProbabilisticNumerics.pdf). Notice that I'm skipping the discussion on diagonal noise modeling.
+[^the-ugly-details]: (the ugly details) I will skip the ugly details in this blogpost. The computation of a Gaussian Process' predictive posterior can be found in Sec. 2.2. of [Gaussian Processes for Machine Learning, by Rasmussen and Williams](https://gaussianprocess.org/gpml/chapters/RW2.pdf), or on Sec. 4.2.2. of [Probabilistic Numerics, by Hennig et al.](https://www.probabilistic-numerics.org/assets/ProbabilisticNumerics.pdf). Notice that I'm skipping the discussion on diagonal noise modeling.
 
 $$ f(\bm{x}_*) \sim \mathcal{N}(\mu_0(\bm{x}_*) + \bm{k}_*^\top \bm{K}^{-1}(\bm{f} - \bm{\mu_0}), k(\bm{x}_*, \bm{x}_*) - \bm{k}_*^\top \bm{K}^{-1} \bm{k}_*) $$
 
@@ -100,7 +100,7 @@ Where
 - $\Gamma$ is the [Gamma function](https://mathworld.wolfram.com/GammaFunction.html), $K_\nu$ is the [modified Bessel function](https://en.wikipedia.org/wiki/Bessel_function) of the second kind, and
 - $\nu$ is usually 5/2, but it can be any positive real number. For $\nu = i + 1/2$ (with $i$ a positive integer) the kernel takes a nice closed form.[^details-on-matern]
 
-[^details-on-matern]: For more details, see [Probabilistic Numerics, Sec. 5.5.](https://www.probabilistic-numerics.org/assets/ProbabilisticNumerics.pdf).
+[^details-on-matern]: (details on Matérn) For more details, see [Probabilistic Numerics, Sec. 5.5.](https://www.probabilistic-numerics.org/assets/ProbabilisticNumerics.pdf).
 
 These kernels have some hyperparameters in them (like the lengthscale matrix $\bm{\theta}_l$ or the output scale $\theta_{\text{out}}$). **Fitting** a Gaussian Process to a given dataset consists of estimating these hyperparameters by maximizing the likelihood of the data.
 
@@ -295,7 +295,7 @@ Bayesian Optimization (B.O.) has three key ingredients:
 - A probabilistic surrogate model $\tilde{f}\colon\mathcal{X}\to\mathbb{R}$, whose goal is to approximate the objective function. Since we will use Gaussian Processes, the ingredients we will need are a prior $\mu_0\colon\mathcal{X}\to\mathbb{R}$ and kernel $k$.[^other-surrogate-models]
 - An **acquisition function** $\alpha(\bm{x}|\tilde{f})$ which measures the "potential" of new points using the surrogate model. If a given $\bm{x}_*\in\mathcal{X}$ scores high in the acquisition function, then it potentially maximizes the objective function $f$.
 
-[^other-surrogate-models]: We are using Gaussian Processes as a surrogate model here, but other ones could be used! The main requirement is for them to allow us to have good uncertainty estimates of the objective function. [Recent research by Yucen Lily Li, Tim Rudner and Andrew Gordon Wilson has explored this direction](https://arxiv.org/abs/2305.20028).
+[^other-surrogate-models]: (other surrogate models) We are using Gaussian Processes as a surrogate model here, but other ones could be used! The main requirement is for them to allow us to have good uncertainty estimates of the objective function. [Recent research by Yucen Lily Li, Tim Rudner and Andrew Gordon Wilson has explored this direction](https://arxiv.org/abs/2305.20028).
 
 The usual loop in a B.O. goes like this:
 
@@ -305,7 +305,7 @@ The usual loop in a B.O. goes like this:
 
 We usually stop after finding an optimum that is high enough, or after a fixed number of iterations.[^stopping-criteria]
 
-[^stopping-criteria]: It's not so simple. The stopping criteria of BO are a topic that is currently under plenty of research. See the references.
+[^stopping-criteria]: (stopping criteria) It's not so simple. The stopping criteria of BO are a topic that is currently under plenty of research. See the references.
 
 As we discussed in the introduction, examples of black-box objective functions include the output of expensive simulations in physics and biology, or the accuracy of an ML setup. Now we discuss four examples of acquisition functions.
 
@@ -339,7 +339,7 @@ $$ \alpha_{\text{EI}}(\bm{x}_*; \mathcal{D}) = \mathbb{E}[I(\bm{x}_*;\mathcal{D}
 
 which measures by how much a given $\bm{x}_*$ may improve on the current best.[^closed-form]
 
-[^closed-form]: These two acquisition functions have closed form when we use vanilla Gaussian Processes. For the technical details, check the references.
+[^closed-form]: (closed form) These two acquisition functions have closed form when we use vanilla Gaussian Processes. For the technical details, check the references.
 
 Using the same running example and sample we showed for TS, here's how EI fairs:
 
@@ -463,7 +463,7 @@ Bayesian Optimization works for black-box objective function with general domain
 
 `Cross-in-tray` is a particularly difficult function for black-box optimization algorithms based on Evolutionary Strategies.[^David-Ha-blogpost] Let me show you e.g. CMA-ES trying to optimize it:
 
-[^David-Ha-blogpost]: If you're not familiar with evolutionary strategies, I can't recommend [David Ha's introduction](https://blog.otoro.net/2017/10/29/visual-evolution-strategies/) enough.
+[^David-Ha-blogpost]: (David Ha's blogpost) If you're not familiar with evolutionary strategies, I can't recommend [David Ha's introduction](https://blog.otoro.net/2017/10/29/visual-evolution-strategies/) enough.
 
 <CenteredImage size={"midSize"} src={"/assets/bo_blogpost/cma_es.gif"} alt={"A GIF showing how CMA-ES works in the cross-in-tray 2D test function."} />
 
@@ -471,7 +471,7 @@ Unless it gets lucky with the initialization, CMA-ES tends to get stuck in one o
 
 Another advantage of BO vs. Evolutionary Strategies is **sample efficiency**: for each generation, an evolutionary strategy must query the objective function as many times as the population size. This is prohibitively expensive if the objective function is e.g. an expensive simulation that cannot be run in parallel.[^sample-efficiency-comparison]
 
-[^sample-efficiency-comparison]: In [Sec. 3.4. of my dissertation](https://www.miguelgondu.com/assets/phdthesis.pdf) I run a sample-efficiency comparison between BO and CMA-ES for these two test functions. The results show that BO reliably finds an optima in less queries to the objective function. I plan to run experiments on higher-dimensional examples in the future.
+[^sample-efficiency-comparison]: (sample efficiency comparison) In [Sec. 3.4. of my dissertation](https://www.miguelgondu.com/assets/phdthesis.pdf) I run a sample-efficiency comparison between BO and CMA-ES for these two test functions. The results show that BO reliably finds an optima in less queries to the objective function. I plan to run experiments on higher-dimensional examples in the future.
 
 <Heading aria-label="BOs drawbacks" as="h2" hash="BOsDrawbacks">Bayesian Optimization's drawbacks</Heading>
 
@@ -483,7 +483,7 @@ You might have noticed that, in our running example, we optimized the acquisitio
 
 There are several alternatives to this. Since we can evaluate the acq. function easily, we could simply use Evolutionary Strategies (like CMA-ES, shown above) to optimize it. Otherwise, we could rely on gradient-based optimization.[^gps-are-differentiable]
 
-[^gps-are-differentiable]: Depending on our choice of kernel, we can also compute distributions over the gradient of a Gaussian Process. I would love to dive deeper here, but I think it's a topic on its own. Check [Sec. 9.4. of *Gaussian Processes for Machine Learning*](https://gaussianprocess.org/gpml/chapters/RW9.pdf) or [this paper on estimating gradients of acquisition functions](https://proceedings.neurips.cc/paper_files/paper/2018/file/498f2c21688f6451d9f5fd09d53edda7-Paper.pdf) for more details.
+[^gps-are-differentiable]: (GPs are differentiable) Depending on our choice of kernel, we can also compute distributions over the gradient of a Gaussian Process. I would love to dive deeper here, but I think it's a topic on its own. Check [Sec. 9.4. of *Gaussian Processes for Machine Learning*](https://gaussianprocess.org/gpml/chapters/RW9.pdf) or [this paper on estimating gradients of acquisition functions](https://proceedings.neurips.cc/paper_files/paper/2018/file/498f2c21688f6451d9f5fd09d53edda7-Paper.pdf) for more details.
 
 Other alternatives to high dimensional inputs focus on running the optimization of the acquisition function on only **trust regions**, centered around the best performing points. These trust regions are essentially small cubes, whose size adapts over the optimization.
 
@@ -491,15 +491,15 @@ Other alternatives to high dimensional inputs focus on running the optimization 
 
 Vanilla versions of kernel methods and Gaussian Processes don't scale well with either the size of the dataset, or the dimension of the input space. Folk knowledge says that (vanilla) Gaussian Processes don't fit well above 20 input dimensions.[^folk]
 
-[^folk]: Check for example [this Stack Exchange question](https://stats.stackexchange.com/questions/564528/why-does-bayesian-optimization-perform-poorly-in-more-than-20-dimensions).
+[^folk]: (folk) Check for example [this Stack Exchange question](https://stats.stackexchange.com/questions/564528/why-does-bayesian-optimization-perform-poorly-in-more-than-20-dimensions).
 
 When it comes to large datasets, exact GP inference may be possible with GPyTorch and their implementation. Approximate inference is usually done through inducing points, which are a set of points that's representative of the entire dataset.[^inducing-points]
 
-[^inducing-points]: The classic reference to cite for inducing points is [a paper by Quiñonero-Candela and Rasmussen](https://proceedings.neurips.cc/paper_files/paper/2018/file/498f2c21688f6451d9f5fd09d53edda7-Paper.pdf). Check it if you're interested!
+[^inducing-points]: (inducing points) The classic reference to cite for inducing points is [a paper by Quiñonero-Candela and Rasmussen](https://proceedings.neurips.cc/paper_files/paper/2018/file/498f2c21688f6451d9f5fd09d53edda7-Paper.pdf). Check it if you're interested!
 
 High dimensional inputs are usually projected to lower-dimensional spaces, using either linear mappings (assuming e.g. that there are several dimensions that are uninformative and can be ignored), or using neural networks. Another alternative is also to provide a handcrafted mapping from solution to a so-called *behavior space* (as they do in the Intelligent Trial-and-Error paper, using MAP-Elites).[^intelligent-trial-and-error]
 
-[^intelligent-trial-and-error]: See [*Robots that can adapt like animals*, by Cully et al](https://www.nature.com/articles/nature14422). The authors learn a corpus of different robot controllers using handcrafted dimensions, and then adapt to damage using Bayesian Optimization.
+[^intelligent-trial-and-error]: (intelligent trial-and-error) See [*Robots that can adapt like animals*, by Cully et al](https://www.nature.com/articles/nature14422). The authors learn a corpus of different robot controllers using handcrafted dimensions, and then adapt to damage using Bayesian Optimization.
 
 <Heading aria-label="BO's drawbacks - parallelizing" as="h3" hash="BoDrawbacksParallelizing">Parallelizing</Heading>
 
@@ -546,6 +546,6 @@ If you found this blogpost useful, feel free to cite it.
 - [*Taking the human out of the loop: a review of Bayesian Optimization*, by Shahriari et al.](https://www.cs.ox.ac.uk/people/nando.defreitas/publications/BayesOptLoop.pdf). What a classic.
 - [*Maximizing acquisition functions for Bayesian optimization*, by Wilson, Hutter and Deisenroth.](https://proceedings.neurips.cc/paper_files/paper/2018/file/498f2c21688f6451d9f5fd09d53edda7-Paper.pdf) This paper discusses how to approximate the gradients of acquisition functions using MC, and leveraging differentiable kernels.
 - [*Scalable Global Optimization via Local Bayesian Optimization*, by Eriksson et al.](https://arxiv.org/abs/1910.01739). This paper introduces `TurBO`, or Bayesian Optimization with trust regions.
-- Alexander Balandat has several papers on parallel versions of Bayesian Optimization. [Check his google scholar for some examples](https://scholar.google.com/citations?user=xvnfpkMAAAAJ&hl=en).
+- Maximilian Balandat has several papers on parallel versions of Bayesian Optimization. [Check his google scholar for some examples](https://scholar.google.com/citations?user=xvnfpkMAAAAJ&hl=en).
 - The stopping criteria is currently under plenty of research. Check for example the work of [Anastasiia Makarova](https://scholar.google.com/citations?user=skAF5s8AAAAJ&hl=en&oi=sra). In particular [*Automatic Termination for Hyperparameter Optimization*](https://proceedings.mlr.press/v188/makarova22a/makarova22a.pdf).
 - [*Robots that can adapt like animals*, by Cully et al](https://www.nature.com/articles/nature14422). A great example of Bayesian Optimization on top of handcrafted features.
