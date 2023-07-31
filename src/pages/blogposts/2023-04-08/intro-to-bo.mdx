@@ -67,11 +67,14 @@ Assuming $f\sim \text{GP}(\mu, k)$ allows for computing **an entire distribution
 
 <CenteredImage size={"midSize"} src={"/assets/bo_blogpost/xsinx_w_noisy_samples.jpg"} alt="Noisy samples from x * sin(x)" />
 
-Given a new point $x_*$ that's not on the dataset, you can consider the joint distribution of $\{f(x_1), \dots, f(x_N), f(x_*)\}$ and compute the conditional distribution of $f(x_*)$ given the dataset:[^the-ugly-details]
+Given a new point $x_*$ that's not on the dataset, you can consider the joint distribution of $\{f(x_1), \dots, f(x_N), f(x_*)\}$ and compute the conditional distribution of $f(x_*)$ given the dataset:
+
+$$ f(\bm{x}_*) \sim \mathcal{N}(\mu_0(\bm{x}_*) + \bm{k}_*^\top \bm{K}^{-1}(\bm{f} - \bm{\mu_0}), k(\bm{x}_*, \bm{x}_*) - \bm{k}_*^\top \bm{K}^{-1} \bm{k}_*) $$
+
+where $\bm{k}^* = [k(\bm{x}_*, \bm{x}_i)]_{i=1}^N$, $\bm{f} = [f(\bm{x}_i)]_{i=1}^N$, $\bm{\mu_0} = [\mu_0(\bm{x}_i)]_{i=1}^N$, and $\bm{K}=[k(\bm{x}_i, \bm{x}_j)]_{i,j=1}^N$.[^the-ugly-details]
 
 [^the-ugly-details]: (the ugly details) I will skip the ugly details in this blogpost. The computation of a Gaussian Process' predictive posterior can be found in Sec. 2.2. of [Gaussian Processes for Machine Learning, by Rasmussen and Williams](https://gaussianprocess.org/gpml/chapters/RW2.pdf), or on Sec. 4.2.2. of [Probabilistic Numerics, by Hennig et al.](https://www.probabilistic-numerics.org/assets/ProbabilisticNumerics.pdf). Notice that I'm skipping the discussion on diagonal noise modeling.
 
-$$ f(\bm{x}_*) \sim \mathcal{N}(\mu_0(\bm{x}_*) + \bm{k}_*^\top \bm{K}^{-1}(\bm{f} - \bm{\mu_0}), k(\bm{x}_*, \bm{x}_*) - \bm{k}_*^\top \bm{K}^{-1} \bm{k}_*) $$
 
 Consider the distribution around $x_*=0$ in our running example, assuming that the prior $\mu_0$ equals $0$. The closest values we have in the dataset are at $x=-0.7$ and $x=1.1$, which means $x_*=0$ is far away from the training set. This is automatically quantified by the variance in the posterior distribution of $f(x_*)$:
 
