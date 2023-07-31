@@ -164,7 +164,7 @@ A pretty good fit! `scikit-learn`'s implementation is great, but it only deals w
 
 <Heading aria-label="GPs in practice - GPyTorch" as="h3" hash="GPsGPyTorch">GPyTorch</Heading>
 
-GPyTorch was developed with other forms of Gaussian Processes in mind, plus scalable exact inference. The authors promise exact inference with millions of datapoints, and they achieve this by reducing the computational complexity of inference from $O(n^3)$ to $O(n^2)$. [Check their paper for more details](https://arxiv.org/abs/1809.11165). These other forms of Gaussian Processes include approximations using inducing points, and deep kernel learning (where we use a neural network to project high-dimensional data to a low-dimensional feature space before applying the kernel) (?).
+GPyTorch was developed with other forms of Gaussian Processes in mind, plus scalable exact inference. The authors promise exact inference with millions of datapoints, and they achieve this by reducing the computational complexity of inference from $O(n^3)$ to $O(n^2)$. [Check their paper for more details](https://arxiv.org/abs/1809.11165).
 
 Following the tutorials, this is how you would specify the same Gaussian Process we did for scikit-learn:
 
@@ -259,7 +259,7 @@ def fit_gaussian_process(
     return model
 ```
 
-Notice that, to train a model using GPyTorch, we need to write significantly more code: specifying that the likelihood is Gaussian, define the optimizer explicity, and optimize the likelihood manually. This might seem verbose, but it's actually giving us plenty of flexibility! We could e.g. include a neural network in our `forward`, use other likelihoods, or interplay with other PyTorch-based libraries.
+Notice that, to train a model using GPyTorch, we need to write significantly more code: specifying that the likelihood is Gaussian, defining the optimizer explicity, and optimizing the likelihood manually. This might seem verbose, but it's actually giving us plenty of flexibility! We could e.g. include a neural network in our `forward`, use other likelihoods, or interplay with other PyTorch-based libraries.
 
 You can also see the kernel hyperparameters:
 
@@ -320,7 +320,7 @@ Circling back to our guiding example of $x\sin(x)$, let's start by only having $
 
 <CenteredImage size={"midSize"} src={"/assets/bo_blogpost/bo_w_TS.gif"} alt={"A GIF showing how Thompson Sampling works: we fit a Gaussian Process, sample from it, and consider this sample's optimum."} />
 
-At first, the samples are not approximating the objective function at all, and so we end up exploring the domain almost at random. These initial explorations allow us to get a better approximation of the function. TS quickly finds the left optimum, and tends to get stuck there, since all samples start to have their maximum there.
+At first, the samples are not approximating the objective function at all, and so we end up exploring the domain almost at random. These initial explorations allow us to get a better approximation of the function. TS quickly finds the left optimum, and tends to get stuck there, since further samples are likely to have their maximum there.
 
 <Heading aria-label="BO - improvement based" as="h3" hash="BoImprovementBased">Improvement-based policies</Heading>
 
@@ -330,7 +330,7 @@ For each new point $\bm{x}_*$, consider its "improvement":
 
 $$ I(\bm{x}_*; \mathcal{D}) = \max(0, f(\bm{x}_*) - f_{\text{best}})$$
 
-where $f_{\text{best}}$ is the maximum value in our trace $\mathcal{D} = \{(\bm{x}_n, f(\bm{x}_n))\}_{n=1}^N$. The improvement measures how much we are gaining at point $f(\bm{x}_*)$, compared to the current best.
+where $f_{\text{best}}$ is the maximum value for $f(\bm{x}_n)$ in our trace $\mathcal{D} = \{(\bm{x}_n, f(\bm{x}_n))\}_{n=1}^N$. The improvement measures how much we are gaining at point $f(\bm{x}_*)$, compared to the current best.
 
 since we have a probabilistic approximation of $f$, we can compute quantities like the **probability of improvement** (PI):
 
@@ -366,7 +366,7 @@ Notice that, for $\beta=1$, the optimization gets stuck on the first global opti
 
 <Heading aria-label="BOs in practice" as="h2" hash="BOsInPractice">Bayesian Optimization in practice: BoTorch</Heading>
 
-BoTorch is a Python library that interoperates well with GPyTorch for running BO experiments. All the animations I presented above were made by quickly fitting BoTorch's models for exact GP inference, and by using their implementations of the acquisition functions (except for Thompson Sampling).
+BoTorch is a Python library that interoperates well with GPyTorch for running BO experiments. All the animations I presented above were made by fitting BoTorch's models for exact GP inference, and by using their implementations of the acquisition functions (except for Thompson Sampling).
 
 Following their tutorial (and adapting it to our example), this is a minimal working version of the code for doing a Bayesian Optimization loop:
 
@@ -539,7 +539,7 @@ If you found this blogpost useful, feel free to cite it.
 
 <Heading aria-label="ReferencesGP" as="h3" hash="ReferencesGP">Gaussian Processes</Heading>
 
-- [*Gaussian Processes for Machine Learning* by Rasmussen and Williams. Chapters 2, 4 and 9.](https://gaussianprocess.org/gpml/). This book is "the bible" of Gaussian Processes.
+- [*Gaussian Processes for Machine Learning* by Rasmussen and Williams. Chapters 2, 4 and 9](https://gaussianprocess.org/gpml/). This book is "the bible" of Gaussian Processes.
 - [*Probabilistic Numerics* by Hennig, Osborne and Kersting. Secs. 4.2 and 5.5](https://www.probabilistic-numerics.org/textbooks/). I really like their presentation of Gaussian algebra and of Gaussian Processes. The computations for the posterior GP can be found either here or in the bible.
 - [*A Unifying View of Sparse Approximate Gaussian Process Regression*, by Quiñonero-Candela and Rasmussen](https://proceedings.neurips.cc/paper_files/paper/2018/file/498f2c21688f6451d9f5fd09d53edda7-Paper.pdf). A paper about inducing points/active sets/pseudo-inputs in GPs.
 - [Exact Gaussian Processes on a Million Data Points](https://arxiv.org/abs/1903.08114).
