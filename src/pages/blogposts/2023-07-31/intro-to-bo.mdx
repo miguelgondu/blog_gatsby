@@ -500,7 +500,7 @@ When it comes to large datasets, exact GP inference may be possible with GPyTorc
 
 [^inducing-points]: (inducing points) The classic reference to cite for inducing points is [a paper by Quiñonero-Candela and Rasmussen](https://proceedings.neurips.cc/paper_files/paper/2018/file/498f2c21688f6451d9f5fd09d53edda7-Paper.pdf). Check it if you're interested!
 
-High dimensional inputs are usually projected to lower-dimensional spaces, using either linear mappings (assuming e.g. that there are several dimensions that are uninformative and can be ignored), or using neural networks. Another alternative is also to provide a handcrafted mapping from solution to a so-called *behavior space* (as they do in the Intelligent Trial-and-Error paper, using MAP-Elites).[^intelligent-trial-and-error]
+High dimensional inputs are usually projected to lower-dimensional spaces, using either linear mappings (assuming e.g. that there are several dimensions that are uninformative and can be ignored), or using neural networks. Another alternative is to provide a handcrafted mapping from solution to a so-called *behavior space* (as they do in the Intelligent Trial-and-Error paper, using MAP-Elites).[^intelligent-trial-and-error]
 
 [^intelligent-trial-and-error]: (intelligent trial-and-error) See [*Robots that can adapt like animals*, by Cully et al](https://www.nature.com/articles/nature14422). The authors learn a corpus of different robot controllers using handcrafted dimensions, and then adapt to damage using Bayesian Optimization.
 
