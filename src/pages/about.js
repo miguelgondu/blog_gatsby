@@ -43,7 +43,7 @@ function allPapers() {
         linkPublication: null,
         linkCode: null,
     }
-    
+
     // GPHLVM paper
     let gphlvmPaper = {
         title: "Bringing robotics taxonomies to continuous domains via GPLVM on hyperbolic manifolds",
@@ -57,7 +57,7 @@ function allPapers() {
         linkPublication: null,
         linkCode: null,
     }
-    
+
     // Mario plays on a manifold paper
     let marioPaper = {
         title: "Mario Plays on a Manifold",
@@ -71,7 +71,7 @@ function allPapers() {
         linkPublication: "https://ieeexplore.ieee.org/document/9893612",
         linkCode: null,
     }
-    
+
     // VNCA paper
     let vncaPaper = {
         title: "Variational Neural Cellular Automata",
@@ -85,7 +85,7 @@ function allPapers() {
         linkPublication: "https://openreview.net/forum?id=7fFO4cMBx_9",
         linkCode: "https://github.com/rasmusbergpalm/vnca",
     }
-    
+
     // PBIG paper
     let pullingBackInfoGeomPaper = {
         title: "Pulling back information geometry",
@@ -99,7 +99,7 @@ function allPapers() {
         linkPublication: "https://proceedings.mlr.press/v151/arvanitidis22b.html",
         linkCode: null,
     }
-    
+
     // Fast Game Content Adaption paper
     let fastContentAdaptionPaper = {
         title: "Fast Game Content Adaptation Through Bayesian-based Player Modelling",
@@ -113,7 +113,7 @@ function allPapers() {
         linkPublication: "https://ieeexplore.ieee.org/document/9619018",
         linkCode: "https://github.com/miguelgondu/bayesian_roguelike",
     }
-    
+
     // Finding Game Levels paper
     let findingLevelsPaper = {
         title: "Finding Game Levels with the Right Difficulty in a Few Trials through Intelligent Trial-and-Error",
@@ -127,7 +127,7 @@ function allPapers() {
         linkPublication: "https://ieeexplore.ieee.org/document/9231548",
         linkCode: "https://github.com/miguelgondu/finding_game_levels_paper",
     }
-    
+
     // BRIL paper
     let brilPaper = {
         title: "Learning a Behavioral Repertoire from Demonstrations",
@@ -141,7 +141,7 @@ function allPapers() {
         linkPublication: "https://ieeexplore.ieee.org/document/9231897",
         // linkCode: "https://github.com/miguelgondu/sc2reaper",
     }
-    
+
     // M.Sc thesis
     let mscThesis = {
         title: "Neural Networks that express multiple strategies in the video game StarCraft 2",
@@ -172,8 +172,8 @@ const AboutPage = () => (
         <img src={profile_photo} class="profile_pic" alt=""></img>
 
         <p>I'm Miguel González Duque, a mathematician from the Universidad Nacional de Colombia, and a PhD in Machine Learning from the IT University of Copenhagen (supervised by <a href="http://sebastianrisi.com/" target="_blank" rel="noopener noreferrer">Sebastian Risi</a> and <a href="http://www2.compute.dtu.dk/~sohau/" target="_blank" rel="noopener noreferrer">Søren Hauberg</a>).</p>
-            
-        <p>I'm mostly interested in applications of probabilistic modeling and geometry. You can find some of my projects on <a href="https://github.com/miguelgondu" target="_blank" rel="noopener noreferrer">my GitHub profile</a>. Some of these are also available <a href="https://miguelgondu.com/projects" target="_blank" rel="noopener noreferrer">in the link above</a>. Highlights:</p>
+
+        <p>I'm mostly interested in applications of probabilistic modeling, geometry and optimization. You can find some of my projects on <a href="https://github.com/miguelgondu" target="_blank" rel="noopener noreferrer">my GitHub profile</a>. Some of these are also available <a href="https://miguelgondu.com/projects" target="_blank" rel="noopener noreferrer">in the link above</a>. Highlights:</p>
 
         <ul>
             <li><a href="https://miguelgondu.com/assets/phdthesis.pdf" target="_blank" rel="noopener noreferrer">My PhD thesis</a>, which applied Bayesian Optimization and generative modeling to video game content adaption.</li>
@@ -186,6 +186,7 @@ const AboutPage = () => (
         <h2>Experience</h2>
 
         <ul>
+            <li>Machine Learning Engineer at the <a href="https://mlls.dk/" target="_blank" rel="noopener noreferrer">Center for Basic Machine Learning Research in Life Science</a>, working with <a href="https://di.ku.dk/english/staff/vip/?pure=en/persons/275482" target="_blank" rel="noopener noreferrer">Wouter Boomsma</a> and <a href="http://www2.compute.dtu.dk/~sohau/" target="_blank" rel="noopener noreferrer">Søren Hauberg</a> (2023-current).</li>
             <li>PhD Fellow at the <a href="https://game.itu.dk/groups/creativeai/" target="_blank" rel="noopener noreferrer">Creative AI Lab</a>, IT University of Copenhagen (2019-2023).</li>
             <li>PhD Sabbatical at the <i>Bosch Center for AI</i>, working with <a href="https://leonelrozo.weebly.com/" target="_blank" rel="noopener noreferrer">Leonel Rozo</a> on using Gaussian Processes for representation and regression of robotic data (6 months in 2022).</li>
         </ul>
