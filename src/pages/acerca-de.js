@@ -11,8 +11,8 @@ const AboutPageEs = () => (
         </div>
 
         <p>Soy Miguel González Duque, un matemático de la Universidad Nacional de Colombia, y doctor de la Universidad IT de Copenhague (supervisado por <a href="http://sebastianrisi.com/" target="_blank" rel="noopener noreferrer">Sebastian Risi</a> y <a href="http://www2.compute.dtu.dk/~sohau/" target="_blank" rel="noopener noreferrer">Søren Hauberg</a>).</p>
-        
-        <p>Me interesa más que todo las aplicaciones de la modelación probabilística y la geometría diferencial. Si te interesan mis projectos, los puedes encontrar en <a href="https://github.com/miguelgondu" target="_blank" rel="noopener noreferrer">mi perfil en GitHub</a> o en el link de <a href="https://miguelgondu.com/projects" target="_blank" rel="noopener noreferrer">Proyectos</a> arriba. Los más importantes:</p>
+
+        <p>Me interesa más que todo las aplicaciones de la modelación probabilística, la geometría diferencial y la optimización. Si te interesan mis projectos, los puedes encontrar en <a href="https://github.com/miguelgondu" target="_blank" rel="noopener noreferrer">mi perfil en GitHub</a> o en el link de <a href="https://miguelgondu.com/projects" target="_blank" rel="noopener noreferrer">Proyectos</a> arriba. Los más importantes:</p>
 
         <ul>
             <li><a href="https://miguelgondu.com/assets/phdthesis.pdf" target="_blank" rel="noopener noreferrer">Mi tesis doctoral</a>, en la que usé optimización Bayesiana y modelos generativos para crear y adaptar contenido de videojuegos.</li>
@@ -22,7 +22,7 @@ const AboutPageEs = () => (
 
         <p>Para contactarme, puedes escribirme al correo miguelgondu(at)gmail(dot)com.</p>
 
-        <p>Mi experiencia profecional y mis publicaciones están en esta página, pero en inglés. Si quieres verlas, has clic <Link to="/about">aquí</Link>.</p>
+        <p>Mi experiencia profesional y mis publicaciones están en esta página, pero en inglés. Si quieres verlas, has clic <Link to="/about">aquí</Link>.</p>
     </LayoutEs>
 )
 
